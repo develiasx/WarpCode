@@ -1,0 +1,2464 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WarpCode — ScratchQuest Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK v10 (módulos via CDN compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<style>
+:root{
+  --bg:#07090f;--s1:#0f1623;--s2:#162033;--s3:#1c2a42;
+  --border:#1e3a5f;--border2:rgba(0,212,255,.18);
+  --accent:#00d4ff;--purple:#7c3aed;--gold:#ffd700;
+  --green:#10b981;--red:#ef4444;--orange:#f97316;--yellow:#fbbf24;--pink:#ec4899;
+  --text:#e2e8f0;--muted:#64748b;--muted2:#94a3b8;
+  --sidebar:250px;--radius:14px;--radius-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 10% 10%,rgba(0,212,255,.05) 0%,transparent 45%),
+             radial-gradient(ellipse at 90% 90%,rgba(124,58,237,.05) 0%,transparent 45%),
+             repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,212,255,.018) 40px),
+             repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(0,212,255,.018) 40px);}
+
+/* ── LOADING SCREEN ── */
+#screen-loading{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;position:relative;z-index:10;}
+.loading-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:2rem;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:4px;}
+.loading-spin{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-msg{font-size:.78rem;color:var(--muted);letter-spacing:2px;}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;position:relative;z-index:1;}
+.screen.active{display:flex;flex-direction:column;}
+
+/* ── LOGIN ── */
+#screen-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+.login-wrap{width:100%;max-width:460px;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(1.8rem,5vw,3rem);
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:4px;margin-bottom:4px;}
+.logo-sub{color:var(--muted);font-size:.76rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:44px;}
+
+/* ── LOGIN HERO LOGO ── */
+.login-logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:44px;}
+.login-bolt{font-size:3.2rem;line-height:1;margin-bottom:2px;
+  filter:drop-shadow(0 0 14px rgba(255,140,0,.8)) drop-shadow(0 0 30px rgba(255,100,0,.4));}
+.login-wordmark{font-family:'Orbitron',monospace;font-weight:900;
+  font-size:clamp(2.4rem,9vw,4rem);letter-spacing:6px;line-height:1;
+  background:linear-gradient(90deg,#ff6ec7 0%,#a259ff 30%,#00d4ff 60%,#a259ff 80%,#ff6ec7 100%);
+  background-size:250% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:warpShift 4s ease infinite;
+  filter:drop-shadow(0 0 24px rgba(162,89,255,.5));}
+@keyframes warpShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.login-sub-text{font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:4px;
+  color:#7754b8;text-transform:uppercase;margin-top:10px;}
+.mode-card{width:100%;padding:20px;border:1px solid var(--border);border-radius:var(--radius);
+  background:var(--s1);color:var(--text);font-family:'Nunito',sans-serif;cursor:pointer;
+  margin-bottom:12px;display:flex;align-items:center;gap:16px;transition:all .2s;text-align:left;}
+.mode-card:hover{border-color:var(--accent);box-shadow:0 0 24px rgba(0,212,255,.1);transform:translateY(-2px);}
+.mode-emoji{font-size:2.2rem;flex-shrink:0;}
+.mode-title{font-size:1rem;font-weight:800;margin-bottom:2px;}
+.mode-desc{font-size:.76rem;color:var(--muted2);}
+
+/* ── SYNC INDICATOR ── */
+.sync-indicator{position:fixed;top:12px;right:12px;z-index:9999;display:flex;align-items:center;gap:6px;
+  background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.65rem;color:var(--muted);
+  transition:all .3s;pointer-events:none;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.sync-dot.syncing{background:var(--orange);animation:pulse .8s ease infinite alternate;}
+.sync-dot.error{background:var(--red);}
+@keyframes pulse{from{opacity:.4}to{opacity:1}}
+
+/* ── APP SHELL ── */
+.app-shell{display:flex;flex:1;min-height:100vh;position:relative;z-index:1;}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden;}
+.sidebar-logo{padding:22px 18px 18px;border-bottom:1px solid var(--border);}
+.sidebar-logo .logo{font-size:1.2rem;letter-spacing:2px;margin-bottom:0;}
+.sidebar-logo .logo-sub{font-size:.58rem;letter-spacing:2px;margin-bottom:0;}
+.sidebar-user{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-av{font-size:1.5rem;width:40px;height:40px;background:rgba(0,212,255,.08);border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-name{font-weight:800;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sb-role{font-size:.65rem;color:var(--muted);margin-top:1px;}
+.sidebar-nav{flex:1;padding:10px 8px;overflow-y:auto;}
+.snav{width:100%;padding:11px 13px;border:none;border-radius:var(--radius-sm);
+  background:transparent;color:var(--muted2);font-family:'Nunito',sans-serif;font-size:.86rem;font-weight:700;
+  display:flex;align-items:center;gap:11px;cursor:pointer;margin-bottom:3px;
+  transition:all .2s;text-align:left;position:relative;}
+.snav:hover{background:var(--s2);color:var(--text);}
+.snav.active{background:rgba(0,212,255,.1);color:var(--accent);}
+.snav.active::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:3px;background:var(--accent);border-radius:0 3px 3px 0;}
+.snav-ic{font-size:1.05rem;flex-shrink:0;}
+.snav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;font-weight:900;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+.sidebar-back{padding:10px 8px;border-top:1px solid var(--border);}
+.sidebar-back button{width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--muted);font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.sidebar-back button:hover{border-color:var(--red);color:var(--red);}
+.main-content{flex:1;min-width:0;overflow-y:auto;padding:26px;padding-bottom:100px;}
+.mobile-topbar{display:none;align-items:center;justify-content:space-between;padding:13px 16px;
+  background:var(--s1);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.mobile-topbar-title{font-family:'Orbitron',monospace;font-size:.8rem;color:var(--accent);letter-spacing:2px;}
+.back-btn{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:4px 8px;}
+.mobile-bottomnav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--border);z-index:100;}
+.mobile-nav-inner{display:flex;}
+.mnav{flex:1;padding:9px 4px 11px;background:none;border:none;color:var(--muted);
+  font-family:'Nunito',sans-serif;font-size:.56rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .2s;position:relative;}
+.mnav-ic{font-size:1.15rem;}
+.mnav.active{color:var(--accent);}
+.mnav-badge{position:absolute;top:5px;right:calc(50% - 20px);background:var(--red);color:#fff;font-size:.52rem;font-weight:900;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .mobile-topbar{display:flex;}
+  .mobile-bottomnav{display:block;}
+  .main-content{padding:14px;padding-bottom:88px;}
+  .app-shell{flex-direction:column;}
+}
+
+/* ── PAGES ── */
+.page{display:none;animation:fadeUp .25s ease;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── COMPONENTS ── */
+.sec-title{font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;margin-top:2px;}
+.page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.page-title{font-family:'Orbitron',monospace;font-size:.96rem;font-weight:700;}
+.page-sub{font-size:.76rem;color:var(--muted2);margin-top:2px;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--purple));}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media(max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+.form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+.form-group{flex:1;min-width:130px;}
+label{display:block;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+input,select,textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+textarea{resize:vertical;min-height:70px;}
+select option{background:var(--s1);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 18px;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.86rem;font-weight:800;letter-spacing:.3px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-block{display:flex;width:100%;margin-bottom:8px;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;}
+.btn-primary:hover{box-shadow:0 4px 20px rgba(0,212,255,.3);transform:translateY(-1px);}
+.btn-gold{background:var(--gold);color:#111;}
+.btn-gold:hover{box-shadow:0 4px 16px rgba(255,215,0,.3);}
+.btn-success{background:var(--green);color:#fff;}
+.btn-danger{background:var(--red);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-purple{background:var(--purple);color:#fff;}
+.btn-sm{padding:6px 12px;font-size:.72rem;}
+.btn:active{transform:scale(.97);}
+.stat-box{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;}
+.stat-val{font-family:'Orbitron',monospace;font-size:1.7rem;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+
+/* ── STUDENT CARD ── */
+.student-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:9px;display:flex;align-items:center;gap:12px;transition:border-color .2s;}
+.student-card:hover{border-color:var(--border2);}
+.avatar{font-size:1.6rem;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:rgba(0,212,255,.08);border-radius:50%;border:1px solid var(--border);flex-shrink:0;}
+.sinfo{flex:1;min-width:0;}
+.sname{font-weight:800;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.smeta{font-size:.7rem;color:var(--muted2);margin-top:2px;}
+.xp-bar{height:3px;background:var(--s1);border-radius:2px;margin-top:6px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:2px;transition:width .6s;}
+.xp-val{font-family:'Orbitron',monospace;font-size:.8rem;color:var(--gold);font-weight:700;white-space:nowrap;}
+
+/* ── MISSION CARD ── */
+.mission-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:15px;margin-bottom:9px;transition:border-color .2s;position:relative;}
+.mission-card.done{border-color:rgba(16,185,129,.35);}
+.mission-card.pending{border-color:rgba(251,191,36,.35);}
+.mission-card.team-mission{border-color:rgba(236,72,153,.3);}
+.mission-card:hover{border-color:var(--border2);}
+.mtitle{font-weight:800;font-size:.92rem;margin-bottom:5px;}
+.mdesc{font-size:.78rem;color:var(--muted2);line-height:1.6;}
+.mtags{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:9px;}
+.mdiff{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:5px;font-weight:800;}
+.diff-easy{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.diff-medium{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.diff-hard{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}
+.diff-team{background:rgba(236,72,153,.15);color:var(--pink);border:1px solid rgba(236,72,153,.3);}
+.diff-weekly{background:rgba(249,115,22,.15);color:var(--orange);border:1px solid rgba(249,115,22,.3);}
+.mxp{font-family:'Orbitron',monospace;font-size:.68rem;color:var(--gold);}
+.status-tag{font-size:.6rem;font-weight:800;letter-spacing:1px;padding:3px 8px;border-radius:5px;display:inline-block;}
+.tag-done{background:rgba(16,185,129,.15);color:var(--green);}
+.tag-pending{background:rgba(251,191,36,.15);color:var(--yellow);}
+.tag-open{background:rgba(100,116,139,.12);color:var(--muted);}
+
+/* ── APPROVAL CARD ── */
+.approval-card{background:var(--s2);border:1px solid rgba(251,191,36,.35);border-radius:var(--radius);padding:15px;margin-bottom:9px;}
+.approval-meta{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;gap:8px;flex-wrap:wrap;}
+.approval-link{font-size:.73rem;color:var(--accent);word-break:break-all;display:block;margin-bottom:9px;}
+.approval-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+/* ── RANKING ── */
+.rank-item{display:flex;align-items:center;gap:11px;padding:12px 14px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:7px;transition:all .2s;}
+.rank-item:hover{transform:translateX(3px);}
+.rank-item.me{border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.04);}
+.rnum{font-family:'Orbitron',monospace;font-size:1.05rem;font-weight:900;width:32px;text-align:center;flex-shrink:0;}
+.r1{color:var(--gold);}.r2{color:#c0c0c0;}.r3{color:#cd7f32;}.rx{color:var(--muted);}
+
+/* ── BADGES ── */
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px;}
+.badge-item{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:13px 7px;text-align:center;transition:all .2s;cursor:default;}
+.badge-item:hover{transform:translateY(-3px);border-color:var(--border2);}
+.badge-item.locked{opacity:.25;filter:grayscale(1);}
+.badge-icon{font-size:1.7rem;margin-bottom:5px;}
+.badge-name{font-size:.63rem;font-weight:800;}
+.badge-req{font-size:.57rem;color:var(--muted);margin-top:2px;line-height:1.4;}
+
+/* ── HERO ── */
+.hero-card{background:linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12));border:1px solid rgba(0,212,255,.25);border-radius:var(--radius);padding:26px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden;}
+.hero-card::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(0,212,255,.07),transparent 70%);pointer-events:none;}
+.hero-avatar{font-size:3.8rem;margin-bottom:9px;}
+.hero-name{font-size:1.35rem;font-weight:900;}
+.hero-turma{font-size:.75rem;color:var(--muted2);margin-bottom:14px;}
+.hero-xp{font-family:'Orbitron',monospace;font-size:2.5rem;font-weight:900;color:var(--gold);line-height:1;}
+.hero-xp-lbl{font-size:.6rem;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.hero-level{display:inline-block;font-family:'Orbitron',monospace;font-size:.75rem;color:var(--accent);background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);padding:5px 15px;border-radius:8px;}
+.hero-streak{display:inline-block;margin-left:8px;font-size:.75rem;color:var(--orange);background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);padding:5px 12px;border-radius:8px;font-weight:800;}
+.hero-bar{height:5px;background:rgba(255,255,255,.07);border-radius:3px;margin-top:13px;overflow:hidden;}
+.hero-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:3px;transition:width .7s;}
+.hero-bar-lbl{display:flex;justify-content:space-between;font-size:.6rem;color:var(--muted);margin-top:3px;}
+
+/* ── STREAK CARD ── */
+.streak-card{background:linear-gradient(135deg,rgba(249,115,22,.12),rgba(239,68,68,.08));border:1px solid rgba(249,115,22,.3);border-radius:var(--radius);padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;}
+.streak-fire{font-size:2.2rem;}
+.streak-num{font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:900;color:var(--orange);}
+.streak-lbl{font-size:.7rem;color:var(--muted2);margin-top:2px;}
+
+/* ── HISTORY ── */
+.history-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.history-item:last-child{border-bottom:none;}
+.history-icon{font-size:1.3rem;flex-shrink:0;}
+.history-desc{flex:1;font-size:.82rem;}
+.history-xp{font-family:'Orbitron',monospace;font-size:.78rem;color:var(--gold);font-weight:700;flex-shrink:0;}
+.history-date{font-size:.65rem;color:var(--muted);margin-top:2px;}
+
+/* ── SHOP ── */
+.shop-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:15px;margin-bottom:9px;transition:all .2s;}
+.shop-card:hover{border-color:var(--gold);box-shadow:0 0 20px rgba(255,215,0,.08);}
+.shop-card.claimed{opacity:.5;}
+.shop-name{font-weight:800;font-size:.92rem;margin-bottom:4px;}
+.shop-desc{font-size:.78rem;color:var(--muted2);margin-bottom:10px;line-height:1.5;}
+.shop-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.shop-cost{font-family:'Orbitron',monospace;font-size:.8rem;color:var(--gold);font-weight:700;}
+
+/* ── PIN ── */
+.pin-display{font-family:'Orbitron',monospace;font-size:2.8rem;font-weight:900;letter-spacing:12px;color:var(--gold);text-align:center;background:var(--s2);border:2px dashed rgba(255,215,0,.35);border-radius:var(--radius);padding:16px;margin:8px 0;}
+
+/* ── SCRATCH BTN ── */
+.scratch-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px;border:none;border-radius:var(--radius-sm);background:linear-gradient(135deg,#ff6b2b,#ff9500);color:#fff;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;text-decoration:none;transition:all .2s;margin-bottom:10px;}
+.scratch-btn:hover{box-shadow:0 4px 20px rgba(255,107,43,.35);transform:translateY(-1px);}
+
+/* ── DESAFIO SEMANA ── */
+.weekly-card{background:linear-gradient(135deg,rgba(249,115,22,.15),rgba(239,68,68,.1));border:2px solid rgba(249,115,22,.4);border-radius:var(--radius);padding:18px;margin-bottom:14px;position:relative;overflow:hidden;}
+.weekly-card::before{content:'⚡ DESAFIO DA SEMANA';position:absolute;top:10px;right:10px;font-size:.58rem;font-family:'Orbitron',monospace;letter-spacing:2px;color:var(--orange);background:rgba(249,115,22,.15);padding:3px 8px;border-radius:5px;}
+.weekly-timer{font-family:'Orbitron',monospace;font-size:.72rem;color:var(--orange);margin-top:8px;}
+
+/* ── AVATAR PICKER ── */
+.avatar-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0;}
+.av-opt{font-size:1.8rem;padding:10px;border:2px solid var(--border);border-radius:10px;cursor:pointer;text-align:center;transition:all .2s;background:var(--s2);}
+.av-opt:hover,.av-opt.selected{border-color:var(--accent);background:rgba(0,212,255,.1);}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:26px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;position:relative;animation:fadeUp .25s ease;}
+.modal-title{font-family:'Orbitron',monospace;font-size:.76rem;letter-spacing:3px;color:var(--accent);margin-bottom:18px;}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;}
+.modal-close:hover{color:var(--text);}
+@media(max-width:768px){
+  .modal-overlay{align-items:flex-end;padding:0;}
+  .modal{border-radius:20px 20px 0 0;max-height:92vh;max-width:100%;}
+}
+
+/* ── LEVEL UP OVERLAY ── */
+#levelup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9000;align-items:center;justify-content:center;flex-direction:column;text-align:center;}
+#levelup-overlay.active{display:flex;}
+.levelup-emoji{font-size:5rem;animation:bounce 0.5s ease infinite alternate;}
+.levelup-title{font-family:'Orbitron',monospace;font-size:clamp(1.5rem,5vw,2.5rem);font-weight:900;background:linear-gradient(135deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 8px;}
+.levelup-sub{font-size:1rem;color:var(--muted2);margin-bottom:28px;}
+.levelup-stars{font-size:2rem;animation:starSpin 1s ease infinite;}
+@keyframes bounce{from{transform:scale(1)}to{transform:scale(1.15)}}
+@keyframes starSpin{0%{opacity:1;transform:rotate(0)}50%{opacity:.5}100%{opacity:1;transform:rotate(360deg)}}
+
+/* ── EMPTY / TOAST ── */
+.empty{text-align:center;padding:44px 20px;color:var(--muted);}
+.empty-icon{font-size:2.8rem;margin-bottom:10px;}
+.empty-text{font-size:.86rem;line-height:1.7;}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--s1);border:1px solid var(--accent);border-radius:var(--radius);padding:12px 22px;font-size:.86rem;color:var(--text);box-shadow:0 8px 32px rgba(0,212,255,.2);z-index:9999;text-align:center;animation:toastIn .3s ease;white-space:nowrap;max-width:90vw;}
+@keyframes toastIn{from{transform:translateX(-50%) translateY(16px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+
+/* ── FEEDBACK BUBBLE ── */
+.feedback-bubble{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:10px;padding:10px 13px;font-size:.8rem;color:var(--muted2);line-height:1.6;margin-top:8px;}
+.feedback-bubble strong{color:var(--accent);}
+
+/* ── TABS (aluno login) ── */
+#screen-aluno-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+.aluno-login-wrap{width:100%;max-width:400px;}
+
+/* ── TELA SENHA PROFESSOR ── */
+#screen-prof-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+.prof-login-wrap{width:100%;max-width:380px;position:relative;}
+
+/* ── TELA TURMA ── */
+#screen-turma-sel{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+.turma-sel-wrap{width:100%;max-width:420px;}
+.turma-card{width:100%;padding:18px 20px;border:1px solid var(--border);border-radius:var(--radius);
+  background:var(--s1);color:var(--text);font-family:'Nunito',sans-serif;cursor:pointer;
+  margin-bottom:10px;display:flex;align-items:center;gap:14px;transition:all .2s;text-align:left;}
+.turma-card:hover{border-color:var(--accent);box-shadow:0 0 24px rgba(0,212,255,.1);transform:translateY(-2px);}
+.turma-card-icon{font-size:1.8rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,212,255,.08);border-radius:50%;border:1px solid var(--border);flex-shrink:0;}
+.turma-card-count{font-size:.68rem;color:var(--muted2);margin-top:2px;}
+
+/* ── TELA ALUNOS DA TURMA ── */
+#screen-aluno-lista{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+.aluno-lista-wrap{width:100%;max-width:420px;}
+.aluno-pick-card{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);
+  background:var(--s2);color:var(--text);font-family:'Nunito',sans-serif;cursor:pointer;
+  margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:all .2s;text-align:left;}
+.aluno-pick-card:hover{border-color:var(--accent);background:rgba(0,212,255,.05);transform:translateX(4px);}
+
+/* ── TELA SENHA ── */
+#screen-senha{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+.senha-wrap{width:100%;max-width:400px;}
+.senha-avatar{font-size:3.5rem;margin-bottom:6px;}
+.senha-nome{font-size:1.2rem;font-weight:900;margin-bottom:2px;}
+.senha-turma{font-size:.75rem;color:var(--muted2);margin-bottom:22px;}
+.pin-dots{display:flex;gap:10px;justify-content:center;margin:16px 0;}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:transparent;transition:all .3s;}
+.pin-dot.filled{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px rgba(0,212,255,.5);}
+.pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;}
+.kbtn{padding:16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--s2);
+  color:var(--text);font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.kbtn:hover{border-color:var(--accent);background:rgba(0,212,255,.08);}
+.kbtn:active{transform:scale(.93);}
+.kbtn.del{font-family:'Nunito',sans-serif;font-size:.9rem;}
+.senha-hint{font-size:.72rem;color:var(--muted);margin-top:14px;line-height:1.6;}
+.senha-error{font-size:.78rem;color:var(--red);margin-top:8px;min-height:20px;}
+
+/* ══ WC ══ */
+:root{--wc:#ffd700;--wc2:#f59e0b;}
+.sb-wc{font-family:'Orbitron',monospace;font-size:.6rem;color:var(--wc);margin-top:2px;}
+.wc-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.3);border-radius:20px;padding:3px 10px;font-family:'Orbitron',monospace;font-size:.7rem;color:var(--wc);font-weight:700;}
+.wc-shop-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:9px;transition:all .25s;}
+.wc-shop-card:hover{border-color:rgba(255,215,0,.4);}
+.wc-shop-card.owned{border-color:rgba(16,185,129,.3);}
+.wc-shop-card.equipped{border-color:rgba(0,212,255,.4);}
+.wc-cost{font-family:'Orbitron',monospace;font-size:.75rem;color:var(--wc);font-weight:700;}
+.wc-free-tag{font-size:.58rem;font-weight:900;color:var(--green);background:rgba(16,185,129,.12);padding:2px 7px;border-radius:4px;}
+.wc-owned-tag{font-size:.58rem;font-weight:900;color:var(--green);border:1px solid rgba(16,185,129,.3);padding:2px 7px;border-radius:4px;}
+.wc-equipped-tag{font-size:.58rem;font-weight:900;color:var(--accent);border:1px solid rgba(0,212,255,.3);padding:2px 7px;border-radius:4px;}
+.wc-balance-big{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--wc);line-height:1;}
+.wc-exchange-box{background:linear-gradient(135deg,rgba(16,185,129,.07),rgba(0,212,255,.05));border:1px solid rgba(16,185,129,.25);border-radius:var(--radius);padding:16px;margin-top:14px;}
+.btn-wc{background:linear-gradient(135deg,var(--wc),var(--wc2));color:#111;font-weight:900;}
+.mwc{font-family:'Orbitron',monospace;font-size:.68rem;color:var(--wc);}
+
+/* ══ STEAM PROFILE ══ */
+.steam-banner-bg{height:130px;border-radius:var(--radius) var(--radius) 0 0;position:relative;overflow:hidden;}
+.steam-banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.7));}
+.steam-profile-lower{background:var(--s1);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:14px 16px 16px;margin-bottom:14px;}
+.steam-avatar-wrap{position:relative;display:inline-block;margin-top:-36px;margin-bottom:8px;}
+.steam-avatar{width:72px;height:72px;border-radius:12px;border:3px solid var(--bg);font-size:2.8rem;display:flex;align-items:center;justify-content:center;background:var(--s2);overflow:hidden;}
+.online-dot{position:absolute;bottom:-2px;right:-2px;width:15px;height:15px;border-radius:50%;background:var(--green);border:2px solid var(--bg);box-shadow:0 0 8px rgba(16,185,129,.8);}
+.steam-name-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.steam-pname{font-size:1.25rem;font-weight:900;line-height:1;}
+.steam-sub{font-size:.7rem;color:var(--muted2);margin-top:3px;}
+.steam-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+@media(max-width:500px){.steam-stat-grid{grid-template-columns:repeat(2,1fr);}}
+.steam-stat{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;transition:border-color .2s;}
+.steam-stat:hover{border-color:var(--border2);}
+.steam-stat-val{font-family:'Orbitron',monospace;font-size:1.15rem;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.steam-stat-lbl{font-size:.52rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+
+/* ══ ACTIVITY FEED ══ */
+.activity-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--s2);border-radius:8px;margin-bottom:5px;border:1px solid var(--border);transition:border-color .2s;}
+.activity-item:hover{border-color:var(--border2);}
+.activity-icon{font-size:1.2rem;flex-shrink:0;}
+.activity-text{flex:1;font-size:.78rem;}
+.activity-time{font-size:.6rem;color:var(--muted);flex-shrink:0;white-space:nowrap;}
+.activity-xp{font-family:'Orbitron',monospace;font-size:.7rem;color:var(--gold);flex-shrink:0;}
+
+/* ══ PET ══ */
+.pet-wrap{position:absolute;bottom:12px;right:14px;font-size:2rem;z-index:5;animation:petBounce 2.2s ease-in-out infinite;cursor:help;filter:drop-shadow(0 2px 10px rgba(0,0,0,.6));user-select:none;}
+@keyframes petBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.08)}}
+
+/* ══ HACK POWER ══ */
+.hack-card{background:linear-gradient(135deg,rgba(16,185,129,.07),rgba(0,212,255,.04));border:1px solid rgba(16,185,129,.35);border-radius:var(--radius);padding:13px;margin-bottom:9px;position:relative;overflow:hidden;transition:all .2s;}
+.hack-card::after{content:'⚡ HACK';position:absolute;top:8px;right:10px;font-size:.5rem;font-family:'Orbitron',monospace;color:var(--green);background:rgba(16,185,129,.12);padding:2px 7px;border-radius:4px;}
+.hack-card.active-hack{border-color:rgba(16,185,129,.7);box-shadow:0 0 16px rgba(16,185,129,.2);}
+.hack-card.used-hack{opacity:.4;filter:grayscale(.5);}
+.hack-name{font-weight:900;font-size:.88rem;margin-bottom:3px;}
+.hack-desc{font-size:.73rem;color:var(--muted2);line-height:1.5;}
+
+/* ══ COSMETIC BORDERS ══ */
+.hero-card.b-neon{box-shadow:0 0 0 2px var(--accent),0 0 20px rgba(0,212,255,.35)!important;}
+.hero-card.b-gold{box-shadow:0 0 0 2px var(--gold),0 0 20px rgba(255,215,0,.35)!important;}
+.hero-card.b-purple{box-shadow:0 0 0 2px #a855f7,0 0 20px rgba(168,85,247,.35)!important;}
+.hero-card.b-cosmic{box-shadow:0 0 0 2px var(--pink),0 0 30px rgba(236,72,153,.25)!important;}
+.hero-card.b-rainbow{animation:rainbowBrd 2s linear infinite;}
+@keyframes rainbowBrd{0%{box-shadow:0 0 0 2px #f00}25%{box-shadow:0 0 0 2px #ff0}50%{box-shadow:0 0 0 2px #0ff}75%{box-shadow:0 0 0 2px #f0f}100%{box-shadow:0 0 0 2px #f00}}
+.hero-card.e-sparkle::before{content:'✨✨';position:absolute;top:8px;right:8px;font-size:.9rem;animation:sparkleF 1.5s ease-in-out infinite alternate;z-index:1;}
+@keyframes sparkleF{from{opacity:.4;transform:translateY(0)}to{opacity:1;transform:translateY(-4px)}}
+.hero-card.e-fire::before{content:'🔥';position:absolute;bottom:8px;right:8px;font-size:1.5rem;animation:firePulse 1.1s ease infinite;z-index:1;}
+.hero-card.e-stars::before{content:'⭐🌟';position:absolute;top:8px;right:8px;font-size:.9rem;animation:firePulse 1.5s ease-in-out infinite;z-index:1;}
+.hero-card.e-lightning::before{content:'⚡';position:absolute;top:8px;right:10px;font-size:1.5rem;animation:boltFloat 1.5s ease-in-out infinite;z-index:1;}
+@keyframes boltFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.05)}}
+@keyframes firePulse{0%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(249,115,22,.6))}50%{transform:scale(1.22);filter:drop-shadow(0 0 12px rgba(249,115,22,1))}100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(249,115,22,.6))}}
+
+/* ══ PATENTE ══ */
+.patente{font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:1px;font-weight:900;display:inline-block;padding:3px 9px;border-radius:6px;margin-top:4px;}
+.p-recruta{background:rgba(100,116,139,.15);color:#64748b;}.p-soldado{background:rgba(16,185,129,.12);color:var(--green);}
+.p-tenente{background:rgba(0,212,255,.12);color:var(--accent);}.p-capitao{background:rgba(168,85,247,.12);color:#a855f7;}
+.p-general{background:rgba(255,215,0,.12);color:var(--gold);}.p-lenda{background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(168,85,247,.15));color:var(--pink);}
+
+/* ══ LOOT ══ */
+.loot-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9800;align-items:center;justify-content:center;flex-direction:column;}
+.loot-overlay.active{display:flex;}
+.loot-box{font-size:5rem;cursor:pointer;transition:transform .2s;filter:drop-shadow(0 0 30px rgba(255,215,0,.6));}
+.loot-box:hover:not(.opened){transform:scale(1.08) rotate(-3deg);}
+@keyframes lootOpen{0%{transform:scale(1)}25%{transform:scale(1.3) rotate(-10deg)}60%{transform:scale(.9)}100%{transform:scale(1)}}
+.loot-reveal{animation:lootReveal .5s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes lootReveal{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1);opacity:1}}
+.loot-day-row{display:flex;justify-content:center;gap:5px;margin:12px 0;flex-wrap:wrap;}
+.loot-day-dot{width:30px;height:30px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:900;color:var(--muted);}
+.loot-day-dot.claimed{background:rgba(255,215,0,.18);border-color:var(--gold);color:var(--gold);}
+.loot-day-dot.today{background:rgba(0,212,255,.18);border-color:var(--accent);color:var(--accent);}
+
+/* ══ SEASON ══ */
+.season-bar{background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(124,58,237,.08));border:1px solid rgba(0,212,255,.2);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
+.season-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--purple),var(--pink));}
+.season-prog-wrap{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin:8px 0;}
+.season-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:3px;transition:width .7s;}
+
+/* ══ WELCOME ══ */
+.welcome-back{background:linear-gradient(90deg,rgba(0,212,255,.08),rgba(124,58,237,.08));border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.welcome-icon{font-size:2rem;}
+.welcome-text{font-size:.85rem;font-weight:800;}
+.welcome-sub{font-size:.72rem;color:var(--muted2);margin-top:2px;}
+
+/* ══ STREAK V2 ══ */
+.streak-card-v2{background:linear-gradient(135deg,rgba(249,115,22,.18),rgba(239,68,68,.1));border:1px solid rgba(249,115,22,.45);border-radius:var(--radius);padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;}
+.streak-card-v2::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),var(--red));}
+.streak-big{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--orange);line-height:1;}
+.streak-label{font-size:.68rem;color:var(--muted2);margin-top:3px;}
+.streak-fire-anim{display:inline-block;animation:firePulse 1.1s ease-in-out infinite;}
+
+/* ══ CUSTOM MODAL ══ */
+.custom-section{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+.custom-options{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.custom-opt{padding:8px 12px;border:2px solid var(--border);border-radius:10px;cursor:pointer;font-size:.75rem;font-weight:800;transition:all .2s;background:var(--s1);}
+.custom-opt:hover,.custom-opt.selected{border-color:var(--accent);background:rgba(0,212,255,.08);}
+.custom-opt.locked-opt{opacity:.35;cursor:not-allowed;}
+.banner-opt{height:50px;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.7);flex:1;min-width:120px;}
+.banner-opt.selected{border-color:white;}.banner-opt.locked-opt{opacity:.35;cursor:not-allowed;}
+.border-opt-prev{width:56px;height:56px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid transparent;cursor:pointer;background:var(--s1);transition:all .2s;font-size:1.3rem;}
+.border-opt-prev.selected{background:rgba(0,212,255,.1);}.border-opt-prev.locked-opt{opacity:.35;cursor:not-allowed;}
+
+/* ══ THEME + TITLE ══ */
+.theme-swatch{display:flex;gap:3px;margin-top:6px;height:20px;border-radius:6px;overflow:hidden;}
+.theme-swatch span{flex:1;}
+.title-badge{display:inline-block;font-family:'Orbitron',monospace;font-size:.65rem;font-weight:900;letter-spacing:1px;padding:4px 12px;border-radius:20px;}
+
+/* ══ VISUAL FEEDBACK ══ */
+.xp-float{position:fixed;pointer-events:none;z-index:99999;font-family:'Orbitron',monospace;font-weight:900;font-size:1.5rem;color:var(--gold);text-shadow:0 0 24px rgba(255,215,0,.9);animation:xpRise 1.8s ease-out forwards;}
+@keyframes xpRise{0%{opacity:1;transform:translateY(0) scale(.8)}30%{opacity:1;transform:translateY(-40px) scale(1.3)}70%{opacity:.8;transform:translateY(-110px) scale(1)}100%{opacity:0;transform:translateY(-180px) scale(.7)}}
+.screen-flash{position:fixed;inset:0;pointer-events:none;z-index:99998;animation:flashOut .7s ease-out forwards;}
+@keyframes flashOut{0%{opacity:.5}100%{opacity:0}}
+.particle{position:fixed;pointer-events:none;z-index:99997;width:8px;height:8px;border-radius:50%;animation:particleFly 1.3s ease-out forwards;}
+@keyframes particleFly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(0)}}
+
+</style>
+</head>
+<body>
+
+<!-- SYNC INDICATOR -->
+<div class="sync-indicator" id="sync-indicator">
+  <div class="sync-dot" id="sync-dot"></div>
+  <span id="sync-text">Conectado</span>
+</div>
+
+<!-- LEVEL UP OVERLAY -->
+<div id="levelup-overlay">
+  <div class="levelup-stars">⭐✨🌟</div>
+  <div class="levelup-emoji" id="lu-emoji">🏆</div>
+  <div class="levelup-title" id="lu-title">SUBIU DE NÍVEL!</div>
+  <div class="levelup-sub" id="lu-sub">Você agora é Explorador</div>
+  <button class="btn btn-gold" onclick="closeLevelUp()" style="font-size:1rem;padding:14px 32px;">🎉 Incrível!</button>
+</div>
+
+<!-- LOADING -->
+<div id="screen-loading" class="screen active">
+  <div class="loading-logo">⚡ WARPCODE</div>
+  <div class="loading-spin"></div>
+  <div class="loading-msg">Conectando ao servidor...</div>
+</div>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen">
+  <div class="login-wrap">
+    <div class="login-logo-wrap">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span class="login-bolt">⚡</span>
+        <span class="login-wordmark">WARPCODE</span>
+      </div>
+      <div class="login-sub-text">Robótica &nbsp;·&nbsp; Scratch &nbsp;·&nbsp; Aventura</div>
+    </div>
+    <button class="mode-card" onclick="goProfLogin()">
+      <div class="mode-emoji" style="width:56px;height:56px;background:rgba(124,58,237,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;">🧑‍🏫</div>
+      <div style="flex:1;"><div class="mode-title">Sou Professor</div><div class="mode-desc">Gerencie turmas, aprove<br>missões e recompensas</div></div>
+      <div style="color:var(--accent);font-size:1rem;flex-shrink:0;">›</div>
+    </button>
+    <button class="mode-card" onclick="goAlunoLogin()">
+      <div class="mode-emoji" style="width:56px;height:56px;background:rgba(0,212,255,.12);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;">🚀</div>
+      <div style="flex:1;"><div class="mode-title">Sou Aluno</div><div class="mode-desc">Complete missões, ganhe XP<br>e suba de nível!</div></div>
+      <div style="color:var(--accent);font-size:1rem;flex-shrink:0;">›</div>
+    </button>
+    <div style="margin-top:24px;font-size:.65rem;color:var(--muted);letter-spacing:1px;display:flex;gap:18px;justify-content:center;">
+      <span>🔥 Nuvem</span><span>⚡ Firebase</span><span>🚀 Tempo real</span>
+    </div>
+  </div>
+</div>
+
+<!-- PROFESSOR LOGIN -->
+<div id="screen-prof-login" class="screen">
+  <div class="prof-login-wrap">
+    <button class="back-btn" style="position:absolute;top:20px;left:20px;" onclick="goLogin()">←</button>
+    <div style="font-size:3rem;margin-bottom:8px;">🧑‍🏫</div>
+    <div class="logo" style="font-size:1.8rem;">WarpCode</div>
+    <div class="logo-sub" style="margin-bottom:28px;">Acesso do Professor</div>
+    <div class="card" style="text-align:left;">
+      <label>Senha do Professor</label>
+      <input id="prof-senha-input" type="password" placeholder="Digite sua senha"
+        style="margin-bottom:8px;font-size:1rem;letter-spacing:2px;"
+        onkeydown="if(event.key==='Enter')confirmarSenhaProf()">
+      <div id="prof-senha-erro" style="font-size:.75rem;color:var(--red);min-height:18px;margin-bottom:10px;"></div>
+      <button class="btn btn-primary btn-block" onclick="confirmarSenhaProf()">🔓 ENTRAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFESSOR -->
+<div id="screen-prof" class="screen" style="flex-direction:row;">
+  <div class="app-shell" style="flex:1;min-height:100vh;">
+    <aside class="sidebar">
+      <div class="sidebar-logo"><div class="logo">⚡ WC</div><div class="logo-sub" style="margin-top:2px;">Professor</div></div>
+      <div class="sidebar-user"><div class="sb-av">🧑‍🏫</div><div><div class="sb-name">Professor</div><div class="sb-role">Administrador</div></div></div>
+      <nav class="sidebar-nav">
+        <button class="snav active" id="snav-alunos" onclick="profTab('alunos','snav-alunos')"><span class="snav-ic">👥</span>Alunos</button>
+        <button class="snav" id="snav-aprovar" onclick="profTab('aprovar','snav-aprovar')"><span class="snav-ic">✅</span>Aprovar Missões<span class="snav-badge" id="snav-badge" style="display:none">0</span></button>
+        <button class="snav" id="snav-desafio" onclick="profTab('desafio','snav-desafio')"><span class="snav-ic">🔥</span>Desafio da Semana</button>
+        <button class="snav" id="snav-loja" onclick="profTab('loja','snav-loja')"><span class="snav-ic">🛒</span>Loja de Recompensas</button>
+        <button class="snav" id="snav-ranking" onclick="profTab('ranking','snav-ranking')"><span class="snav-ic">🏆</span>Ranking</button>
+        <button class="snav" id="snav-pin" onclick="profTab('pin','snav-pin')"><span class="snav-ic">🔑</span>Acesso Alunos</button>
+      </nav>
+      <div class="sidebar-back"><button onclick="goLogin()">← Sair</button></div>
+    </aside>
+    <div class="mobile-topbar">
+      <button class="back-btn" onclick="goLogin()">←</button>
+      <div class="mobile-topbar-title" id="prof-topbar-title">ALUNOS</div>
+      <div style="width:36px"></div>
+    </div>
+    <main class="main-content">
+
+      <!-- ALUNOS -->
+      <div id="ppage-alunos" class="page active">
+        <div class="page-hdr"><div><div class="page-title">👥 Alunos</div><div class="page-sub">Cadastre e gerencie sua turma</div></div></div>
+        <div class="card">
+          <div class="sec-title">➕ Novo Aluno</div>
+          <div class="form-row">
+            <div class="form-group"><label>Nome</label><input id="p-nome" type="text" placeholder="Nome completo"></div>
+            <div class="form-group"><label>Turma</label>
+              <select id="p-turma">
+                <option>6º Ano A</option><option>6º Ano B</option><option>7º Ano A</option><option>7º Ano B</option>
+                <option>8º Ano A</option><option>8º Ano B</option><option>9º Ano A</option><option>9º Ano B</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
+              <button class="btn btn-primary" onclick="cadastrarAluno()">➕ Cadastrar</button>
+            </div>
+          </div>
+        </div>
+        <div class="sec-title">Lista de Alunos</div>
+        <div id="p-lista-alunos"></div>
+      </div>
+
+      <!-- APROVAR -->
+      <div id="ppage-aprovar" class="page">
+        <div class="page-hdr"><div><div class="page-title">✅ Aprovar Missões</div><div class="page-sub">Valide os projetos e dê feedback</div></div></div>
+        <div class="sec-title">⏳ Aguardando Aprovação</div>
+        <div id="p-aprovacoes"></div>
+        <div class="sec-title" style="margin-top:18px;">⚡ Dar XP Manual</div>
+        <div class="card">
+          <div class="form-row">
+            <div class="form-group"><label>Aluno</label><select id="p-xp-aluno"></select></div>
+            <div class="form-group"><label>Motivo</label>
+              <select id="p-xp-motivo">
+                <option value="50">Participou da aula (+50 XP)</option>
+                <option value="100">Concluiu atividade (+100 XP)</option>
+                <option value="200">Ajudou colega (+200 XP)</option>
+                <option value="300">Projeto criativo (+300 XP)</option>
+                <option value="500">Desafio especial (+500 XP)</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
+              <button class="btn btn-primary" onclick="darXP()">⚡ Dar XP</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESAFIO DA SEMANA -->
+      <div id="ppage-desafio" class="page">
+        <div class="page-hdr"><div><div class="page-title">🔥 Desafio da Semana</div><div class="page-sub">Uma missão especial com XP bônus e tempo limitado</div></div></div>
+        <div class="card">
+          <div class="sec-title">🔥 Configurar Desafio</div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Título do Desafio</label><input id="d-titulo" placeholder="Ex: Jogo de Natal em Scratch!"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Descrição</label><textarea id="d-desc" placeholder="Descreva o que os alunos devem criar..."></textarea></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>🎬 Link de Vídeo Exemplo (opcional)</label><input id="d-video" type="url" placeholder="https://youtube.com/watch?v=..."></div>
+          <div class="form-row">
+            <div class="form-group"><label>XP Bônus</label><input id="d-xp" type="number" placeholder="500" min="100"></div>
+            <div class="form-group"><label>Validade (dias)</label><input id="d-dias" type="number" placeholder="7" min="1" max="30"></div>
+            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
+              <button class="btn btn-orange" onclick="salvarDesafio()">🔥 Publicar</button>
+            </div>
+          </div>
+        </div>
+        <div class="sec-title">Desafios Ativos</div>
+        <div id="p-desafio-atual"></div>
+      </div>
+
+      <!-- LOJA -->
+      <div id="ppage-loja" class="page">
+        <div class="page-hdr"><div><div class="page-title">🛒 Loja de Recompensas</div><div class="page-sub">Alunos trocam XP por recompensas reais</div></div></div>
+        <div class="card">
+          <div class="sec-title">➕ Nova Recompensa</div>
+          <div class="form-row">
+            <div class="form-group"><label>Emoji</label><input id="r-emoji" placeholder="🎁" maxlength="2" style="text-align:center;font-size:1.4rem;"></div>
+            <div class="form-group" style="flex:2;"><label>Nome da Recompensa</label><input id="r-nome" placeholder="Ex: Escolher o projeto livre"></div>
+            <div class="form-group"><label>Custo em XP</label><input id="r-custo" type="number" placeholder="300" min="50"></div>
+            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
+              <button class="btn btn-gold" onclick="addRecompensa()">➕ Adicionar</button>
+            </div>
+          </div>
+        </div>
+        <div class="sec-title">Itens da Loja</div>
+        <div id="p-loja-items"></div>
+        <div class="sec-title" style="margin-top:18px;">📋 Resgates Pendentes</div>
+        <div id="p-resgates"></div>
+      </div>
+
+      <!-- RANKING -->
+      <div id="ppage-ranking" class="page">
+        <div class="page-hdr"><div><div class="page-title">🏆 Ranking Geral</div></div></div>
+        <div id="p-ranking"></div>
+      </div>
+
+      <!-- PIN -->
+      <div id="ppage-pin" class="page">
+        <div class="page-hdr"><div><div class="page-title">🔑 Acesso dos Alunos</div></div></div>
+        <div class="grid-2" style="margin-bottom:18px;">
+          <div class="card" style="text-align:center;">
+            <div class="sec-title">PIN da Turma</div>
+            <div class="pin-display" id="pin-display">----</div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+              <button class="btn btn-outline btn-sm" onclick="gerarPin()" style="flex:1;">🔄 Novo PIN</button>
+              <button class="btn btn-primary btn-sm" onclick="copiarLink()" style="flex:1;">📋 Copiar Link</button>
+            </div>
+          </div>
+          <div>
+            <div class="sec-title">Como funciona</div>
+            <div style="font-size:.8rem;color:var(--muted2);line-height:1.9;">
+              1️⃣ Compartilhe o link com os alunos<br>
+              2️⃣ Aluno clica em <strong style="color:var(--text)">Sou Aluno</strong><br>
+              3️⃣ Seleciona a turma e o seu nome<br>
+              4️⃣ 1º acesso: cria senha de 4 dígitos<br>
+              5️⃣ Próximos acessos: digita a senha<br>
+              6️⃣ Envia missão para aprovação
+            </div>
+          </div>
+        </div>
+        <div class="sec-title">📊 Estatísticas</div>
+        <div class="grid-4">
+          <div class="stat-box"><div class="stat-val" id="stat-alunos">0</div><div class="stat-lbl">Alunos</div></div>
+          <div class="stat-box"><div class="stat-val" id="stat-xp">0</div><div class="stat-lbl">XP Total</div></div>
+          <div class="stat-box"><div class="stat-val" id="stat-miss">0</div><div class="stat-lbl">Missões OK</div></div>
+          <div class="stat-box"><div class="stat-val" id="stat-pend">0</div><div class="stat-lbl">Pendentes</div></div>
+        </div>
+      </div>
+
+    </main>
+    <div class="mobile-bottomnav">
+      <div class="mobile-nav-inner">
+        <button class="mnav active" id="mnav-alunos" onclick="profTab('alunos','mnav-alunos',true)"><span class="mnav-ic">👥</span>Alunos</button>
+        <button class="mnav" id="mnav-aprovar" onclick="profTab('aprovar','mnav-aprovar',true)"><span class="mnav-ic">✅</span>Aprovar<span class="mnav-badge" id="mnav-badge" style="display:none">0</span></button>
+        <button class="mnav" id="mnav-desafio" onclick="profTab('desafio','mnav-desafio',true)"><span class="mnav-ic">🔥</span>Desafio</button>
+        <button class="mnav" id="mnav-loja" onclick="profTab('loja','mnav-loja',true)"><span class="mnav-ic">🛒</span>Loja</button>
+        <button class="mnav" id="mnav-pin" onclick="profTab('pin','mnav-pin',true)"><span class="mnav-ic">🔑</span>Acesso</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ALUNO LOGIN (selecionar turma diretamente) -->
+<div id="screen-aluno-login" class="screen">
+  <div class="aluno-login-wrap">
+    <button class="back-btn" style="position:absolute;top:20px;left:20px;" onclick="goLogin()">←</button>
+    <div class="logo" style="font-size:1.8rem;">👾 WarpCode</div>
+    <div class="logo-sub" style="margin-bottom:28px;">Modo Aluno</div>
+    <div id="turma-lista-inline"></div>
+  </div>
+</div>
+
+<!-- SELECIONAR ALUNO DA TURMA -->
+<div id="screen-aluno-lista" class="screen">
+  <div class="aluno-lista-wrap">
+    <button class="back-btn" style="position:absolute;top:20px;left:20px;" onclick="showScreen('screen-aluno-login')">←</button>
+    <div class="logo" style="font-size:1.8rem;">👾 WarpCode</div>
+    <div class="logo-sub" id="aluno-lista-subtitulo" style="margin-bottom:6px;">Turma</div>
+    <p style="font-size:.75rem;color:var(--muted);margin-bottom:20px;">Qual é o seu nome?</p>
+    <div id="aluno-lista-nomes"></div>
+  </div>
+</div>
+
+<!-- TELA DE SENHA -->
+<div id="screen-senha" class="screen">
+  <div class="senha-wrap">
+    <button class="back-btn" style="position:absolute;top:20px;left:20px;" onclick="showScreen('screen-aluno-lista')">←</button>
+    <div class="senha-avatar" id="senha-avatar">👾</div>
+    <div class="senha-nome" id="senha-nome">—</div>
+    <div class="senha-turma" id="senha-turma">—</div>
+    <div class="card" style="text-align:left;padding:22px;">
+      <div id="senha-modo-titulo" style="font-family:'Orbitron',monospace;font-size:.72rem;letter-spacing:2px;color:var(--accent);text-align:center;margin-bottom:4px;">CRIAR SENHA</div>
+      <div id="senha-modo-sub" style="font-size:.76rem;color:var(--muted2);text-align:center;margin-bottom:4px;">Escolha uma senha de 4 dígitos</div>
+      <div class="pin-dots" id="pin-dots">
+        <div class="pin-dot" id="pd0"></div>
+        <div class="pin-dot" id="pd1"></div>
+        <div class="pin-dot" id="pd2"></div>
+        <div class="pin-dot" id="pd3"></div>
+      </div>
+      <div class="senha-error" id="senha-error"></div>
+      <div class="pin-keypad">
+        <button class="kbtn" onclick="digitarSenha('1')">1</button>
+        <button class="kbtn" onclick="digitarSenha('2')">2</button>
+        <button class="kbtn" onclick="digitarSenha('3')">3</button>
+        <button class="kbtn" onclick="digitarSenha('4')">4</button>
+        <button class="kbtn" onclick="digitarSenha('5')">5</button>
+        <button class="kbtn" onclick="digitarSenha('6')">6</button>
+        <button class="kbtn" onclick="digitarSenha('7')">7</button>
+        <button class="kbtn" onclick="digitarSenha('8')">8</button>
+        <button class="kbtn" onclick="digitarSenha('9')">9</button>
+        <button class="kbtn" onclick="limparSenha()" style="font-size:.75rem;color:var(--muted);">LIMPAR</button>
+        <button class="kbtn" onclick="digitarSenha('0')">0</button>
+        <button class="kbtn del" onclick="apagarSenha()">⌫</button>
+      </div>
+      <div class="senha-hint" id="senha-hint"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ALUNO DASHBOARD -->
+<div id="screen-aluno" class="screen" style="flex-direction:row;">
+  <div class="app-shell" style="flex:1;min-height:100vh;">
+    <aside class="sidebar">
+      <div class="sidebar-logo"><div class="logo">⚡ WC</div><div class="logo-sub" style="margin-top:2px;">Aluno</div></div>
+      <div class="sidebar-user">
+        <div class="sb-av" id="aluno-sb-av">👾</div>
+        <div style="min-width:0;"><div class="sb-name" id="aluno-sb-name">—</div><div class="sb-role" id="aluno-sb-xp">0 XP</div><div class="sb-wc" id="aluno-sb-wc">🪙 0 WC</div></div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="snav active" id="asnav-perfil" onclick="alunoTab('perfil','asnav-perfil')"><span class="snav-ic">🏠</span>Meu Perfil</button>
+        <button class="snav" id="asnav-missoes" onclick="alunoTab('missoes','asnav-missoes')"><span class="snav-ic">🎯</span>Missões<span id="miss-badge-sb" class="snav-badge" style="display:none;background:var(--accent);color:#000;"></span></button>
+        <button class="snav" id="asnav-equipe" onclick="alunoTab('equipe','asnav-equipe')"><span class="snav-ic">🤝</span>Missões em Equipe</button>
+        <button class="snav" id="asnav-loja" onclick="alunoTab('loja','asnav-loja')"><span class="snav-ic">🛒</span>Loja XP</button>
+        <button class="snav" id="asnav-wcloja" onclick="alunoTab('wcloja','asnav-wcloja')"><span class="snav-ic">🪙</span>Loja WarpCoins</button>
+        <button class="snav" id="asnav-ranking" onclick="alunoTab('ranking','asnav-ranking')"><span class="snav-ic">🏆</span>Ranking</button>
+        <button class="snav" id="asnav-historico" onclick="alunoTab('historico','asnav-historico')"><span class="snav-ic">📜</span>Histórico</button>
+        <button class="snav" id="asnav-badges" onclick="alunoTab('badges','asnav-badges')"><span class="snav-ic">🏅</span>Conquistas</button>
+      </nav>
+      <div class="sidebar-back"><button onclick="goLogin()">← Sair</button></div>
+    </aside>
+    <div class="mobile-topbar">
+      <button class="back-btn" onclick="goLogin()">←</button>
+      <div class="mobile-topbar-title" id="a-topbar-title">PERFIL</div>
+      <div style="width:36px"></div>
+    </div>
+    <main class="main-content">
+
+      <!-- PERFIL -->
+      <div id="apage-perfil" class="page active">
+        <div id="a-season-bar"></div>
+        <div id="a-welcome"></div>
+        <div id="a-hero"></div>
+        <div class="steam-stat-grid" id="a-stats" style="margin-bottom:14px;"></div>
+        <div id="a-streak-card"></div>
+        <div class="sec-title">🏅 Últimas Conquistas</div>
+        <div class="badge-grid" id="a-badges-mini" style="margin-bottom:14px;"></div>
+        <div class="sec-title">📡 Atividade Recente</div>
+        <div id="a-activity-feed" style="margin-bottom:14px;"></div>
+      </div>
+
+      <!-- MISSÕES -->
+      <div id="apage-missoes" class="page">
+        <div class="page-hdr"><div><div class="page-title">🎯 Missões Individuais</div><div class="page-sub">Complete no Scratch e envie para aprovação</div></div></div>
+        <div id="a-weekly-banner"></div>
+        <div id="a-missoes"></div>
+      </div>
+
+      <!-- EQUIPE -->
+      <div id="apage-equipe" class="page">
+        <div class="page-hdr"><div><div class="page-title">🤝 Missões em Equipe</div><div class="page-sub">Colabore com colegas e dividam o XP</div></div></div>
+        <div id="a-equipe-missoes"></div>
+      </div>
+
+      <!-- LOJA -->
+      <div id="apage-loja" class="page">
+        <div class="page-hdr">
+          <div><div class="page-title">🛒 Loja de Recompensas</div><div class="page-sub">Troque seu XP por recompensas reais!</div></div>
+          <div class="stat-box" style="padding:10px 16px;"><div class="stat-val" id="a-saldo-loja" style="font-size:1.1rem;">0</div><div class="stat-lbl">XP Disponível</div></div>
+        </div>
+        <div id="a-loja-items"></div>
+      </div>
+
+      <!-- RANKING -->
+      <div id="apage-ranking" class="page">
+        <div class="page-hdr"><div><div class="page-title">🏆 Ranking da Turma</div></div></div>
+        <div id="a-ranking"></div>
+      </div>
+
+      <!-- HISTÓRICO -->
+      <div id="apage-historico" class="page">
+        <div class="page-hdr"><div><div class="page-title">📜 Histórico de XP</div><div class="page-sub">Tudo que você ganhou até agora</div></div></div>
+        <div class="card"><div id="a-historico"></div></div>
+      </div>
+
+      <!-- BADGES -->
+      <div id="apage-badges" class="page">
+        <div class="page-hdr"><div><div class="page-title">🏅 Conquistas</div></div></div>
+        <div class="badge-grid" id="a-badges"></div>
+      </div>
+
+      <!-- LOJA WARPCOINS -->
+      <div id="apage-wcloja" class="page">
+        <div class="page-hdr">
+          <div><div class="page-title">🪙 Loja WarpCoins</div><div class="page-sub">Cosméticos, avatares, bordas e efeitos</div></div>
+          <div style="text-align:center;"><div class="wc-balance-big" id="a-wc-saldo">0</div><div style="font-size:.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;">WarpCoins</div></div>
+        </div>
+        <div class="wc-exchange-box">
+          <div class="sec-title" style="color:var(--green);">💱 TROCAR XP por WarpCoins</div>
+          <div style="font-size:.75rem;color:var(--muted2);margin-bottom:12px;">Taxa: <strong style="color:var(--accent)">50 XP = 10 🪙</strong></div>
+          <div class="form-row" style="align-items:flex-end;">
+            <div class="form-group"><label>XP a gastar</label><input type="number" id="wc-troca" placeholder="50" min="50" step="50" oninput="previewTroca()"></div>
+            <button class="btn btn-success" onclick="trocarXPporWC()" style="margin-bottom:0;flex-shrink:0;">💱 Trocar</button>
+          </div>
+          <div id="wc-troca-preview" style="font-size:.72rem;color:var(--muted2);margin-top:6px;"></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin:14px 0;">
+          <button class="btn btn-primary btn-sm wc-filter active" onclick="filtrarWC('todos',this)">Todos</button>
+          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('border',this)">🖼️ Bordas</button>
+          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('effect',this)">✨ Efeitos</button>
+          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('banner',this)">🎖️ Banners</button>
+          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('avatar',this)">👾 Avatares</button>
+          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('pet',this)">🐾 Pets</button>
+          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('theme',this)">🎨 Temas</button>
+          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('title',this)">🏷️ Títulos</button>
+          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('hackpower',this)" style="border-color:rgba(16,185,129,.4);color:var(--green);">⚡ Hack Powers</button>
+        </div>
+        <div id="a-wc-items"></div>
+      </div>
+
+    </main>
+    <div class="mobile-bottomnav">
+      <div class="mobile-nav-inner">
+        <button class="mnav active" id="amnav-perfil" onclick="alunoTab('perfil','asnav-perfil',true,'amnav-perfil')"><span class="mnav-ic">🏠</span>Perfil</button>
+        <button class="mnav" id="amnav-missoes" onclick="alunoTab('missoes','asnav-missoes',true,'amnav-missoes')"><span class="mnav-ic">🎯</span>Missões<span id="miss-badge-nav" class="mnav-badge" style="display:none;background:var(--accent);color:#000;"></span></button>
+        <button class="mnav" id="amnav-equipe" onclick="alunoTab('equipe','asnav-equipe',true,'amnav-equipe')"><span class="mnav-ic">🤝</span>Equipe</button>
+        <button class="mnav" id="amnav-loja" onclick="alunoTab('loja','asnav-loja',true,'amnav-loja')"><span class="mnav-ic">🛒</span>Loja</button>
+        <button class="mnav" id="amnav-wcloja" onclick="alunoTab('wcloja','asnav-wcloja',true,'amnav-wcloja')"><span class="mnav-ic">🪙</span>WC</button>
+        <button class="mnav" id="amnav-ranking" onclick="alunoTab('ranking','asnav-ranking',true,'amnav-ranking')"><span class="mnav-ic">🏆</span>Ranking</button>
+        <button class="mnav" id="amnav-historico" onclick="alunoTab('historico','asnav-historico',true,'amnav-historico')"><span class="mnav-ic">📜</span>Histórico</button>
+        <button class="mnav" id="amnav-badges" onclick="alunoTab('badges','asnav-badges',true,'amnav-badges')"><span class="mnav-ic">🏅</span>Badges</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MISSÃO -->
+<div class="modal-overlay" id="modal-missao">
+  <div class="modal"><button class="modal-close" onclick="closeModal('modal-missao')">✕</button><div id="modal-missao-content"></div></div>
+</div>
+<!-- MODAL ALUNO PROF -->
+<div class="modal-overlay" id="modal-aluno">
+  <div class="modal"><button class="modal-close" onclick="closeModal('modal-aluno')">✕</button><div class="modal-title">⚡ GERENCIAR ALUNO</div><div id="modal-aluno-content"></div></div>
+</div>
+<!-- MODAL AVATAR -->
+<div class="modal-overlay" id="modal-avatar">
+  <div class="modal"><button class="modal-close" onclick="closeModal('modal-avatar')">✕</button>
+    <div class="modal-title">🎨 ESCOLHA SEU AVATAR</div>
+    <div class="avatar-grid" id="avatar-grid"></div>
+    <button class="btn btn-primary btn-block" onclick="confirmarAvatar()">✓ Confirmar</button>
+  </div>
+</div>
+
+
+<!-- MUSIC -->
+<button id="music-btn" onclick="toggleMusic()" title="Música Lo-Fi" style="position:fixed;bottom:76px;right:14px;z-index:8000;width:44px;height:44px;border-radius:50%;background:rgba(15,22,35,.9);border:1px solid rgba(0,212,255,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all .3s;backdrop-filter:blur(8px);">🎵</button>
+
+<!-- LOOT OVERLAY -->
+<div class="loot-overlay" id="loot-overlay">
+  <div style="max-width:380px;width:100%;padding:30px 24px;text-align:center;" id="loot-content"></div>
+</div>
+
+<!-- MODAL CUSTOM PERFIL -->
+<div class="modal-overlay" id="modal-custom">
+  <div class="modal" style="max-width:540px;"><button class="modal-close" onclick="closeModal('modal-custom')">✕</button>
+    <div class="modal-title">🎨 CUSTOMIZAR PERFIL</div>
+    <div id="modal-custom-content"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+//  FIREBASE CONFIG
+// ══════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyBG-_OYvPFoPg4yjEMLFePH54G1i7Tqo6A",
+  authDomain: "warpcode-dfa5c.firebaseapp.com",
+  projectId: "warpcode-dfa5c",
+  storageBucket: "warpcode-dfa5c.firebasestorage.app",
+  messagingSenderId: "996625951550",
+  appId: "1:996625951550:web:aee05a0bd0949373185a6f"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Refs das coleções
+const COL = {
+  config:    () => db.collection('config').doc('global'),
+  alunos:    () => db.collection('alunos'),
+  missoes:   () => db.collection('missoes'),
+  pendentes: () => db.collection('pendentes'),
+  resgates:  () => db.collection('resgates'),
+  loja:      () => db.collection('loja'),
+  desafios:  () => db.collection('desafios'),
+};
+
+// ══════════════════════════════════════
+//  STATE LOCAL (cache em memória)
+// ══════════════════════════════════════
+const AVATARS=['🤖','🦾','👾','🐱','🦊','🐉','⚡','🚀','🦁','🐺','🦋','🐸','🦄','🐙','🦖','🐧','🦅','🐯','🦊','🌟'];
+
+let S = {
+  alunos:[], pin:'----',
+  pendentes:[], resgates:[],
+  loja:[], desafio:null,
+  missoes:[], desafios:[]
+};
+
+const MISSOES_PADRAO = [
+  {id:'m1',titulo:"Olá, Mundo Scratch!",desc:"Crie seu primeiro projeto com um personagem se movendo.",xp:100,dif:"easy",done:[],tipo:'individual'},
+  {id:'m2',titulo:"O Gato Falante",desc:"Faça o gato dizer seu nome e uma frase quando clicado.",xp:150,dif:"easy",done:[],tipo:'individual'},
+  {id:'m3',titulo:"Animação em Loop",desc:"Crie uma animação com 3+ frames em loop por 30 segundos.",xp:200,dif:"easy",done:[],tipo:'individual'},
+  {id:'m4',titulo:"Quiz de Robótica",desc:"Monte um quiz com 5 perguntas sobre robótica.",xp:300,dif:"medium",done:[],tipo:'individual'},
+  {id:'m5',titulo:"Mini Jogo: Pega-Pega",desc:"Jogo onde o jogador pega itens e acumula pontos.",xp:400,dif:"medium",done:[],tipo:'individual'},
+  {id:'m6',titulo:"Calculadora Visual",desc:"Calculadora com soma e subtração com feedback na tela.",xp:350,dif:"medium",done:[],tipo:'individual'},
+  {id:'m7',titulo:"Jogo de Plataforma",desc:"Jogo com gravidade, chão e pelo menos 2 fases.",xp:600,dif:"hard",done:[],tipo:'individual'},
+  {id:'m8',titulo:"Mestre dos Loops",desc:"Projeto usando loops, variáveis e mensagens juntos.",xp:700,dif:"hard",done:[],tipo:'individual'},
+  {id:'m9',titulo:"Projeto Livre Criativo",desc:"Projeto original com 20+ blocos para apresentar à turma.",xp:500,dif:"hard",done:[],tipo:'individual'},
+  {id:'m10',titulo:"🤝 Robô em Dupla",desc:"Em dupla: criem um robô animado que responde a cliques. Cada membro contribui com pelo menos 10 blocos.",xp:300,dif:"medium",done:[],tipo:'equipe',vagas:2},
+  {id:'m11',titulo:"🤝 Jogo em Trio",desc:"Em trio: criem um jogo com 3 fases, cada membro responsável por uma fase.",xp:400,dif:"hard",done:[],tipo:'equipe',vagas:3},
+  {id:'m12',titulo:"🤝 Apresentação Animada",desc:"Em dupla: criem uma apresentação animada sobre um tema de robótica.",xp:250,dif:"easy",done:[],tipo:'equipe',vagas:2},
+];
+const LOJA_PADRAO = [
+  {id:'l1',emoji:'🎮',nome:'Escolher o projeto livre',desc:'Você decide o tema do próximo projeto criativo.',custo:300,ativo:true},
+  {id:'l2',emoji:'💺',nome:'Sentar onde quiser',desc:'Por uma aula inteira, pode sentar em qualquer lugar.',custo:200,ativo:true},
+  {id:'l3',emoji:'🏆',nome:'Dar nome ao projeto da turma',desc:'Você escolhe o nome do próximo projeto coletivo.',custo:500,ativo:true},
+  {id:'l4',emoji:'📸',nome:'Foto no mural da fama',desc:'Seu avatar vai para o mural de destaque por 1 semana.',custo:400,ativo:true},
+];
+
+let alunoAtual=null, avatarSelecionado=null;
+
+// ══════════════════════════════════════
+//  SYNC INDICATOR
+// ══════════════════════════════════════
+function setSyncing(s){ // 'ok' | 'syncing' | 'error'
+  const dot=document.getElementById('sync-dot');
+  const txt=document.getElementById('sync-text');
+  dot.className='sync-dot'+(s==='syncing'?' syncing':s==='error'?' error':'');
+  txt.textContent=s==='syncing'?'Salvando...':s==='error'?'Sem conexão':'Conectado';
+}
+
+// ══════════════════════════════════════
+//  INICIALIZAÇÃO — carrega dados do Firestore
+// ══════════════════════════════════════
+async function inicializar(){
+  document.getElementById('screen-loading').classList.add('active');
+  try {
+    // Carrega config global (pin, desafio)
+    const cfgSnap = await COL.config().get();
+    if(cfgSnap.exists){
+      const cfg = cfgSnap.data();
+      S.pin = cfg.pin || String(Math.floor(1000+Math.random()*9000));
+      S.desafio = cfg.desafio || null;
+    } else {
+      // Primeiro uso: cria config
+      S.pin = String(Math.floor(1000+Math.random()*9000));
+      await COL.config().set({ pin: S.pin, desafio: null });
+    }
+
+    // Carrega missões (ou cria padrão)
+    const missSnap = await COL.missoes().get();
+    if(missSnap.empty){
+      const batch = db.batch();
+      MISSOES_PADRAO.forEach(m => batch.set(COL.missoes().doc(m.id), m));
+      await batch.commit();
+      S.missoes = [...MISSOES_PADRAO];
+    } else {
+      S.missoes = missSnap.docs.map(d => ({id:d.id,...d.data()}));
+    }
+
+    // Carrega loja (ou cria padrão)
+    const lojaSnap = await COL.loja().get();
+    if(lojaSnap.empty){
+      const batch = db.batch();
+      LOJA_PADRAO.forEach(r => batch.set(COL.loja().doc(r.id), r));
+      await batch.commit();
+      S.loja = [...LOJA_PADRAO];
+    } else {
+      S.loja = lojaSnap.docs.map(d => ({id:d.id,...d.data()}));
+    }
+
+    // Carrega alunos
+    const alunosSnap = await COL.alunos().orderBy('nome').get();
+    S.alunos = alunosSnap.docs.map(d => ({id:d.id,...d.data()}));
+
+    // Carrega pendentes
+    const pendSnap = await COL.pendentes().where('aprovado','==',false).where('rejeitado','==',false).get();
+    S.pendentes = pendSnap.docs.map(d => ({id:d.id,...d.data()}));
+
+    // Carrega resgates ativos
+    const resgSnap = await COL.resgates().where('rejeitado','==',false).get();
+    S.resgates = resgSnap.docs.map(d => ({id:d.id,...d.data()}));
+
+    // Carrega desafios
+    const desafiosSnap = await COL.desafios().orderBy('ts','desc').get();
+    S.desafios = desafiosSnap.docs.map(d => ({id:d.id,...d.data()}));
+    // Compat: S.desafio aponta para o mais recente ativo
+    S.desafio = S.desafios.find(d=>new Date(d.expira)>new Date())||null;
+
+    setSyncing('ok');
+
+    // Listeners em tempo real
+    ligarListeners();
+
+    // Vai para login
+    showScreen('screen-login');
+  } catch(err) {
+    console.error('Erro Firebase:', err);
+    setSyncing('error');
+    document.querySelector('.loading-msg').textContent = 'Erro ao conectar. Verifique o Firestore.';
+    document.querySelector('.loading-msg').style.color = 'var(--red)';
+  }
+}
+
+// ══════════════════════════════════════
+//  LISTENERS EM TEMPO REAL
+// ══════════════════════════════════════
+function ligarListeners(){
+  // Alunos em tempo real
+  COL.alunos().onSnapshot(snap => {
+    S.alunos = snap.docs.map(d => ({id:d.id,...d.data()}));
+    renderSafe();
+  });
+  // Pendentes
+  COL.pendentes().where('aprovado','==',false).where('rejeitado','==',false).onSnapshot(snap => {
+    S.pendentes = snap.docs.map(d => ({id:d.id,...d.data()}));
+    renderSafe();
+  });
+  // Resgates
+  COL.resgates().where('rejeitado','==',false).onSnapshot(snap => {
+    S.resgates = snap.docs.map(d => ({id:d.id,...d.data()}));
+    renderSafe();
+  });
+  // Config (pin, desafio legado)
+  COL.config().onSnapshot(snap => {
+    if(snap.exists){ const d=snap.data(); S.pin=d.pin||S.pin; renderSafe(); }
+  });
+  // Desafios (coleção independente)
+  COL.desafios().orderBy('ts','desc').onSnapshot(snap => {
+    S.desafios = snap.docs.map(d => ({id:d.id,...d.data()}));
+    S.desafio = S.desafios.find(d=>new Date(d.expira)>new Date())||null;
+    renderSafe();
+  });
+  // Loja
+  COL.loja().onSnapshot(snap => {
+    S.loja = snap.docs.map(d => ({id:d.id,...d.data()}));
+    renderSafe();
+  });
+  // Missões
+  COL.missoes().onSnapshot(snap => {
+    S.missoes = snap.docs.map(d => ({id:d.id,...d.data()}));
+    renderSafe();
+  });
+}
+
+function renderSafe(){
+  const screen = document.querySelector('.screen.active');
+  if(!screen) return;
+  if(screen.id==='screen-prof') renderProf();
+  else if(screen.id==='screen-aluno') renderAluno();
+}
+
+// ══════════════════════════════════════
+//  NÍVEIS & STREAK
+// ══════════════════════════════════════
+function nivel(xp){
+  if(xp>=4000) return {n:"Mestre Scratch",e:"🏆",prox:null,base:4000,idx:4};
+  if(xp>=2000) return {n:"Inventor",e:"🚀",prox:4000,base:2000,idx:3};
+  if(xp>=1000) return {n:"Construtor",e:"🔧",prox:2000,base:1000,idx:2};
+  if(xp>=500)  return {n:"Explorador",e:"⚡",prox:1000,base:500,idx:1};
+  return {n:"Iniciante",e:"🌱",prox:500,base:0,idx:0};
+}
+function pct(xp){const n=nivel(xp);if(!n.prox)return 100;return Math.round(((xp-n.base)/(n.prox-n.base))*100);}
+
+// ══════════════════════════════════════
+//  CONQUISTAS
+// ══════════════════════════════════════
+const CONQ=[
+  {icon:"🌱",nome:"Iniciante",req:"Entre no jogo",check:()=>true},
+  {icon:"⚡",nome:"Explorador",req:"500 XP",check:a=>a.xp>=500},
+  {icon:"🔧",nome:"Construtor",req:"1.000 XP",check:a=>a.xp>=1000},
+  {icon:"🚀",nome:"Inventor",req:"2.000 XP",check:a=>a.xp>=2000},
+  {icon:"🏆",nome:"Mestre Scratch",req:"4.000 XP",check:a=>a.xp>=4000},
+  {icon:"🔥",nome:"Streak 3 dias",req:"3 dias seguidos",check:a=>(a.streak||0)>=3},
+  {icon:"🌋",nome:"Streak 7 dias",req:"7 dias seguidos",check:a=>(a.streak||0)>=7},
+  {icon:"🎮",nome:"Game Dev",req:"Complete um jogo",check:a=>S.missoes.filter(m=>m.dif==='hard'&&(m.done||[]).includes(a.id)).length>0},
+  {icon:"🧠",nome:"Lógico",req:"3 missões",check:a=>S.missoes.filter(m=>(m.done||[]).includes(a.id)).length>=3},
+  {icon:"💡",nome:"Inovador",req:"1 missão difícil",check:a=>S.missoes.filter(m=>m.dif==='hard'&&(m.done||[]).includes(a.id)).length>0},
+  {icon:"🌟",nome:"Top 3",req:"Top 3 do ranking",check:a=>[...S.alunos].sort((x,y)=>y.xp-x.xp).slice(0,3).some(x=>x.id===a.id)},
+  {icon:"🤝",nome:"Trabalho em Equipe",req:"Missão de equipe",check:a=>S.missoes.filter(m=>m.tipo==='equipe'&&(m.done||[]).includes(a.id)).length>0},
+  {icon:"🛒",nome:"Primeiro Resgate",req:"Resgate da loja",check:a=>S.resgates.some(r=>r.alunoId===a.id&&r.aprovado)},
+  {icon:"🎯",nome:"Dedicado",req:"5 missões",check:a=>S.missoes.filter(m=>(m.done||[]).includes(a.id)).length>=5},
+  {icon:"⭐",nome:"Desafiador",req:"Complete desafio semanal",check:a=>(a.desafiosConcluidos||0)>0},
+];
+
+// ══════════════════════════════════════
+//  NAVEGAÇÃO
+// ══════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('screen-loading').style.display='none';
+}
+function goLogin(){alunoAtual=null;showScreen('screen-login');}
+function goProfLogin(){
+  document.getElementById('prof-senha-input').value='';
+  document.getElementById('prof-senha-erro').textContent='';
+  showScreen('screen-prof-login');
+  setTimeout(()=>document.getElementById('prof-senha-input').focus(),200);
+}
+const PROF_SENHA = 'prof00';
+function confirmarSenhaProf(){
+  const v = document.getElementById('prof-senha-input').value;
+  if(v !== PROF_SENHA){
+    document.getElementById('prof-senha-erro').textContent='❌ Senha incorreta.';
+    document.getElementById('prof-senha-input').value='';
+    return;
+  }
+  document.getElementById('prof-senha-erro').textContent='';
+  goProf();
+}
+function goProf(){showScreen('screen-prof');renderProf();}
+function goAlunoLogin(){
+  renderTurmasSel();
+  showScreen('screen-aluno-login');
+}
+
+// ══════════════════════════════════════
+//  FLUXO DE LOGIN DO ALUNO
+//  Turma → Aluno → Senha (4 dígitos)
+// ══════════════════════════════════════
+
+let alunoSenhaBuffer = '';
+let senhaEtapa = 'login';  // 'login' | 'criar' | 'confirmar'
+let senhaCriada = '';
+
+// ── ETAPA 1: Listar turmas disponíveis ──
+function renderTurmasSel(){
+  const turmasMap = {};
+  S.alunos.forEach(a => {
+    if(!turmasMap[a.turma]) turmasMap[a.turma] = [];
+    turmasMap[a.turma].push(a);
+  });
+  const turmas = Object.keys(turmasMap).sort();
+  const el = document.getElementById('turma-lista-inline');
+  if(!turmas.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum aluno cadastrado ainda.<br>Peça ao professor para cadastrar sua turma.</div></div>`;
+    return;
+  }
+  const emojis = {'6':'📗','7':'📘','8':'📙','9':'📕'};
+  el.innerHTML = turmas.map(t => {
+    const ano = t.charAt(0);
+    const ic = emojis[ano] || '📚';
+    const qtd = turmasMap[t].length;
+    return `<button class="turma-card" onclick="selecionarTurma('${t}')">
+      <div class="turma-card-icon">${ic}</div>
+      <div style="flex:1;text-align:left;">
+        <div style="font-weight:800;font-size:1rem;">${t}</div>
+        <div class="turma-card-count">${qtd} aluno${qtd!==1?'s':''} cadastrado${qtd!==1?'s':''}</div>
+      </div>
+      <div style="color:var(--muted);font-size:1.1rem;">›</div>
+    </button>`;
+  }).join('');
+}
+
+// ── ETAPA 2: Listar alunos da turma ──
+function selecionarTurma(turma){
+  const alunosTurma = S.alunos.filter(a => a.turma === turma).sort((a,b)=>a.nome.localeCompare(b.nome));
+  document.getElementById('aluno-lista-subtitulo').textContent = turma;
+  const el = document.getElementById('aluno-lista-nomes');
+  el.innerHTML = alunosTurma.map(a => {
+    const n = nivel(a.xp||0);
+    const temSenha = !!a.senha;
+    return `<button class="aluno-pick-card" onclick="selecionarAluno('${a.id}')">
+      <div style="font-size:1.6rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+        background:rgba(0,212,255,.08);border-radius:50%;border:1px solid var(--border);flex-shrink:0;">${a.avatar||'👾'}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:800;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.nome}</div>
+        <div style="font-size:.68rem;color:var(--muted2);margin-top:2px;">${n.e} ${n.n} · ${a.xp||0} XP</div>
+      </div>
+      <div style="font-size:.65rem;color:${temSenha?'var(--green)':'var(--muted)'};flex-shrink:0;">${temSenha?'🔒':'🔓'}</div>
+    </button>`;
+  }).join('');
+  showScreen('screen-aluno-lista');
+}
+
+// ── ETAPA 3: Tela de senha ──
+function selecionarAluno(id){
+  const a = S.alunos.find(x=>x.id===id);
+  if(!a) return;
+  alunoAtual = id;
+  alunoSenhaBuffer = '';
+  senhaCriada = '';
+
+  document.getElementById('senha-avatar').textContent = a.avatar||'👾';
+  document.getElementById('senha-nome').textContent = a.nome;
+  document.getElementById('senha-turma').textContent = a.turma;
+
+  if(a.senha){
+    senhaEtapa = 'login';
+    document.getElementById('senha-modo-titulo').textContent = 'ENTRAR';
+    document.getElementById('senha-modo-sub').textContent = 'Digite sua senha de 4 dígitos';
+    document.getElementById('senha-hint').textContent = '';
+  } else {
+    senhaEtapa = 'criar';
+    document.getElementById('senha-modo-titulo').textContent = 'CRIAR SENHA';
+    document.getElementById('senha-modo-sub').textContent = 'Escolha uma senha de 4 dígitos';
+    document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os seus próximos acessos.';
+  }
+  document.getElementById('senha-error').textContent = '';
+  atualizarDots();
+  showScreen('screen-senha');
+}
+
+// ── TECLADO NUMÉRICO ──
+function digitarSenha(d){
+  if(alunoSenhaBuffer.length >= 4) return;
+  alunoSenhaBuffer += d;
+  atualizarDots();
+  if(alunoSenhaBuffer.length === 4) setTimeout(processarSenha, 200);
+}
+function apagarSenha(){
+  alunoSenhaBuffer = alunoSenhaBuffer.slice(0,-1);
+  atualizarDots();
+  document.getElementById('senha-error').textContent = '';
+}
+function limparSenha(){
+  alunoSenhaBuffer = '';
+  atualizarDots();
+  document.getElementById('senha-error').textContent = '';
+}
+function atualizarDots(){
+  for(let i=0;i<4;i++){
+    const el = document.getElementById('pd'+i);
+    el.classList.toggle('filled', i < alunoSenhaBuffer.length);
+  }
+}
+
+// ── PROCESSAMENTO DA SENHA ──
+async function processarSenha(){
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  if(!a) return;
+
+  if(senhaEtapa === 'login'){
+    if(alunoSenhaBuffer === a.senha){
+      await finalizarEntrada();
+    } else {
+      document.getElementById('senha-error').textContent = '❌ Senha incorreta. Tente novamente.';
+      alunoSenhaBuffer = '';
+      atualizarDots();
+    }
+  } else if(senhaEtapa === 'criar'){
+    senhaCriada = alunoSenhaBuffer;
+    alunoSenhaBuffer = '';
+    senhaEtapa = 'confirmar';
+    document.getElementById('senha-modo-titulo').textContent = 'CONFIRMAR SENHA';
+    document.getElementById('senha-modo-sub').textContent = 'Digite novamente para confirmar';
+    document.getElementById('senha-hint').textContent = '';
+    document.getElementById('senha-error').textContent = '';
+    atualizarDots();
+  } else if(senhaEtapa === 'confirmar'){
+    if(alunoSenhaBuffer === senhaCriada){
+      setSyncing('syncing');
+      try {
+        await COL.alunos().doc(alunoAtual).update({senha: senhaCriada});
+        toast('🔒 Senha criada com sucesso!');
+        setSyncing('ok');
+        await finalizarEntrada();
+      } catch(e){
+        toast('❌ Erro ao salvar senha!'); setSyncing('error');
+        alunoSenhaBuffer=''; atualizarDots();
+      }
+    } else {
+      document.getElementById('senha-error').textContent = '⚠️ As senhas não coincidem. Tente novamente.';
+      alunoSenhaBuffer = ''; senhaCriada = '';
+      senhaEtapa = 'criar';
+      document.getElementById('senha-modo-titulo').textContent = 'CRIAR SENHA';
+      document.getElementById('senha-modo-sub').textContent = 'Escolha uma senha de 4 dígitos';
+      document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os seus próximos acessos.';
+      atualizarDots();
+    }
+  }
+}
+
+// ── ENTRADA FINAL (streak, level up, etc.) ──
+async function finalizarEntrada(){
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  if(!a) return;
+
+  const hoje = new Date().toDateString();
+  let novoStreak = a.streak||0;
+  let bonusXP = 0;
+  const hist = [...(a.historico||[])];
+  let mostrarLootBox = false;
+
+  if(!a.lastLogin){
+    novoStreak = 1;
+    mostrarLootBox = true;
+  } else {
+    const last = new Date(a.lastLogin).toDateString();
+    if(last !== hoje){
+      const diff = Math.round((new Date(hoje)-new Date(last))/(1000*60*60*24));
+      if(diff===1){
+        novoStreak = (a.streak||1)+1;
+        if(novoStreak%5===0){ bonusXP=novoStreak*10; hist.unshift({desc:`🔥 Streak de ${novoStreak} dias! Bônus!`,xp:bonusXP,ts:Date.now()}); }
+      } else novoStreak = 1;
+      mostrarLootBox = (a.lastDailyLoot !== hoje);
+    }
+  }
+
+  const nivAntes = nivel(a.xp||0).idx;
+  try {
+    const update = {streak:novoStreak, lastLogin:new Date().toISOString()};
+    if(bonusXP>0) update.xp = (a.xp||0)+bonusXP;
+    if(hist.length !== a.historico?.length) update.historico = hist.slice(0,30);
+    await COL.alunos().doc(alunoAtual).update(update);
+  } catch(e){ console.warn('Erro ao atualizar streak',e); }
+
+  document.getElementById('a-topbar-title').textContent = a.nome.split(' ')[0].toUpperCase();
+  showScreen('screen-aluno');
+  renderAluno();
+
+  const aAtual = S.alunos.find(x=>x.id===alunoAtual);
+  if(aAtual){
+    const nivDepois = nivel(aAtual.xp||0);
+    if(nivDepois.idx > nivAntes) showLevelUp(nivDepois);
+    if(mostrarLootBox) setTimeout(()=>mostrarLoot(aAtual, rollLoot()), 1200);
+  }
+}
+
+const PROF_LABELS={alunos:'Alunos',aprovar:'Aprovar Missões',desafio:'Desafio da Semana',loja:'Loja',ranking:'Ranking',pin:'Acesso Alunos'};
+function profTab(tab,navId,isMobile=false){
+  document.querySelectorAll('[id^="ppage-"]').forEach(p=>p.classList.remove('active'));
+  document.getElementById('ppage-'+tab).classList.add('active');
+  document.querySelectorAll('.snav[id^="snav-"]').forEach(b=>b.classList.remove('active'));
+  const sb=document.getElementById('snav-'+tab);if(sb)sb.classList.add('active');
+  document.querySelectorAll('.mnav[id^="mnav-"]').forEach(b=>b.classList.remove('active'));
+  const mb=document.getElementById('mnav-'+tab);if(mb)mb.classList.add('active');
+  document.getElementById('prof-topbar-title').textContent=(PROF_LABELS[tab]||'').toUpperCase();
+  renderProf();
+}
+const ALUNO_LABELS={perfil:'Perfil',missoes:'Missões',equipe:'Equipe',loja:'Loja XP',wcloja:'WarpCoins',ranking:'Ranking',historico:'Histórico',badges:'Conquistas'};
+function alunoTab(tab,snavId,isMobile=false,mnavId=''){
+  document.querySelectorAll('[id^="apage-"]').forEach(p=>p.classList.remove('active'));
+  document.getElementById('apage-'+tab).classList.add('active');
+  document.querySelectorAll('.snav[id^="asnav-"]').forEach(b=>b.classList.remove('active'));
+  const sb=document.getElementById(snavId);if(sb)sb.classList.add('active');
+  document.querySelectorAll('.mnav[id^="amnav-"]').forEach(b=>b.classList.remove('active'));
+  if(mnavId){const mb=document.getElementById(mnavId);if(mb)mb.classList.add('active');}
+  document.getElementById('a-topbar-title').textContent=(ALUNO_LABELS[tab]||'').toUpperCase();
+  renderAluno();
+}
+
+// ══════════════════════════════════════
+//  RENDER PROFESSOR
+// ══════════════════════════════════════
+function renderProf(){renderPAlunos();renderPAprovacoes();renderPRanking();renderPStats();renderPLoja();renderPResgates();renderPDesafio();renderSelects();}
+
+function renderPAlunos(){
+  const el=document.getElementById('p-lista-alunos');
+  if(!S.alunos.length){el.innerHTML=`<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum aluno cadastrado.<br>Adicione acima!</div></div>`;return;}
+  el.innerHTML=S.alunos.map(a=>{
+    const n=nivel(a.xp||0);
+    return `<div class="student-card">
+      <div class="avatar">${a.avatar||'👾'}</div>
+      <div class="sinfo">
+        <div class="sname">${a.nome}</div>
+        <div class="smeta">${a.turma} · ${n.e} ${n.n} · 🔥${a.streak||0} dias</div>
+        <div class="xp-bar"><div class="xp-fill" style="width:${pct(a.xp||0)}%"></div></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;"><div class="xp-val">${a.xp||0} XP</div><div style="font-size:.62rem;color:var(--muted);margin-top:2px;">${pct(a.xp||0)}% → próx.</div></div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn btn-success btn-sm" onclick="abrirModalAluno('${a.id}')">+XP</button>
+        <button class="btn btn-danger btn-sm" onclick="removerAluno('${a.id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPAprovacoes(){
+  const el=document.getElementById('p-aprovacoes');
+  if(!S.pendentes.length){el.innerHTML=`<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">Nenhuma missão pendente.</div></div>`;return;}
+  el.innerHTML=S.pendentes.map(p=>{
+    const aluno=S.alunos.find(a=>a.id===p.alunoId);
+    const missao=p.isDesafio
+      ? (S.desafios.find(d=>d.id===p.desafioId)||{titulo:'Desafio da Semana',xp:p.xp||0,dif:'hard'})
+      : S.missoes.find(m=>m.id===p.missaoId);
+    if(!aluno||!missao) return '';
+    const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[missao.dif]||'diff-hard';
+    const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[missao.dif]||'Difícil';
+    const dt=new Date(p.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    return `<div class="approval-card">
+      <div class="approval-meta">
+        <div><div style="font-weight:800;font-size:.92rem;">${aluno.avatar||'👾'} ${aluno.nome} <span style="color:var(--muted2);font-weight:400;font-size:.8rem">${aluno.turma}</span></div><div style="font-size:.65rem;color:var(--muted)">${dt}</div></div>
+        <span class="mdiff ${dc}">${dl}</span>
+      </div>
+      <div style="font-size:.82rem;color:var(--muted2);margin-bottom:8px;">📋 ${missao.titulo} <span style="color:var(--gold);font-family:'Orbitron',monospace;font-size:.7rem">+${missao.xp} XP</span></div>
+      ${p.link?`<a class="approval-link" href="${p.link}" target="_blank">🔗 ${p.link}</a>`:''}
+      <div class="form-group" style="margin-bottom:10px;"><label>Feedback para o aluno (opcional)</label><input type="text" id="fb-${p.id}" placeholder="Ex: Ótimo uso dos loops!"></div>
+      <div class="approval-actions">
+        <button class="btn btn-success btn-sm" onclick="aprovar('${p.id}')">✓ Aprovar +${missao.xp} XP</button>
+        <button class="btn btn-danger btn-sm" onclick="rejeitar('${p.id}')">✕ Rejeitar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPRanking(){
+  const sorted=[...S.alunos].sort((a,b)=>(b.xp||0)-(a.xp||0));
+  const el=document.getElementById('p-ranking');
+  if(!sorted.length){el.innerHTML=`<div class="empty"><div class="empty-icon">🏆</div><div class="empty-text">Sem alunos ainda.</div></div>`;return;}
+  el.innerHTML=sorted.map((a,i)=>{
+    const n=nivel(a.xp||0);
+    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rx';
+    const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+    return `<div class="rank-item">
+      <div class="rnum ${rc}">${ri}</div>
+      <div class="avatar" style="width:38px;height:38px;font-size:1.3rem">${a.avatar||'👾'}</div>
+      <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.9rem;">${a.nome}</div><div style="font-size:.68rem;color:var(--muted2)">${a.turma} · ${n.e} ${n.n}</div></div>
+      <div style="font-family:'Orbitron',monospace;font-size:.88rem;color:var(--gold);font-weight:700;flex-shrink:0">${a.xp||0} XP</div>
+    </div>`;
+  }).join('');
+}
+
+function renderPLoja(){
+  const el=document.getElementById('p-loja-items');
+  if(!S.loja.length){el.innerHTML=`<div class="empty"><div class="empty-icon">🛒</div><div class="empty-text">Adicione itens acima.</div></div>`;return;}
+  el.innerHTML=S.loja.map(r=>`
+    <div class="shop-card ${r.ativo?'':'claimed'}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <div style="font-size:1.8rem">${r.emoji}</div>
+        <div><div class="shop-name">${r.nome}</div><div style="font-size:.72rem;color:var(--muted2)">${r.desc||''}</div></div>
+      </div>
+      <div class="shop-footer">
+        <span class="shop-cost">🏅 ${r.custo} XP</span>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-sm ${r.ativo?'btn-danger':'btn-success'}" onclick="toggleLoja('${r.id}')">${r.ativo?'Desativar':'Ativar'}</button>
+          <button class="btn btn-sm btn-outline" onclick="removerLoja('${r.id}')">✕</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderPResgates(){
+  const el=document.getElementById('p-resgates');
+  const pendentes=S.resgates.filter(r=>!r.aprovado&&!r.rejeitado);
+  if(!pendentes.length){el.innerHTML=`<div class="empty" style="padding:20px;"><div class="empty-icon">🎁</div><div class="empty-text">Nenhum resgate pendente.</div></div>`;return;}
+  el.innerHTML=pendentes.map(r=>{
+    const aluno=S.alunos.find(a=>a.id===r.alunoId);
+    const item=S.loja.find(i=>i.id===r.itemId);
+    if(!aluno||!item) return '';
+    return `<div class="approval-card">
+      <div style="font-weight:800;font-size:.92rem;margin-bottom:4px;">${aluno.avatar||'👾'} ${aluno.nome} quer resgatar:</div>
+      <div style="font-size:.82rem;color:var(--muted2);margin-bottom:10px;">${item.emoji} ${item.nome} — <span style="color:var(--gold);font-family:'Orbitron',monospace;">${item.custo} XP</span></div>
+      <div class="approval-actions">
+        <button class="btn btn-success btn-sm" onclick="aprovarResgate('${r.id}')">✓ Confirmar Entrega</button>
+        <button class="btn btn-danger btn-sm" onclick="rejeitarResgate('${r.id}')">✕ Cancelar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPDesafio(){
+  const el=document.getElementById('p-desafio-atual');
+  const ativos=S.desafios.filter(d=>new Date(d.expira)>new Date());
+  if(!ativos.length){el.innerHTML=`<div class="empty" style="padding:20px;"><div class="empty-icon">🔥</div><div class="empty-text">Nenhum desafio ativo.<br>Configure acima!</div></div>`;return;}
+  el.innerHTML=ativos.map(d=>{
+    const expira=new Date(d.expira);
+    const dias=Math.max(0,Math.ceil((expira-new Date())/(1000*60*60*24)));
+    return `<div class="weekly-card" style="margin-bottom:12px;">
+      <div class="mtitle">${d.titulo}</div>
+      <div class="mdesc">${d.desc}</div>
+      ${d.video?`<div style="margin-top:8px;font-size:.75rem;color:var(--accent);">🎬 <a href="${d.video}" target="_blank" style="color:var(--accent);">${d.video}</a></div>`:''}
+      <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+        <span class="mdiff diff-weekly">Semanal</span>
+        <span class="mxp">+${d.xp} XP</span>
+        <span class="weekly-timer">⏱ ${dias} dia(s) restante(s)</span>
+      </div>
+      <button class="btn btn-danger btn-sm" style="margin-top:12px;" onclick="removerDesafio('${d.id}')">Encerrar</button>
+    </div>`;
+  }).join('');
+}
+
+function renderPStats(){
+  const xpTotal=S.alunos.reduce((s,a)=>s+(a.xp||0),0);
+  const missOk=S.missoes.reduce((s,m)=>s+(m.done||[]).length,0);
+  document.getElementById('stat-alunos').textContent=S.alunos.length;
+  document.getElementById('stat-xp').textContent=xpTotal;
+  document.getElementById('stat-miss').textContent=missOk;
+  document.getElementById('stat-pend').textContent=S.pendentes.length;
+  document.getElementById('pin-display').textContent=S.pin;
+  const n=S.pendentes.length;
+  ['snav-badge','mnav-badge'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.style.display=n>0?'flex':'none';el.textContent=n;});
+}
+function renderSelects(){
+  const sel=document.getElementById('p-xp-aluno');if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML=S.alunos.length?S.alunos.map(a=>`<option value="${a.id}" ${a.id==cur?'selected':''}>${a.avatar||'👾'} ${a.nome}</option>`).join(''):'<option>— Nenhum —</option>';
+}
+
+// ══════════════════════════════════════
+//  RENDER ALUNO
+// ══════════════════════════════════════
+function renderAluno(){
+  if(!alunoAtual) return;
+  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
+  const n=nivel(a.xp||0);const p=pct(a.xp||0);
+  const missFeitas=S.missoes.filter(m=>(m.done||[]).includes(a.id)).length;
+  const pos=[...S.alunos].sort((x,y)=>(y.xp||0)-(x.xp||0)).findIndex(x=>x.id===a.id)+1;
+  const streak=a.streak||0;
+
+  document.getElementById('aluno-sb-av').textContent=a.avatar||'👾';
+  document.getElementById('aluno-sb-name').textContent=a.nome;
+  document.getElementById('aluno-sb-xp').textContent=`${a.xp||0} XP · ${n.e} ${n.n}`;
+
+  const saldo=wcSaldo(a);
+  const pat=patente(a.xp||0);
+  const eqBorder=eqItem(a,'border');const eqEffect=eqItem(a,'effect');const eqBanner=eqItem(a,'banner');
+  const eqPet=eqItem(a,'pet');const eqTitle=eqItem(a,'title');
+  const bItem=WC_ITEMS.find(i=>i.id===eqBorder);const eItem=WC_ITEMS.find(i=>i.id===eqEffect);
+  const banItem=WC_ITEMS.find(i=>i.id===eqBanner)||WC_ITEMS.find(i=>i.id==='banner_default');
+  const petItem=eqPet?WC_ITEMS.find(i=>i.id===eqPet):null;
+  const titleItem=eqTitle?WC_ITEMS.find(i=>i.id===eqTitle):null;
+  const displayTitle=titleItem?`<span class="${titleItem.titleCls} patente">${titleItem.titleTxt}</span>`:`<span class="${pat.cls} patente">${pat.nome}</span>`;
+  loadSavedTheme(a);
+  const bannerBg=banItem?.bg||'linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12))';
+  const heroEl=document.getElementById('a-hero');
+  heroEl.className=`hero-card${bItem?' '+bItem.cls:''}${eItem?' '+eItem.cls:''}`;
+  heroEl.style.background='transparent';heroEl.style.border='none';heroEl.style.padding='0';heroEl.style.overflow='visible';
+  const badgesUnlocked=CONQ.filter(c=>c.check(a));
+  const jogosCriados=S.missoes.filter(m=>(m.done||[]).includes(a.id)&&m.dif==='hard').length;
+  const diasAtivo=a.historico?new Set(a.historico.map(h=>new Date(h.ts).toDateString())).size:1;
+  const avatarInner=a.profilePhoto
+    ?`<img src="${a.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`
+    :`<span style="font-size:2.4rem;line-height:1;">${a.avatar||'👾'}</span>`;
+  heroEl.innerHTML=`
+    <div class="steam-banner-bg" style="background:${bannerBg};">
+      <div class="steam-banner-overlay"></div>
+    </div>
+    <div class="steam-profile-lower" style="position:relative;">
+      ${petItem?`<div class="pet-wrap" title="${petItem.name}">${petItem.petEmoji}</div>`:''}
+      <div class="steam-avatar-wrap" onclick="abrirAvatar()" style="cursor:pointer;" title="Clique para mudar avatar">
+        <div class="steam-avatar">${avatarInner}</div>
+        <div style="position:absolute;bottom:-2px;right:-2px;font-size:.65rem;background:var(--s2);border-radius:50%;padding:2px;border:1px solid var(--border);">✏️</div>
+        <div class="online-dot"></div>
+      </div>
+      <div class="steam-name-row">
+        <div>
+          <div class="steam-pname">${a.nome}</div>
+          <div class="steam-sub">${a.turma} · ${displayTitle}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <span class="hero-level" style="font-size:.65rem;padding:3px 10px;">${n.e} ${n.n}</span>
+            ${streak>=1?`<span class="hero-streak" style="font-size:.65rem;padding:3px 10px;"><span class="streak-fire-anim" style="font-size:.8rem;">🔥</span> ${streak} dia${streak!==1?'s':''}</span>`:''}
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--gold);line-height:1;">${a.xp||0}</div>
+          <div style="font-size:.55rem;color:var(--muted);letter-spacing:3px;text-transform:uppercase;">XP total</div>
+          <div style="margin-top:6px;">
+            <div class="hero-bar" style="width:120px;"><div class="hero-bar-fill" style="width:${p}%"></div></div>
+            <div style="font-size:.56rem;color:var(--muted);margin-top:2px;text-align:right;">${p}% → ${n.prox?n.prox+' XP':'MAX 🎉'}</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" onclick="abrirCustomPerfil()">🎨 Customizar</button>
+      </div>
+    </div>`;
+
+  // WC sidebar sync
+  const wcSb=document.getElementById('aluno-sb-wc');if(wcSb)wcSb.textContent=`🪙 ${saldo} WC`;
+  const wcSaldoEl=document.getElementById('a-wc-saldo');if(wcSaldoEl)wcSaldoEl.textContent=saldo;
+  renderWCLoja(a);
+
+  // Season bar
+  const seasonEl=document.getElementById('a-season-bar');
+  if(seasonEl&&S.season){const ss=S.season;const now2=new Date();const end2=new Date(ss.end);const start2=new Date(ss.start);const total2=Math.max(1,(end2-start2)/86400000);const elapsed2=(now2-start2)/86400000;const pc2=Math.min(100,Math.round(elapsed2/total2*100));const dias2=Math.max(0,Math.ceil((end2-now2)/86400000));seasonEl.innerHTML=`<div class="season-bar"><div style="font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:3px;color:var(--accent);margin-bottom:2px;">🏆 ${ss.nome}</div><div style="font-size:.7rem;color:var(--muted2);">${ss.periodo} · ⏱ ${dias2} dias restantes</div><div class="season-prog-wrap"><div class="season-prog-fill" style="width:${pc2}%"></div></div></div>`;}
+  else if(seasonEl)seasonEl.innerHTML='';
+
+  // Welcome card
+  const welcomeEl=document.getElementById('a-welcome');
+  if(welcomeEl){const hora=new Date().getHours();const saudacao=hora<12?'Bom dia':hora<18?'Boa tarde':'Boa noite';welcomeEl.innerHTML=`<div class="welcome-back"><div class="welcome-icon">${a.avatar||'👾'}</div><div style="flex:1;"><div class="welcome-text">${saudacao}, ${a.nome.split(' ')[0]}! 👋</div><div class="welcome-sub">${n.e} ${n.n} · ${a.xp||0} XP · #${pos} · <span class="${pat.cls} patente">${pat.nome}</span></div></div><div class="wc-badge">🪙 ${saldo}</div></div>`;}
+
+  document.getElementById('a-stats').innerHTML=`
+    <div class="steam-stat"><div class="steam-stat-val">${a.xp||0}</div><div class="steam-stat-lbl">XP Total</div></div>
+    <div class="steam-stat"><div class="steam-stat-val">#${pos}</div><div class="steam-stat-lbl">Ranking</div></div>
+    <div class="steam-stat"><div class="steam-stat-val">${missFeitas}</div><div class="steam-stat-lbl">Missões ✅</div></div>
+    <div class="steam-stat"><div class="steam-stat-val">${saldo}</div><div class="steam-stat-lbl">🪙 WC</div></div>
+    <div class="steam-stat"><div class="steam-stat-val">${jogosCriados}</div><div class="steam-stat-lbl">Jogos Épicos</div></div>
+    <div class="steam-stat"><div class="steam-stat-val">${badgesUnlocked.length}</div><div class="steam-stat-lbl">Badges</div></div>
+    <div class="steam-stat"><div class="steam-stat-val">${streak}</div><div class="steam-stat-lbl">🔥 Streak</div></div>
+    <div class="steam-stat"><div class="steam-stat-val">${diasAtivo}</div><div class="steam-stat-lbl">Dias Ativo</div></div>`;
+
+  document.getElementById('a-streak-card').innerHTML=streak>=1?`
+    <div class="streak-card-v2">
+      <div style="font-size:2.4rem;line-height:1;"><span class="streak-fire-anim">🔥</span></div>
+      <div style="flex:1;">
+        <div class="streak-big">${streak} dia${streak!==1?'s':''}</div>
+        <div class="streak-label">Acesso consecutivo · ${streak>=7?'Incrível! 🌟':streak>=3?'Continue assim! 💪':'Bom começo! ⚡'}</div>
+      </div>
+    </div>`:'';
+
+  const desbloq=CONQ.filter(c=>c.check(a)).slice(0,6);
+  document.getElementById('a-badges-mini').innerHTML=desbloq.map(c=>`<div class="badge-item"><div class="badge-icon">${c.icon}</div><div class="badge-name">${c.nome}</div></div>`).join('')||`<p style="color:var(--muted);font-size:.8rem">Complete missões para ganhar badges!</p>`;
+
+  // ACTIVITY FEED
+  const feedEl=document.getElementById('a-activity-feed');
+  if(feedEl){const hist2=(a.historico||[]).slice(0,5);if(hist2.length){feedEl.innerHTML=hist2.map(h=>{const dt=new Date(h.ts);const now3=new Date();const diff=Math.floor((now3-dt)/60000);const ago=diff<1?'agora':diff<60?diff+'min':diff<1440?Math.floor(diff/60)+'h':Math.floor(diff/1440)+'d';const icon=h.xp>200?'🚀':h.xp>0?'⚡':h.xp<0?'💸':'🎁';return`<div class="activity-item"><div class="activity-icon">${icon}</div><div class="activity-text">${h.desc}</div><div class="activity-time">${ago}</div>${h.xp?`<div class="activity-xp">${h.xp>0?'+':''}${h.xp}</div>`:''}</div>`;}).join('');}else{feedEl.innerHTML=`<div class="empty" style="padding:20px;"><div class="empty-icon">📡</div><div class="empty-text">Nenhuma atividade ainda.</div></div>`;}}
+
+  // DESAFIO BANNER — todos os desafios ativos
+  const wb=document.getElementById('a-weekly-banner');
+  const desafiosAtivos=S.desafios.filter(d=>new Date(d.expira)>new Date());
+  if(desafiosAtivos.length){
+    wb.innerHTML=desafiosAtivos.map(d=>{
+      const dias=Math.max(0,Math.ceil((new Date(d.expira)-new Date())/(1000*60*60*24)));
+      const jafez=S.pendentes.find(p=>p.alunoId===a.id&&p.isDesafio&&p.desafioId===d.id);
+      return `<div class="weekly-card" style="margin-bottom:14px;">
+        <div class="mtitle">${d.titulo}</div>
+        <div class="mdesc">${d.desc}</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+          <span class="mdiff diff-weekly">Semanal</span>
+          <span class="mxp">+${d.xp} XP</span>
+          <span class="weekly-timer">⏱ ${dias} dia(s)</span>
+          ${jafez?`<span class="status-tag tag-pending">⏳ Enviado</span>`:''}
+        </div>
+        ${!jafez?`<button class="btn btn-orange" style="margin-top:12px;width:100%;" onclick="abrirDesafio('${d.id}')">🔥 Participar do Desafio</button>`:''}
+      </div>`;
+    }).join('');
+  } else wb.innerHTML='';
+
+  // MISSÕES INDIVIDUAIS
+  const indiv=S.missoes.filter(m=>m.tipo==='individual');
+  document.getElementById('a-missoes').innerHTML=indiv.map(m=>{
+    const feita=(m.done||[]).includes(a.id);
+    const pend=S.pendentes.find(p=>p.alunoId===a.id&&p.missaoId===m.id);
+    const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[m.dif];
+    const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[m.dif];
+    let statusTag,action='';
+    if(feita){
+      statusTag=`<span class="status-tag tag-done">✓ Aprovada</span>`;
+      if(pend?.feedback) action=`<div class="feedback-bubble">💬 <strong>Professor:</strong> ${pend.feedback}</div>`;
+    } else if(pend) statusTag=`<span class="status-tag tag-pending">⏳ Aguardando</span>`;
+    else{statusTag=`<span class="status-tag tag-open">Disponível</span>`;action=`<div style="margin-top:10px;"><button class="btn btn-gold" style="width:100%;" onclick="abrirMissao('${m.id}')">🚀 Iniciar Missão</button></div>`;}
+    return `<div class="mission-card ${feita?'done':pend?'pending':''}">
+      <div class="mtitle">${m.titulo}</div>
+      <div class="mdesc">${m.desc}</div>
+      <div class="mtags"><span class="mdiff ${dc}">${dl}</span><span class="mxp">+${m.xp} XP</span>${statusTag}</div>
+      ${action}</div>`;
+  }).join('');
+
+  // MISSÕES EQUIPE
+  const equipe=S.missoes.filter(m=>m.tipo==='equipe');
+  document.getElementById('a-equipe-missoes').innerHTML=equipe.map(m=>{
+    const feita=(m.done||[]).includes(a.id);
+    const pend=S.pendentes.find(p=>p.alunoId===a.id&&p.missaoId===m.id);
+    const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[m.dif];
+    const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[m.dif];
+    let statusTag,action='';
+    if(feita) statusTag=`<span class="status-tag tag-done">✓ Aprovada</span>`;
+    else if(pend) statusTag=`<span class="status-tag tag-pending">⏳ Aguardando</span>`;
+    else{statusTag=`<span class="status-tag tag-open">Disponível</span>`;action=`<div style="margin-top:10px;"><button class="btn btn-purple" style="width:100%;" onclick="abrirMissao('${m.id}')">🤝 Iniciar em Equipe</button></div>`;}
+    return `<div class="mission-card team-mission ${feita?'done':pend?'pending':''}">
+      <div class="mtitle">${m.titulo}</div>
+      <div class="mdesc">${m.desc}</div>
+      <div class="mtags"><span class="mdiff ${dc}">${dl}</span><span class="mxp">+${m.xp} XP/membro</span><span class="mdiff diff-team">👥 ${m.vagas} pessoas</span>${statusTag}</div>
+      ${action}</div>`;
+  }).join('');
+
+  // LOJA
+  document.getElementById('a-saldo-loja').textContent=a.xp||0;
+  const lojaAtiva=S.loja.filter(r=>r.ativo);
+  document.getElementById('a-loja-items').innerHTML=lojaAtiva.length?lojaAtiva.map(r=>{
+    const jaResgatou=S.resgates.find(x=>x.alunoId===a.id&&x.itemId===r.id&&!x.rejeitado);
+    const podeComprar=(a.xp||0)>=r.custo&&!jaResgatou;
+    return `<div class="shop-card ${jaResgatou?'claimed':''}">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+        <div style="font-size:2rem;flex-shrink:0;">${r.emoji}</div>
+        <div><div class="shop-name">${r.nome}</div><div class="shop-desc" style="margin-bottom:0">${r.desc||''}</div></div>
+      </div>
+      <div class="shop-footer">
+        <span class="shop-cost">🏅 ${r.custo} XP</span>
+        ${jaResgatou?`<span class="status-tag tag-pending">${jaResgatou.aprovado?'✅ Entregue':'⏳ Aguardando'}</span>`:
+          podeComprar?`<button class="btn btn-gold btn-sm" onclick="resgatar('${r.id}')">🛒 Resgatar</button>`:
+          `<span style="font-size:.72rem;color:var(--muted);">Faltam ${r.custo-(a.xp||0)} XP</span>`}
+      </div>
+    </div>`;
+  }).join(''):`<div class="empty"><div class="empty-icon">🛒</div><div class="empty-text">Loja vazia por enquanto.</div></div>`;
+
+  // RANKING
+  const sorted=[...S.alunos].sort((x,y)=>(y.xp||0)-(x.xp||0));
+  document.getElementById('a-ranking').innerHTML=sorted.map((al,i)=>{
+    const nv=nivel(al.xp||0);const isMe=al.id===a.id;
+    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rx';
+    const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+    return `<div class="rank-item ${isMe?'me':''}">
+      <div class="rnum ${rc}">${ri}</div>
+      <div class="avatar" style="width:38px;height:38px;font-size:1.3rem">${al.avatar||'👾'}</div>
+      <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.9rem;">${al.nome}${isMe?' 👈':''}</div><div style="font-size:.68rem;color:var(--muted2)">${nv.e} ${nv.n}${(al.streak||0)>=3?` · 🔥${al.streak}`:''}</div></div>
+      <div style="font-family:'Orbitron',monospace;font-size:.88rem;color:var(--gold);font-weight:700;flex-shrink:0">${al.xp||0} XP</div>
+    </div>`;
+  }).join('');
+
+  // HISTÓRICO
+  const hist=a.historico||[];
+  document.getElementById('a-historico').innerHTML=hist.length?hist.map(h=>`
+    <div class="history-item">
+      <div class="history-icon">${h.xp>0?'⬆️':'⬇️'}</div>
+      <div style="flex:1;"><div class="history-desc">${h.desc}</div><div class="history-date">${new Date(h.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div></div>
+      <div class="history-xp" style="color:${h.xp>0?'var(--gold)':'var(--red)'};">${h.xp>0?'+':''}${h.xp} XP</div>
+    </div>`).join(''):`<div class="empty" style="padding:20px;"><div class="empty-icon">📜</div><div class="empty-text">Seu histórico aparecerá aqui.</div></div>`;
+
+  // BADGES
+  document.getElementById('a-badges').innerHTML=CONQ.map(c=>{
+    const ok=c.check(a);
+    return `<div class="badge-item ${ok?'':'locked'}"><div class="badge-icon">${c.icon}</div><div class="badge-name">${c.nome}</div><div class="badge-req">${c.req}</div></div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════
+//  AÇÕES PROFESSOR — FIREBASE
+// ══════════════════════════════════════
+async function cadastrarAluno(){
+  const nome=document.getElementById('p-nome').value.trim();
+  if(!nome) return toast('⚠️ Digite o nome!');
+  setSyncing('syncing');
+  try {
+    const novoAluno={nome,turma:document.getElementById('p-turma').value,avatar:'👾',xp:0,streak:0,historico:[],desafiosConcluidos:0,lastLogin:null,criadoEm:Date.now()};
+    await COL.alunos().add(novoAluno);
+    document.getElementById('p-nome').value='';
+    toast(`✅ ${nome} entrou no WarpCode!`);
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro ao cadastrar!'); setSyncing('error'); }
+}
+
+async function removerAluno(id){
+  if(!confirm('Remover este aluno? Isso apagará todos os dados dele.')) return;
+  setSyncing('syncing');
+  try {
+    await COL.alunos().doc(id).delete();
+    // Remove pendentes do aluno
+    const pBatch=db.batch();
+    S.pendentes.filter(p=>p.alunoId===id).forEach(p=>pBatch.delete(COL.pendentes().doc(p.id)));
+    const rBatch=db.batch();
+    S.resgates.filter(r=>r.alunoId===id).forEach(r=>rBatch.delete(COL.resgates().doc(r.id)));
+    await pBatch.commit();
+    await rBatch.commit();
+    // Remove de missões done
+    const missBatch=db.batch();
+    S.missoes.forEach(m=>{
+      if((m.done||[]).includes(id)){
+        missBatch.update(COL.missoes().doc(m.id),{done:firebase.firestore.FieldValue.arrayRemove(id)});
+      }
+    });
+    await missBatch.commit();
+    toast('🗑️ Aluno removido.');
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro ao remover!'); setSyncing('error'); }
+}
+
+async function darXP(){
+  const id=document.getElementById('p-xp-aluno').value;
+  const xp=parseInt(document.getElementById('p-xp-motivo').value);
+  const a=S.alunos.find(x=>x.id===id);if(!a) return toast('Selecione um aluno!');
+  const antes=nivel(a.xp||0).idx;
+  setSyncing('syncing');
+  try {
+    const novoXP=(a.xp||0)+xp;
+    const hist=[{desc:`⚡ XP manual do professor`,xp,ts:Date.now()},...(a.historico||[])].slice(0,30);
+    await COL.alunos().doc(id).update({xp:novoXP,historico:hist});
+    const depois=nivel(novoXP);
+    if(depois.idx>antes) toast(`🎉 ${a.nome} subiu para ${depois.e} ${depois.n}!`);
+    else toast(`⚡ +${xp} XP para ${a.nome}!`);
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+async function aprovar(pid){
+  const pend=S.pendentes.find(p=>p.id===pid);if(!pend)return;
+  const aluno=S.alunos.find(a=>a.id===pend.alunoId);
+  const missao=pend.isDesafio?{titulo:'Desafio da Semana',xp:pend.xp||S.desafio?.xp||0}:S.missoes.find(m=>m.id===pend.missaoId);
+  if(!aluno||!missao)return;
+  const fbEl=document.getElementById('fb-'+pid);
+  const fb=fbEl?fbEl.value.trim():'';
+  const antes=nivel(aluno.xp||0).idx;
+  setSyncing('syncing');
+  try {
+    const novoXP=(aluno.xp||0)+missao.xp;
+    const wcPorDif2={easy:15,medium:25,hard:40};
+    const wcGanho=(S.desafio&&pend.isDesafio)?30:wcPorDif2[missao.dif]||20;
+    const novoWCBonus=(aluno.wc_bonus||0)+wcGanho;
+    const hist=[{desc:`✅ Missão aprovada: ${missao.titulo}${fb?` · "${fb}"`:''} +${wcGanho}🪙`,xp:missao.xp,ts:Date.now()},...(aluno.historico||[])].slice(0,30);
+    // Atualiza aluno
+    await COL.alunos().doc(aluno.id).update({xp:novoXP,wc_bonus:novoWCBonus,historico:hist});
+    // Marca missão como done (se não for desafio)
+    if(!pend.isDesafio){
+      await COL.missoes().doc(pend.missaoId).update({done:firebase.firestore.FieldValue.arrayUnion(aluno.id)});
+    } else {
+      await COL.alunos().doc(aluno.id).update({desafiosConcluidos:firebase.firestore.FieldValue.increment(1)});
+    }
+    // Remove pendente
+    await COL.pendentes().doc(pid).delete();
+    const depois=nivel(novoXP);
+    if(depois.idx>antes) toast(`🎉 ${aluno.nome} subiu para ${depois.e} ${depois.n}!`);
+    else toast(`✅ Aprovado! +${missao.xp} XP para ${aluno.nome}`);
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro ao aprovar!'); setSyncing('error'); }
+}
+
+async function rejeitar(pid){
+  setSyncing('syncing');
+  try {
+    await COL.pendentes().doc(pid).delete();
+    toast('❌ Missão rejeitada.');
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+function abrirModalAluno(id){
+  const a=S.alunos.find(x=>x.id===id);const n=nivel(a.xp||0);
+  document.getElementById('modal-aluno-content').innerHTML=`
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:3rem">${a.avatar||'👾'}</div>
+      <div style="font-weight:800;font-size:1.1rem;margin-top:7px">${a.nome}</div>
+      <div style="color:var(--muted2);font-size:.78rem">${a.turma}</div>
+      <div style="font-family:'Orbitron',monospace;font-size:1.8rem;color:var(--gold);margin-top:8px">${a.xp||0} XP</div>
+      <div style="font-size:.72rem;color:var(--accent)">${n.e} ${n.n} · 🔥${a.streak||0} dias</div>
+    </div>
+    <label>Quantidade de XP</label>
+    <input type="number" id="modal-xp-v" placeholder="Ex: 150" min="1" style="margin-bottom:12px">
+    <button class="btn btn-primary btn-block" onclick="ajustarXP('${id}',1)">+ Adicionar XP</button>
+    <button class="btn btn-danger btn-block" onclick="ajustarXP('${id}',-1)">− Remover XP</button>
+    <button class="btn btn-outline btn-block" onclick="closeModal('modal-aluno')" style="margin-bottom:0">Cancelar</button>`;
+  document.getElementById('modal-aluno').classList.add('active');
+}
+
+async function ajustarXP(id,sinal){
+  const v=parseInt(document.getElementById('modal-xp-v').value);if(!v||v<1)return toast('⚠️ Digite um valor!');
+  const a=S.alunos.find(x=>x.id===id);
+  const novoXP=Math.max(0,(a.xp||0)+sinal*v);
+  setSyncing('syncing');
+  try {
+    const hist=[{desc:`${sinal>0?'⚡ Ajuste +':'➖ Ajuste -'}${v} XP pelo professor`,xp:sinal*v,ts:Date.now()},...(a.historico||[])].slice(0,30);
+    await COL.alunos().doc(id).update({xp:novoXP,historico:hist});
+    closeModal('modal-aluno');
+    toast(`${sinal>0?'⚡ +':'➖ -'}${v} XP → ${a.nome}`);
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+async function addRecompensa(){
+  const emoji=document.getElementById('r-emoji').value.trim()||'🎁';
+  const nome=document.getElementById('r-nome').value.trim();
+  const custo=parseInt(document.getElementById('r-custo').value);
+  if(!nome) return toast('⚠️ Digite o nome!');
+  if(!custo||custo<1) return toast('⚠️ Digite o custo em XP!');
+  setSyncing('syncing');
+  try {
+    await COL.loja().add({emoji,nome,desc:'Recompensa especial da turma.',custo,ativo:true});
+    document.getElementById('r-emoji').value='';
+    document.getElementById('r-nome').value='';
+    document.getElementById('r-custo').value='';
+    toast('✅ Recompensa adicionada!');
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+async function toggleLoja(id){
+  const r=S.loja.find(x=>x.id===id);if(!r)return;
+  try { await COL.loja().doc(id).update({ativo:!r.ativo}); } catch(e){ toast('❌ Erro!'); }
+}
+
+async function removerLoja(id){
+  if(!confirm('Remover item?'))return;
+  try { await COL.loja().doc(id).delete(); } catch(e){ toast('❌ Erro!'); }
+}
+
+async function aprovarResgate(rid){
+  const r=S.resgates.find(x=>x.id===rid);if(!r)return;
+  const aluno=S.alunos.find(a=>a.id===r.alunoId);
+  const item=S.loja.find(i=>i.id===r.itemId);
+  setSyncing('syncing');
+  try {
+    await COL.resgates().doc(rid).update({aprovado:true});
+    if(aluno&&item){
+      const hist=[{desc:`🎁 Resgate entregue: ${item.nome}`,xp:0,ts:Date.now()},...(aluno.historico||[])].slice(0,30);
+      await COL.alunos().doc(aluno.id).update({historico:hist});
+    }
+    toast('✅ Resgate confirmado!');
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+async function rejeitarResgate(rid){
+  const r=S.resgates.find(x=>x.id===rid);if(!r)return;
+  const aluno=S.alunos.find(a=>a.id===r.alunoId);
+  const item=S.loja.find(i=>i.id===r.itemId);
+  setSyncing('syncing');
+  try {
+    await COL.resgates().doc(rid).delete();
+    if(aluno&&item){
+      const novoXP=(aluno.xp||0)+item.custo;
+      const hist=[{desc:`↩ Resgate cancelado: ${item.nome} (XP devolvido)`,xp:item.custo,ts:Date.now()},...(aluno.historico||[])].slice(0,30);
+      await COL.alunos().doc(aluno.id).update({xp:novoXP,historico:hist});
+    }
+    toast('↩ Resgate cancelado e XP devolvido.');
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+async function salvarDesafio(){
+  const titulo=document.getElementById('d-titulo').value.trim();
+  const desc=document.getElementById('d-desc').value.trim();
+  const video=document.getElementById('d-video')?.value.trim()||'';
+  const xp=parseInt(document.getElementById('d-xp').value)||300;
+  const dias=parseInt(document.getElementById('d-dias').value)||7;
+  if(!titulo) return toast('⚠️ Digite um título!');
+  const expira=new Date();expira.setDate(expira.getDate()+dias);
+  setSyncing('syncing');
+  try {
+    await COL.desafios().add({titulo,desc,video,xp,expira:expira.toISOString(),ts:Date.now(),done:[]});
+    document.getElementById('d-titulo').value='';
+    document.getElementById('d-desc').value='';
+    if(document.getElementById('d-video')) document.getElementById('d-video').value='';
+    document.getElementById('d-xp').value='';
+    document.getElementById('d-dias').value='';
+    toast('🔥 Desafio publicado!');
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+async function removerDesafio(id){
+  if(!confirm('Encerrar este desafio?'))return;
+  try {
+    await COL.desafios().doc(id).delete();
+    toast('Desafio encerrado.');
+  } catch(e){ toast('❌ Erro!'); }
+}
+
+// ══════════════════════════════════════
+//  AÇÕES ALUNO — FIREBASE
+// ══════════════════════════════════════
+// entrarAluno mantida por compatibilidade
+async function entrarAluno(){ goAlunoLogin(); }
+
+function abrirMissao(mid){
+  const a=S.alunos.find(x=>x.id===alunoAtual);
+  const m=S.missoes.find(x=>x.id===mid);
+  if(!a||!m)return;
+  const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[m.dif];
+  const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[m.dif];
+  const isEquipe=m.tipo==='equipe';
+  document.getElementById('modal-missao-content').innerHTML=`
+    <div class="modal-title">🎯 ${m.titulo}</div>
+    <div style="font-size:.86rem;color:var(--muted2);line-height:1.7;margin-bottom:12px">${m.desc}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
+      <span class="mdiff ${dc}">${dl}</span>
+      ${isEquipe?`<span class="mdiff diff-team">👥 ${m.vagas} pessoas</span>`:''}
+      <span class="mxp" style="font-size:.82rem">+${m.xp} XP ${isEquipe?'por membro':''}</span>
+    </div>
+    <div style="font-size:.8rem;color:var(--muted2);line-height:1.9;margin-bottom:16px;background:var(--s2);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+      1️⃣ Clique em <strong style="color:var(--text)">Abrir no Scratch</strong><br>
+      2️⃣ Complete conforme a missão<br>
+      ${isEquipe?'👥 Cada membro deve enviar individualmente<br>':''}
+      3️⃣ Copie o link do projeto<br>
+      4️⃣ Cole aqui e envie para aprovação
+    </div>
+    <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank">🐱 Abrir no Scratch</a>
+    <label>Link do projeto (recomendado)</label>
+    <input type="url" id="missao-link" placeholder="https://scratch.mit.edu/projects/..." style="margin-bottom:14px">
+    <button class="btn btn-primary btn-block" onclick="enviarAprovacao('${m.id}')">📤 Enviar para Aprovação</button>
+    <button class="btn btn-outline btn-block" onclick="closeModal('modal-missao')" style="margin-bottom:0">Cancelar</button>`;
+  document.getElementById('modal-missao').classList.add('active');
+}
+
+async function enviarAprovacao(mid){
+  const a=S.alunos.find(x=>x.id===alunoAtual);
+  if(!a)return;
+  if(S.pendentes.find(p=>p.alunoId===a.id&&p.missaoId===mid)) return toast('⚠️ Já enviada! Aguarde aprovação.');
+  const link=document.getElementById('missao-link')?.value.trim()||'';
+  setSyncing('syncing');
+  try {
+    await COL.pendentes().add({alunoId:a.id,missaoId:mid,link,ts:Date.now(),aprovado:false,rejeitado:false});
+    closeModal('modal-missao');
+    toast('📤 Enviado! Aguarde o professor aprovar.');
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro ao enviar!'); setSyncing('error'); }
+}
+
+function abrirDesafio(desafioId){
+  const d=S.desafios.find(x=>x.id===desafioId);
+  if(!d)return;
+  document.getElementById('modal-missao-content').innerHTML=`
+    <div class="modal-title">🔥 ${d.titulo}</div>
+    <div style="font-size:.86rem;color:var(--muted2);line-height:1.7;margin-bottom:12px">${d.desc}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
+      <span class="mdiff diff-weekly">Desafio Semanal</span>
+      <span class="mxp" style="font-size:.82rem">+${d.xp} XP</span>
+    </div>
+    ${d.video?`<a class="scratch-btn" href="${d.video}" target="_blank" style="background:linear-gradient(135deg,#ef4444,#dc2626);">🎬 Ver Vídeo Exemplo</a>`:''}
+    <div style="font-size:.8rem;color:var(--muted2);line-height:1.9;margin-bottom:16px;background:var(--s2);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+      1️⃣ Clique em <strong style="color:var(--text)">Abrir no Scratch</strong><br>
+      2️⃣ Complete o desafio proposto<br>
+      3️⃣ Copie o link do projeto<br>
+      4️⃣ Cole aqui e envie para aprovação
+    </div>
+    <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank">🐱 Abrir no Scratch</a>
+    <label>Link do projeto (recomendado)</label>
+    <input type="url" id="missao-link" placeholder="https://scratch.mit.edu/projects/..." style="margin-bottom:14px">
+    <button class="btn btn-primary btn-block" onclick="enviarDesafio('${desafioId}')">📤 Enviar para Aprovação</button>
+    <button class="btn btn-outline btn-block" onclick="closeModal('modal-missao')" style="margin-bottom:0">Cancelar</button>`;
+  document.getElementById('modal-missao').classList.add('active');
+}
+
+async function enviarDesafio(desafioId){
+  const d=S.desafios.find(x=>x.id===desafioId);
+  if(!d)return;
+  const a=S.alunos.find(x=>x.id===alunoAtual);
+  if(!a)return;
+  if(S.pendentes.find(p=>p.alunoId===a.id&&p.isDesafio&&p.desafioId===desafioId)) return toast('⚠️ Já enviado! Aguarde aprovação.');
+  const link=document.getElementById('missao-link')?.value.trim()||'';
+  setSyncing('syncing');
+  try {
+    await COL.pendentes().add({alunoId:a.id,missaoId:'desafio',desafioId,link,ts:Date.now(),isDesafio:true,xp:d.xp,aprovado:false,rejeitado:false});
+    closeModal('modal-missao');
+    toast('🔥 Desafio enviado! Aguarde aprovação.');
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+async function resgatar(itemId){
+  const a=S.alunos.find(x=>x.id===alunoAtual);
+  const item=S.loja.find(x=>x.id===itemId);
+  if(!a||!item)return;
+  if((a.xp||0)<item.custo) return toast('⚠️ XP insuficiente!');
+  if(!confirm(`Resgatar "${item.nome}" por ${item.custo} XP?`))return;
+  setSyncing('syncing');
+  try {
+    const novoXP=(a.xp||0)-item.custo;
+    const hist=[{desc:`🛒 Resgate solicitado: ${item.emoji} ${item.nome}`,xp:-item.custo,ts:Date.now()},...(a.historico||[])].slice(0,30);
+    await COL.alunos().doc(a.id).update({xp:novoXP,historico:hist});
+    await COL.resgates().add({alunoId:a.id,itemId:item.id,ts:Date.now(),aprovado:false,rejeitado:false});
+    toast(`🎁 Resgate enviado! Aguarde o professor confirmar.`);
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+// ══════════════════════════════════════
+//  WARPCOINS SYSTEM
+// ══════════════════════════════════════
+const WC_ITEMS=[
+  {id:'border_neon',cat:'border',name:'Borda Neon Cyan',desc:'Contorno ciano pulsante.',cost:0,cls:'b-neon',icon:'💙',free:true},
+  {id:'border_gold',cat:'border',name:'Borda Dourada',desc:'Moldura de ouro.',cost:0,cls:'b-gold',icon:'🏅',free:true},
+  {id:'border_purple',cat:'border',name:'Borda Roxa',desc:'Aura mística em roxo.',cost:0,cls:'b-purple',icon:'💜',free:true},
+  {id:'border_rainbow',cat:'border',name:'Borda Arco-Íris',desc:'Cores em rotação!',cost:0,cls:'b-rainbow',icon:'🌈',free:true},
+  {id:'border_cosmic',cat:'border',name:'Borda Cósmica',desc:'Rosa e roxo nebular.',cost:0,cls:'b-cosmic',icon:'🌸',free:true},
+  {id:'effect_sparkle',cat:'effect',name:'Brilho Mágico',desc:'Estrelinhas.',cost:120,cls:'e-sparkle',icon:'✨',free:false},
+  {id:'effect_fire',cat:'effect',name:'Chamas',desc:'Chamas animadas.',cost:150,cls:'e-fire',icon:'🔥',free:false},
+  {id:'effect_stars',cat:'effect',name:'Estrelas',desc:'Estrelas orbitando.',cost:130,cls:'e-stars',icon:'⭐',free:false},
+  {id:'effect_lightning',cat:'effect',name:'Raio',desc:'Raio elétrico!',cost:140,cls:'e-lightning',icon:'⚡',free:false},
+  {id:'banner_default',cat:'banner',name:'Banner Padrão',desc:'Desbloqueado grátis!',cost:0,bg:'linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12))',icon:'🌌',free:true},
+  {id:'banner_galaxy',cat:'banner',name:'Banner Galáxia',desc:'Galáxia roxa.',cost:0,bg:'linear-gradient(135deg,#0f0c29,#302b63)',icon:'🔮',free:true},
+  {id:'banner_fire',cat:'banner',name:'Banner Chamas',desc:'Fogo ardente.',cost:220,bg:'linear-gradient(135deg,#ff416c,#ff4b2b)',icon:'🔥',free:false},
+  {id:'banner_ocean',cat:'banner',name:'Banner Oceano',desc:'Azul profundo.',cost:200,bg:'linear-gradient(135deg,#1a6091,#2c7da0)',icon:'🌊',free:false},
+  {id:'banner_cyber',cat:'banner',name:'Banner Cyber',desc:'Neon cyberpunk.',cost:280,bg:'linear-gradient(135deg,#0a2e0a,#00ff41)',icon:'💚',free:false},
+  {id:'av_dragon',cat:'avatar',name:'Dragão Místico',desc:'Avatar épico.',cost:300,emoji:'🐲',icon:'🐲',free:false},
+  {id:'av_alien',cat:'avatar',name:'Alienígena',desc:'De outro planeta!',cost:180,emoji:'👽',icon:'👽',free:false},
+  {id:'av_ninja',cat:'avatar',name:'Ninja Hacker',desc:'Mestre das sombras.',cost:350,emoji:'🥷',icon:'🥷',free:false},
+  {id:'av_unicorn',cat:'avatar',name:'Unicórnio',desc:'Criatura lendária.',cost:400,emoji:'🦄',icon:'🦄',free:false},
+  {id:'av_robot',cat:'avatar',name:'Robô Hacker',desc:'Circuitos e caos.',cost:250,emoji:'🤖',icon:'🤖',free:false},
+  {id:'av_wizard',cat:'avatar',name:'Mago do Código',desc:'Feitiços em Python.',cost:320,emoji:'🧙',icon:'🧙',free:false},
+  {id:'av_cat',cat:'avatar',name:'Gato Gênio',desc:'Curioso e veloz.',cost:200,emoji:'😺',icon:'😺',free:false},
+  {id:'pet_cat',cat:'pet',name:'Gatinho Hacker',desc:'Te acompanha no perfil!',cost:150,petEmoji:'🐱',icon:'🐱',free:false},
+  {id:'pet_dragon',cat:'pet',name:'Dragãozinho',desc:'Dragão de bolso épico.',cost:400,petEmoji:'🐲',icon:'🐲',free:false},
+  {id:'pet_robot',cat:'pet',name:'Robô Mini',desc:'Um robôzinho que dança.',cost:300,petEmoji:'🤖',icon:'🤖',free:false},
+  {id:'pet_fox',cat:'pet',name:'Raposa Ninja',desc:'Ágil e misteriosa.',cost:200,petEmoji:'🦊',icon:'🦊',free:false},
+  {id:'pet_alien',cat:'pet',name:'Alienígena',desc:'Veio de outra galáxia.',cost:250,petEmoji:'👽',icon:'👽',free:false},
+  {id:'pet_ghost',cat:'pet',name:'Fantasminha',desc:'Assombra seus inimigos.',cost:180,petEmoji:'👻',icon:'👻',free:false},
+  {id:'theme_default',cat:'theme',name:'WarpCode Clássico',desc:'O visual padrão.',cost:0,icon:'🌌',free:true,vars:{'--bg':'#07090f','--s1':'#0f1623','--s2':'#162033','--accent':'#00d4ff','--purple':'#7c3aed'}},
+  {id:'theme_cyber',cat:'theme',name:'Cyber Verde',desc:'Tema hacker Matrix.',cost:200,icon:'💚',free:false,vars:{'--bg':'#020c02','--s1':'#051205','--s2':'#0a1f0a','--accent':'#00ff41','--purple':'#00cc33'}},
+  {id:'theme_sunset',cat:'theme',name:'Pôr do Sol',desc:'Laranja e rosa vibrante.',cost:220,icon:'🌅',free:false,vars:{'--bg':'#0f0608','--s1':'#1a0810','--s2':'#28101a','--accent':'#ff6b6b','--purple':'#c2185b'}},
+  {id:'theme_ocean',cat:'theme',name:'Oceano Profundo',desc:'Azul e verde das profundezas.',cost:200,icon:'🌊',free:false,vars:{'--bg':'#020810','--s1':'#031020','--s2':'#041530','--accent':'#06b6d4','--purple':'#0891b2'}},
+  {id:'theme_gold',cat:'theme',name:'Ouro e Preto',desc:'Elegância de campeão.',cost:350,icon:'🏆',free:false,vars:{'--bg':'#0a0800','--s1':'#140f00','--s2':'#1f1800','--accent':'#ffd700','--purple':'#f59e0b'}},
+  {id:'title_rookie',cat:'title',name:'Calouro do Código',desc:'Título iniciante.',cost:0,icon:'🌱',free:true,titleTxt:'Calouro do Código',titleCls:'p-soldado'},
+  {id:'title_hacker',cat:'title',name:'Hacker Lendário',desc:'Título épico.',cost:300,icon:'💀',free:false,titleTxt:'Hacker Lendário',titleCls:'p-lenda'},
+  {id:'title_wizard',cat:'title',name:'Mago do Scratch',desc:'Feiticeiro do código.',cost:250,icon:'🧙',free:false,titleTxt:'Mago do Scratch',titleCls:'p-capitao'},
+  {id:'title_speedrun',cat:'title',name:'Speedrunner',desc:'Missões num piscar.',cost:200,icon:'⚡',free:false,titleTxt:'Speedrunner ⚡',titleCls:'p-tenente'},
+  {id:'title_bug',cat:'title',name:'Domador de Bugs',desc:'Bugs temem você.',cost:280,icon:'🐛',free:false,titleTxt:'Domador de Bugs 🐛',titleCls:'p-general'},
+  {id:'hack_xpboost',cat:'hackpower',name:'Turbo XP',desc:'Ganha +50% XP na próxima missão aprovada.',cost:500,icon:'🚀',free:false,hackUses:1,hackId:'xpboost'},
+  {id:'hack_streak',cat:'hackpower',name:'Escudo de Streak',desc:'Protege seu streak por 1 dia de falta.',cost:300,icon:'🛡️',free:false,hackUses:1,hackId:'streak_shield'},
+  {id:'hack_loot2',cat:'hackpower',name:'Loot Duplo',desc:'Próxima caixa de loot revela 2 prêmios.',cost:400,icon:'🎁',free:false,hackUses:1,hackId:'double_loot'},
+  {id:'hack_xpboost2',cat:'hackpower',name:'Mega Turbo XP',desc:'+100% XP na próxima missão aprovada.',cost:900,icon:'💥',free:false,hackUses:1,hackId:'xpboost2'},
+];
+
+const LOOT_TABLE=[
+  {r:'comum',w:35,type:'xp',v:50,label:'+50 XP',icon:'⚡'},
+  {r:'comum',w:25,type:'xp',v:80,label:'+80 XP',icon:'⚡'},
+  {r:'comum',w:20,type:'wc',v:20,label:'+20 WarpCoins 🪙',icon:'🪙'},
+  {r:'raro',w:15,type:'xp',v:150,label:'+150 XP',icon:'⚡'},
+  {r:'raro',w:10,type:'wc',v:50,label:'+50 WarpCoins 🪙',icon:'🪙'},
+  {r:'raro',w:8,type:'item',v:'border_neon',label:'Borda Neon! 💙',icon:'💙'},
+  {r:'épico',w:6,type:'xp',v:300,label:'+300 XP ÉPICO!',icon:'🚀'},
+  {r:'épico',w:5,type:'wc',v:100,label:'+100 WarpCoins! 🪙',icon:'🪙'},
+  {r:'épico',w:4,type:'item',v:'effect_sparkle',label:'Efeito ✨ Mágico!',icon:'✨'},
+  {r:'lendário',w:2,type:'xp',v:500,label:'+500 XP LENDÁRIO!',icon:'🏆'},
+  {r:'lendário',w:1,type:'item',v:'border_cosmic',label:'Borda Cósmica 🌸!',icon:'🌸'},
+];
+
+let wcFilterAtual='todos';
+
+function wcTotal(a){return Math.floor((a.xp||0)/10)+(a.wc_bonus||0);}
+function wcSaldo(a){return Math.max(0,wcTotal(a)-(a.wc_spent||0));}
+function temItem(a,id){const it=WC_ITEMS.find(i=>i.id===id);return(a.wc_owned||[]).includes(id)||(it&&it.free);}
+function eqItem(a,cat){return a['wc_eq_'+cat]||null;}
+function patente(xp){
+  if(xp>=4000)return{nome:'⭐ Lenda Galáctica',cls:'p-lenda'};
+  if(xp>=2000)return{nome:'🎖️ General',cls:'p-general'};
+  if(xp>=1000)return{nome:'⚡ Capitão',cls:'p-capitao'};
+  if(xp>=500)return{nome:'🔷 Tenente',cls:'p-tenente'};
+  if(xp>=200)return{nome:'🟢 Soldado',cls:'p-soldado'};
+  return{nome:'⬜ Recruta',cls:'p-recruta'};
+}
+function rollLoot(){const tot=LOOT_TABLE.reduce((s,i)=>s+i.w,0);let r=Math.random()*tot;for(const it of LOOT_TABLE){r-=it.w;if(r<=0)return it;}return LOOT_TABLE[0];}
+
+function applyTheme(themeId){
+  const item=WC_ITEMS.find(i=>i.id===themeId);if(!item||!item.vars)return;
+  Object.entries(item.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+}
+function loadSavedTheme(a){
+  const eq=a['wc_eq_theme'];
+  if(eq)applyTheme(eq);
+  else{const def=WC_ITEMS.find(i=>i.id==='theme_default');if(def&&def.vars)Object.entries(def.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}
+}
+
+// ── WC LOJA ──
+function filtrarWC(cat,btn){
+  wcFilterAtual=cat;
+  document.querySelectorAll('.wc-filter').forEach(b=>{b.className=b.className.replace(' active','').replace('btn-primary','btn-outline');});
+  if(btn){btn.className=btn.className.replace('btn-outline','btn-primary')+' active';}
+  const a=S.alunos.find(x=>x.id===alunoAtual);if(a)renderWCLoja(a);
+}
+function renderWCLoja(a){
+  const el=document.getElementById('a-wc-items');if(!el)return;
+  const saldo=wcSaldo(a);
+  const items=wcFilterAtual==='todos'?WC_ITEMS:WC_ITEMS.filter(i=>i.cat===wcFilterAtual);
+  const catL={border:'🖼️ Borda',effect:'✨ Efeito',banner:'🎖️ Banner',avatar:'👾 Avatar',pet:'🐾 Pet',theme:'🎨 Tema',title:'🏷️ Título',hackpower:'⚡ Hack'};
+  el.innerHTML=items.map(item=>{
+    const owns=temItem(a,item.id);const eq=eqItem(a,item.cat)===item.id;
+    const hackKey='hack_uses_'+item.id;
+    const hackUsesLeft=(a[hackKey]!==undefined)?a[hackKey]:item.hackUses||0;
+    const hackActive=item.cat==='hackpower'&&hackUsesLeft>0&&owns;
+    const hackUsed=item.cat==='hackpower'&&owns&&hackUsesLeft<=0;
+    let badge='';let action='';
+    if(item.free)badge+='<span class="wc-free-tag">GRÁTIS</span>';
+    if(eq&&item.cat!=='hackpower')badge+='<span class="wc-equipped-tag">EQUIPADO</span>';
+    else if(owns&&!item.free&&item.cat!=='hackpower')badge+='<span class="wc-owned-tag">POSSUÍDO</span>';
+    if(hackActive)badge+='<span class="wc-owned-tag" style="color:var(--green);">✅ ATIVO ('+hackUsesLeft+'x)</span>';
+    if(hackUsed)badge+='<span style="font-size:.58rem;color:var(--muted);border:1px solid var(--border);padding:2px 7px;border-radius:4px;">USADO</span>';
+    if(item.cat==='hackpower'){
+      if(!owns&&saldo>=item.cost)action=`<button class="btn btn-wc btn-sm" onclick="wcComprar('${item.id}')">🪙 ${item.cost}</button>`;
+      else if(!owns)action=`<span style="font-size:.68rem;color:var(--muted);">Faltam ${item.cost-saldo}🪙</span>`;
+      else if(hackActive)action=`<span style="font-size:.68rem;color:var(--green);">Aplicado automaticamente</span>`;
+      else action=`<span style="font-size:.68rem;color:var(--muted);">Esgotado</span>`;
+    } else if(eq){
+      action=`<button class="btn btn-outline btn-sm" onclick="wcDesequipar('${item.cat}')">✕ Remover</button>`;
+    } else if(owns||item.free){
+      action=`<button class="btn btn-primary btn-sm" onclick="wcEquipar('${item.id}','${item.cat}')">🎮 Equipar</button>`;
+    } else if(saldo>=item.cost){
+      action=`<button class="btn btn-wc btn-sm" onclick="wcComprar('${item.id}')">🪙 ${item.cost}</button>`;
+    } else {
+      action=`<span style="font-size:.68rem;color:var(--muted);">Faltam ${item.cost-saldo}🪙</span>`;
+    }
+    let extra='';
+    if(item.cat==='theme'&&item.vars){const c1=item.vars['--accent']||'#00d4ff';const c2=item.vars['--purple']||'#7c3aed';const c3=item.vars['--bg']||'#07090f';extra=`<div class="theme-swatch"><span style="background:${c3};"></span><span style="background:${c1};"></span><span style="background:${c2};"></span></div>`;}
+    if(item.cat==='pet')extra=`<div style="font-size:2.2rem;margin-top:5px;">${item.petEmoji}</div>`;
+    const cardCls=item.cat==='hackpower'?`hack-card${hackActive?' active-hack':hackUsed?' used-hack':''}`:`wc-shop-card ${eq?'equipped':owns||item.free?'owned':''}`;
+    return`<div class="${cardCls}"><div style="display:flex;align-items:center;gap:12px;"><div style="font-size:2rem;flex-shrink:0;">${item.icon}${extra}</div><div style="flex:1;min-width:0;"><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:3px;"><div style="font-weight:900;font-size:.88rem;">${item.name}</div><span style="font-size:.58rem;color:var(--muted2);background:var(--s1);padding:2px 6px;border-radius:4px;">${catL[item.cat]||item.cat}</span>${badge}</div><div style="font-size:.73rem;color:var(--muted2);">${item.desc}</div></div><div style="flex-shrink:0;text-align:right;">${!owns&&!item.free?`<div class="wc-cost" style="margin-bottom:4px;">🪙 ${item.cost}</div>`:''}${action}</div></div></div>`;
+  }).join('')||'<div class="empty"><div class="empty-icon">🪙</div><div class="empty-text">Nenhum item nesta categoria.</div></div>';
+}
+async function wcComprar(itemId){
+  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
+  const item=WC_ITEMS.find(i=>i.id===itemId);if(!item)return;
+  const saldo=wcSaldo(a);if(saldo<item.cost)return toast('🪙 WarpCoins insuficientes!');
+  if(item.cat!=='hackpower'&&temItem(a,itemId))return toast('Você já possui este item!');
+  if(!confirm(`Comprar "${item.name}" por ${item.cost}🪙?`))return;
+  setSyncing('syncing');
+  try{
+    const update={wc_spent:(a.wc_spent||0)+item.cost};
+    const hist=[{desc:`🪙 Comprou: ${item.icon} ${item.name}`,xp:0,ts:Date.now()},...(a.historico||[])].slice(0,30);
+    update.historico=hist;
+    if(item.cat==='hackpower'){const hackKey='hack_uses_'+item.id;update[hackKey]=(a[hackKey]||0)+(item.hackUses||1);}
+    else{update.wc_owned=[...(a.wc_owned||[]),itemId];update['wc_eq_'+item.cat]=itemId;if(item.cat==='theme')applyTheme(itemId);}
+    await COL.alunos().doc(a.id).update(update);
+    toast(`🎉 ${item.name} comprado e equipado!`);setSyncing('ok');
+  }catch(e){toast('❌ Erro!');setSyncing('error');}
+}
+async function wcEquipar(itemId,cat){
+  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
+  try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});if(cat==='theme')applyTheme(itemId);toast('✅ Equipado!');}catch(e){toast('❌ Erro!');}
+}
+async function wcDesequipar(cat){
+  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
+  try{
+    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:null});
+    if(cat==='theme'){const def=WC_ITEMS.find(i=>i.id==='theme_default');if(def&&def.vars)Object.entries(def.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}
+    toast('Removido.');
+  }catch(e){toast('❌ Erro!');}
+}
+
+// ── TROCAR XP → WC ──
+function previewTroca(){const amt=parseInt(document.getElementById('wc-troca')?.value)||0;const el=document.getElementById('wc-troca-preview');if(!el)return;if(amt<50){el.textContent='Mínimo: 50 XP';return;}if(amt%50!==0){el.textContent='Use múltiplos de 50 XP';return;}const a=S.alunos.find(x=>x.id===alunoAtual);const xpAtual=a?a.xp||0:0;if(amt>xpAtual){el.textContent=`⚠️ XP insuficiente (você tem ${xpAtual})`;return;}el.textContent=`${amt} XP → +${Math.floor(amt/50)*10}🪙`;}
+async function trocarXPporWC(){
+  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
+  const amt=parseInt(document.getElementById('wc-troca')?.value)||0;
+  if(amt<50||amt%50!==0)return toast('⚠️ Use múltiplos de 50 XP!');
+  const xpAtual=a.xp||0;if(amt>xpAtual)return toast(`⚠️ Você tem apenas ${xpAtual} XP`);
+  const wcGain=Math.floor(amt/50)*10;if(!confirm(`Trocar ${amt} XP por ${wcGain}🪙?`))return;
+  setSyncing('syncing');
+  try{
+    const novoXP=xpAtual-amt;const novoWCBonus=(a.wc_bonus||0)+wcGain;
+    const hist=[{desc:`💱 Trocou ${amt} XP por +${wcGain}🪙`,xp:-amt,ts:Date.now()},...(a.historico||[])].slice(0,30);
+    await COL.alunos().doc(a.id).update({xp:novoXP,wc_bonus:novoWCBonus,historico:hist});
+    toast(`✅ +${wcGain}🪙 por ${amt} XP!`);setSyncing('ok');
+  }catch(e){toast('❌ Erro!');setSyncing('error');}
+}
+
+// ── CUSTOMIZAR PERFIL ──
+function abrirCustomPerfil(){
+  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
+  const owned=a.wc_owned||[];
+  const borders=WC_ITEMS.filter(i=>i.cat==='border');
+  const effects=WC_ITEMS.filter(i=>i.cat==='effect');
+  const banners=WC_ITEMS.filter(i=>i.cat==='banner');
+  const eqB=eqItem(a,'border');const eqE=eqItem(a,'effect');const eqBan=eqItem(a,'banner');
+  const bCol=(id)=>id.includes('neon')?'#00d4ff':id.includes('gold')?'#ffd700':id.includes('purple')?'#a855f7':id.includes('rainbow')?'#ff00ff':'#ec4899';
+  document.getElementById('modal-custom-content').innerHTML=`
+    <div class="custom-section">
+      <div class="sec-title">📷 FOTO DE PERFIL</div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <div style="width:70px;height:70px;border-radius:50%;border:2px solid var(--border);background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:2.2rem;overflow:hidden;flex-shrink:0;" id="photo-preview">
+          ${a.profilePhoto?`<img src="${a.profilePhoto}" style="width:100%;height:100%;object-fit:cover;">`:a.avatar||'👾'}
+        </div>
+        <div style="flex:1;min-width:160px;">
+          <label class="btn btn-outline btn-sm" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            📁 Escolher da Galeria
+            <input type="file" accept="image/*" style="display:none;" onchange="uploadFotoPerfil(this)">
+          </label>
+          ${a.profilePhoto?`<button class="btn btn-outline btn-sm" onclick="removerFotoPerfil()" style="margin-left:8px;border-color:var(--red);color:var(--red);">🗑️ Remover</button>`:''}
+          <div style="font-size:.68rem;color:var(--muted);margin-top:6px;">JPG, PNG, GIF · máx. 2MB</div>
+        </div>
+      </div>
+    </div>
+    <div class="custom-section">
+      <div class="sec-title">🖼️ BORDAS DO PERFIL</div>
+      <div class="custom-options">
+        <div class="border-opt-prev ${!eqB?'selected':''}" onclick="aplicarCustom(null,'border',this)" title="Padrão" style="border:3px solid var(--border);">⬜<div style="font-size:.5rem;margin-top:2px;">Padrão</div></div>
+        ${borders.map(b=>{const owns=temItem(a,b.id);return`<div class="border-opt-prev ${eqB===b.id?'selected':''} ${!owns?'locked-opt':''}" onclick="${owns?`aplicarCustom('${b.id}','border',this)`:''}" title="${b.name}" style="border:3px solid ${bCol(b.id)};">${owns?b.icon:'🔒'}<div style="font-size:.48rem;margin-top:2px;">${b.name.split(' ').pop()}</div></div>`;}).join('')}
+      </div>
+    </div>
+    <div class="custom-section">
+      <div class="sec-title">✨ EFEITOS</div>
+      <div class="custom-options">
+        <div class="custom-opt ${!eqE?'selected':''}" onclick="aplicarCustom(null,'effect',this)">Nenhum</div>
+        ${effects.map(ef=>{const owns=temItem(a,ef.id);return`<div class="custom-opt ${eqE===ef.id?'selected':''} ${!owns?'locked-opt':''}" onclick="${owns?`aplicarCustom('${ef.id}','effect',this)`:''}">${ef.icon} ${ef.name}${!owns?` 🔒${ef.cost}🪙`:''}</div>`;}).join('')}
+      </div>
+    </div>
+    <div class="custom-section">
+      <div class="sec-title">🎖️ BANNER DO PERFIL</div>
+      <div class="custom-options" style="flex-direction:column;gap:8px;">
+        ${banners.map(bn=>{const owns=temItem(a,bn.id)||bn.free;return`<div class="banner-opt ${eqBan===bn.id?'selected':''} ${!owns?'locked-opt':''}" onclick="${owns?`aplicarCustom('${bn.id}','banner',this)`:''}" style="background:${bn.bg};">${owns?bn.icon:'🔒'} ${bn.name}${bn.free?' · GRÁTIS':!owns?` · 🔒${bn.cost}🪙`:''}</div>`;}).join('')}
+      </div>
+    </div>
+    <button class="btn btn-outline btn-block" onclick="closeModal('modal-custom')" style="margin-top:12px;margin-bottom:0;">Fechar</button>`;
+  document.getElementById('modal-custom').classList.add('active');
+}
+async function uploadFotoPerfil(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>2*1024*1024)return toast('⚠️ Imagem muito grande! Máx 2MB.');
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const dataUrl=e.target.result;
+    const preview=document.getElementById('photo-preview');
+    if(preview)preview.innerHTML=`<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;">`;
+    setSyncing('syncing');
+    try{await COL.alunos().doc(alunoAtual).update({profilePhoto:dataUrl});toast('✅ Foto de perfil atualizada!');setSyncing('ok');}
+    catch(err){toast('❌ Erro ao salvar foto.');setSyncing('error');}
+  };
+  reader.readAsDataURL(file);
+}
+async function removerFotoPerfil(){
+  if(!confirm('Remover foto de perfil?'))return;
+  setSyncing('syncing');
+  try{await COL.alunos().doc(alunoAtual).update({profilePhoto:null});toast('🗑️ Foto removida.');setSyncing('ok');}
+  catch(err){toast('❌ Erro.');setSyncing('error');}
+}
+async function aplicarCustom(itemId,cat,el){
+  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
+  el.closest('.custom-section')?.querySelectorAll('.border-opt-prev,.custom-opt,.banner-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});toast('✅ Aplicado!');}catch(e){toast('❌ Erro!');}
+}
+
+// ── LOOT BOX ──
+function mostrarLoot(a,loot){
+  const streak=a.streak||1;const diasLabel=[20,30,40,50,60,75,100];
+  const dots=Array.from({length:7},(_,i)=>{const done=streak>i+1;const today=streak===i+1||(streak>=7&&i===6);return`<div class="loot-day-dot ${done||today?'claimed':''} ${today?'today':''}">${diasLabel[i]}🪙</div>`;}).join('');
+  document.getElementById('loot-content').innerHTML=`
+    <div style="margin-bottom:16px;text-align:center;">
+      <div style="font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:3px;color:rgba(255,215,0,.7);">RECOMPENSA DIÁRIA</div>
+      <div style="font-size:.75rem;color:var(--muted2);margin-top:3px;">Dia ${streak} de acesso consecutivo!</div>
+    </div>
+    <div style="text-align:center;"><div class="loot-box" id="loot-chest" onclick="abrirLoot()">🎁</div></div>
+    <div id="loot-reveal" style="min-height:80px;text-align:center;margin-top:16px;"></div>
+    <div class="loot-day-row">${dots}</div>
+    <div style="font-size:.6rem;color:var(--muted);text-align:center;margin-bottom:8px;">7 dias seguidos = recompensa máxima!</div>
+    <button id="loot-close-btn" class="btn btn-wc btn-block" style="display:none;letter-spacing:2px;" onclick="fecharLoot()">⚡ INCRÍVEL!</button>`;
+  window._lootData={a,loot};
+  document.getElementById('loot-overlay').classList.add('active');
+}
+async function abrirLoot(){
+  const chest=document.getElementById('loot-chest');if(!chest||chest.classList.contains('opened'))return;
+  chest.classList.add('opened');chest.style.animation='lootOpen .6s ease-in-out';
+  const {a,loot}=window._lootData||{};if(!a||!loot)return;
+  const update={lastDailyLoot:new Date().toDateString()};const hist=[...(a.historico||[])];
+  if(loot.type==='xp'){update.xp=(a.xp||0)+loot.v;hist.unshift({desc:`🎁 Loot diário: ${loot.label}`,xp:loot.v,ts:Date.now()});}
+  else if(loot.type==='wc'){update.wc_bonus=(a.wc_bonus||0)+loot.v;hist.unshift({desc:`🎁 Loot diário: ${loot.label}`,xp:0,ts:Date.now()});}
+  else if(loot.type==='item'){const owned=[...(a.wc_owned||[])];if(!owned.includes(loot.v))owned.push(loot.v);update.wc_owned=owned;hist.unshift({desc:`🎁 Loot raro: ${loot.label}`,xp:0,ts:Date.now()});}
+  update.historico=hist.slice(0,30);
+  try{await COL.alunos().doc(a.id).update(update);}catch(e){console.warn(e);}
+  const rarCol={comum:'#94a3b8',raro:'#00d4ff','épico':'#a855f7',lendário:'#ffd700'};const col=rarCol[loot.r]||'#94a3b8';
+  setTimeout(()=>{
+    chest.textContent='📦';chest.style.fontSize='2.5rem';
+    const rev=document.getElementById('loot-reveal');
+    if(rev)rev.innerHTML=`<div class="loot-reveal"><div style="font-size:3.5rem;filter:drop-shadow(0 0 20px ${col});">${loot.icon}</div></div><div style="font-size:.62rem;font-weight:900;letter-spacing:2px;color:${col};text-transform:uppercase;margin:8px 0;">${loot.r.toUpperCase()}</div><div style="font-size:1rem;font-weight:900;color:#fff;margin-bottom:4px;">${loot.label}</div>`;
+    const btn=document.getElementById('loot-close-btn');if(btn)btn.style.display='flex';
+  },700);
+}
+function fecharLoot(){document.getElementById('loot-overlay').classList.remove('active');window._lootData=null;}
+
+// ── VISUAL FEEDBACK ──
+function floatXP(amount){const el=document.createElement('div');el.className='xp-float';el.textContent='+'+amount+' XP';el.style.left=(window.innerWidth/2-50)+'px';el.style.top=(window.innerHeight/2)+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1900);}
+function flashScreen(color='rgba(0,212,255,1)'){const el=document.createElement('div');el.className='screen-flash';el.style.background=color;document.body.appendChild(el);setTimeout(()=>el.remove(),800);}
+function burstParticles(x,y,color='#ffd700',count=18){for(let i=0;i<count;i++){const el=document.createElement('div');el.className='particle';const angle=(i/count)*Math.PI*2;const dist=60+Math.random()*80;el.style.cssText=`left:${x}px;top:${y}px;background:${color};--px:${Math.cos(angle)*dist}px;--py:${Math.sin(angle)*dist}px;width:${4+Math.random()*6}px;height:${4+Math.random()*6}px;animation-duration:${.8+Math.random()*.6}s;`;document.body.appendChild(el);setTimeout(()=>el.remove(),1500);}}
+
+// ── MUSIC ──
+let _musicPlaying=false;
+function toggleMusic(){_musicPlaying=!_musicPlaying;const btn=document.getElementById('music-btn');if(btn){btn.textContent=_musicPlaying?'🎵':'🔇';btn.classList.toggle('playing',_musicPlaying);}toast(_musicPlaying?'🎵 Música ativada!':'🔇 Música desativada');}
+
+// ══════════════════════════════════════
+//  AVATAR
+// ══════════════════════════════════════
+function abrirAvatar(){
+  const a=S.alunos.find(x=>x.id===alunoAtual);
+  avatarSelecionado=a?.avatar||'👾';
+  document.getElementById('avatar-grid').innerHTML=AVATARS.map(av=>`
+    <div class="av-opt ${av===avatarSelecionado?'selected':''}" onclick="selecionarAvatar('${av}',this)">${av}</div>`).join('');
+  document.getElementById('modal-avatar').classList.add('active');
+}
+function selecionarAvatar(av,el){
+  document.querySelectorAll('.av-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');avatarSelecionado=av;
+}
+async function confirmarAvatar(){
+  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
+  try {
+    await COL.alunos().doc(a.id).update({avatar:avatarSelecionado});
+    closeModal('modal-avatar');toast('✅ Avatar atualizado!');
+  } catch(e){ toast('❌ Erro!'); }
+}
+
+// ══════════════════════════════════════
+//  LEVEL UP
+// ══════════════════════════════════════
+function showLevelUp(n){
+  document.getElementById('lu-emoji').textContent=n.e;
+  document.getElementById('lu-title').textContent='SUBIU DE NÍVEL!';
+  document.getElementById('lu-sub').textContent=`Você agora é ${n.n}!`;
+  document.getElementById('levelup-overlay').classList.add('active');
+}
+function closeLevelUp(){document.getElementById('levelup-overlay').classList.remove('active');}
+
+// ══════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+async function gerarPin(){
+  const novo=String(Math.floor(1000+Math.random()*9000));
+  try { await COL.config().update({pin:novo}); toast(`🔑 Novo PIN: ${novo}`); } catch(e){ toast('❌ Erro!'); }
+}
+function copiarLink(){navigator.clipboard?.writeText(window.location.href).then(()=>toast('📋 Link copiado!')).catch(()=>toast('📋 Copie o link da barra do navegador!'));}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);}
+
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('active');}));
+
+// ── INICIAR ──
+inicializar();
+</script>
+</body>
+</html>
