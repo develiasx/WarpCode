@@ -222,7 +222,7 @@ select option{background:var(--s1);}
 .badge-req{font-size:.57rem;color:var(--muted);margin-top:2px;line-height:1.4;}
 
 /* ── HERO ── */
-.hero-card{background:linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12));border:1px solid rgba(0,212,255,.25);border-radius:var(--radius);padding:26px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden;}
+.hero-card{background:linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12));border:1px solid rgba(0,212,255,.25);border-radius:var(--radius);padding:0;text-align:left;margin-bottom:14px;position:relative;overflow:hidden;min-height:200px;}
 .hero-card::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(0,212,255,.07),transparent 70%);pointer-events:none;}
 .hero-avatar{font-size:3.8rem;margin-bottom:9px;}
 .hero-name{font-size:1.35rem;font-weight:900;}
@@ -371,15 +371,16 @@ select option{background:var(--s1);}
 .mwc{font-family:'Orbitron',monospace;font-size:.68rem;color:var(--wc);}
 
 /* ══ STEAM PROFILE ══ */
-.steam-banner-bg{height:130px;border-radius:var(--radius) var(--radius) 0 0;position:relative;overflow:hidden;}
-.steam-banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.7));}
-.steam-profile-lower{background:var(--s1);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:14px 16px 16px;margin-bottom:14px;}
-.steam-avatar-wrap{position:relative;display:inline-block;margin-top:-36px;margin-bottom:8px;}
-.steam-avatar{width:72px;height:72px;border-radius:12px;border:3px solid var(--bg);font-size:2.8rem;display:flex;align-items:center;justify-content:center;background:var(--s2);overflow:hidden;}
-.online-dot{position:absolute;bottom:-2px;right:-2px;width:15px;height:15px;border-radius:50%;background:var(--green);border:2px solid var(--bg);box-shadow:0 0 8px rgba(16,185,129,.8);}
+.steam-banner-bg{position:absolute;inset:0;border-radius:var(--radius);overflow:hidden;z-index:0;}
+.steam-banner-bg img,.steam-banner-bg>div:first-child{width:100%;height:100%;object-fit:cover;display:block;}
+.steam-banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.18) 0%,rgba(0,0,0,.55) 50%,rgba(0,0,0,.88) 100%);}
+.steam-profile-lower{position:relative;z-index:1;padding:14px 16px 16px;margin-bottom:0;}
+.steam-avatar-wrap{position:relative;display:inline-block;margin-top:0;margin-bottom:8px;}
+.steam-avatar{width:100px;height:100px;border-radius:14px;border:3px solid rgba(0,0,0,.6);font-size:3.4rem;display:flex;align-items:center;justify-content:center;background:var(--s2);overflow:hidden;}
+.online-dot{position:absolute;bottom:-2px;right:-2px;width:17px;height:17px;border-radius:50%;background:var(--green);border:2px solid var(--bg);box-shadow:0 0 12px rgba(16,185,129,1);}
 .steam-name-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-.steam-pname{font-size:1.25rem;font-weight:900;line-height:1;}
-.steam-sub{font-size:.7rem;color:var(--muted2);margin-top:3px;}
+.steam-pname{font-size:1.35rem;font-weight:900;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,.8);}
+.steam-sub{font-size:.7rem;color:rgba(255,255,255,.7);margin-top:3px;text-shadow:0 1px 4px rgba(0,0,0,.8);}
 .steam-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
 @media(max-width:500px){.steam-stat-grid{grid-template-columns:repeat(2,1fr);}}
 .steam-stat{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;transition:border-color .2s;}
@@ -408,12 +409,12 @@ select option{background:var(--s1);}
 .hack-desc{font-size:.73rem;color:var(--muted2);line-height:1.5;}
 
 /* ══ COSMETIC BORDERS ══ */
-.hero-card.b-neon{box-shadow:0 0 0 2px var(--accent),0 0 20px rgba(0,212,255,.35)!important;}
-.hero-card.b-gold{box-shadow:0 0 0 2px var(--gold),0 0 20px rgba(255,215,0,.35)!important;}
-.hero-card.b-purple{box-shadow:0 0 0 2px #a855f7,0 0 20px rgba(168,85,247,.35)!important;}
-.hero-card.b-cosmic{box-shadow:0 0 0 2px var(--pink),0 0 30px rgba(236,72,153,.25)!important;}
+.hero-card.b-neon{box-shadow:0 0 0 2px var(--accent),0 0 32px rgba(0,212,255,.65),0 0 60px rgba(0,212,255,.25)!important;}
+.hero-card.b-gold{box-shadow:0 0 0 2px var(--gold),0 0 32px rgba(255,215,0,.65),0 0 60px rgba(255,215,0,.25)!important;}
+.hero-card.b-purple{box-shadow:0 0 0 2px #a855f7,0 0 32px rgba(168,85,247,.65),0 0 60px rgba(168,85,247,.25)!important;}
+.hero-card.b-cosmic{box-shadow:0 0 0 2px var(--pink),0 0 40px rgba(236,72,153,.5),0 0 70px rgba(236,72,153,.2)!important;}
 .hero-card.b-rainbow{animation:rainbowBrd 2s linear infinite;}
-@keyframes rainbowBrd{0%{box-shadow:0 0 0 2px #f00}25%{box-shadow:0 0 0 2px #ff0}50%{box-shadow:0 0 0 2px #0ff}75%{box-shadow:0 0 0 2px #f0f}100%{box-shadow:0 0 0 2px #f00}}
+@keyframes rainbowBrd{0%{box-shadow:0 0 0 2px #f00,0 0 30px rgba(255,0,0,.5)}25%{box-shadow:0 0 0 2px #ff0,0 0 30px rgba(255,255,0,.5)}50%{box-shadow:0 0 0 2px #0ff,0 0 30px rgba(0,255,255,.5)}75%{box-shadow:0 0 0 2px #f0f,0 0 30px rgba(255,0,255,.5)}100%{box-shadow:0 0 0 2px #f00,0 0 30px rgba(255,0,0,.5)}}
 .hero-card.e-sparkle::before{content:'✨✨';position:absolute;top:8px;right:8px;font-size:.9rem;animation:sparkleF 1.5s ease-in-out infinite alternate;z-index:1;}
 @keyframes sparkleF{from{opacity:.4;transform:translateY(0)}to{opacity:1;transform:translateY(-4px)}}
 .hero-card.e-fire::before{content:'🔥';position:absolute;bottom:8px;right:8px;font-size:1.5rem;animation:firePulse 1.1s ease infinite;z-index:1;}
@@ -470,6 +471,32 @@ select option{background:var(--s1);}
 .banner-opt.selected{border-color:white;}.banner-opt.locked-opt{opacity:.35;cursor:not-allowed;}
 .border-opt-prev{width:56px;height:56px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid transparent;cursor:pointer;background:var(--s1);transition:all .2s;font-size:1.3rem;}
 .border-opt-prev.selected{background:rgba(0,212,255,.1);}.border-opt-prev.locked-opt{opacity:.35;cursor:not-allowed;}
+
+/* ══ TURMA CARDS PROFESSOR ══ */
+.turma-group-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.turma-group-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--purple));}
+.turma-group-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,212,255,.08);}
+.turma-group-name{font-family:'Orbitron',monospace;font-size:.82rem;font-weight:700;color:var(--accent);letter-spacing:2px;margin-bottom:6px;}
+.turma-group-count{font-size:2rem;font-weight:900;color:var(--text);line-height:1;}
+.turma-group-sub{font-size:.65rem;color:var(--muted2);margin-top:4px;}
+.turma-group-bar{height:3px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden;}
+.turma-group-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:2px;}
+.prof-search{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.9rem;outline:none;margin-bottom:12px;transition:border-color .2s;}
+.prof-search:focus{border-color:var(--accent);}
+
+/* ══ COSMETIC RARITY ══ */
+.wc-rarity-comum{border-left:3px solid #64748b!important;}
+.wc-rarity-raro{border-left:3px solid var(--accent)!important;}
+.wc-rarity-epico{border-left:3px solid #a855f7!important;}
+.wc-rarity-lendario{border-left:3px solid var(--gold)!important;box-shadow:0 0 14px rgba(255,215,0,.1);}
+.wc-rarity-badge{display:inline-block;font-size:.52rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:4px;margin-bottom:5px;}
+.rb-comum{background:rgba(100,116,139,.15);color:#94a3b8;}
+.rb-raro{background:rgba(0,212,255,.12);color:var(--accent);}
+.rb-epico{background:rgba(168,85,247,.15);color:#a855f7;}
+.rb-lendario{background:rgba(255,215,0,.15);color:var(--gold);}
+.wc-img-avatar{width:60px;height:60px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
+.wc-img-banner{width:100%;height:54px;border-radius:8px;object-fit:cover;margin-bottom:8px;border:1px solid var(--border);}
+.wc-img-border{width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
 
 /* ══ THEME + TITLE ══ */
 .theme-swatch{display:flex;gap:3px;margin-top:6px;height:20px;border-radius:6px;overflow:hidden;}
@@ -579,7 +606,7 @@ select option{background:var(--s1);}
 
       <!-- ALUNOS -->
       <div id="ppage-alunos" class="page active">
-        <div class="page-hdr"><div><div class="page-title">👥 Alunos</div><div class="page-sub">Cadastre e gerencie sua turma</div></div></div>
+        <div class="page-hdr"><div><div class="page-title">👥 Alunos</div><div class="page-sub">Clique numa turma para ver e gerenciar os alunos</div></div></div>
         <div class="card">
           <div class="sec-title">➕ Novo Aluno</div>
           <div class="form-row">
@@ -595,8 +622,8 @@ select option{background:var(--s1);}
             </div>
           </div>
         </div>
-        <div class="sec-title">Lista de Alunos</div>
-        <div id="p-lista-alunos"></div>
+        <div class="sec-title">Turmas</div>
+        <div id="p-turmas-grid" class="grid-4" style="margin-bottom:14px;"></div>
       </div>
 
       <!-- APROVAR -->
@@ -695,12 +722,14 @@ select option{background:var(--s1);}
           </div>
         </div>
         <div class="sec-title">📊 Estatísticas</div>
-        <div class="grid-4">
+        <div class="grid-4" style="margin-bottom:18px;">
           <div class="stat-box"><div class="stat-val" id="stat-alunos">0</div><div class="stat-lbl">Alunos</div></div>
           <div class="stat-box"><div class="stat-val" id="stat-xp">0</div><div class="stat-lbl">XP Total</div></div>
           <div class="stat-box"><div class="stat-val" id="stat-miss">0</div><div class="stat-lbl">Missões OK</div></div>
           <div class="stat-box"><div class="stat-val" id="stat-pend">0</div><div class="stat-lbl">Pendentes</div></div>
         </div>
+        <div class="sec-title">🔐 Senhas por Turma</div>
+        <div id="p-senhas-turmas"></div>
       </div>
 
     </main>
@@ -902,6 +931,21 @@ select option{background:var(--s1);}
 <!-- MODAL MISSÃO -->
 <div class="modal-overlay" id="modal-missao">
   <div class="modal"><button class="modal-close" onclick="closeModal('modal-missao')">✕</button><div id="modal-missao-content"></div></div>
+</div>
+<!-- MODAL TURMA ALUNOS -->
+<div class="modal-overlay" id="modal-turma">
+  <div class="modal" style="max-width:580px;"><button class="modal-close" onclick="closeModal('modal-turma')">✕</button>
+    <div class="modal-title" id="modal-turma-title">👥 TURMA</div>
+    <input class="prof-search" id="turma-search" placeholder="🔍 Pesquisar aluno..." oninput="filtrarAlunosTurma()">
+    <div id="modal-turma-lista"></div>
+  </div>
+</div>
+<!-- MODAL EDITAR ALUNO (professor) -->
+<div class="modal-overlay" id="modal-editar-aluno">
+  <div class="modal" style="max-width:420px;"><button class="modal-close" onclick="closeModal('modal-editar-aluno')">✕</button>
+    <div class="modal-title">✏️ EDITAR ALUNO</div>
+    <div id="modal-editar-aluno-content"></div>
+  </div>
 </div>
 <!-- MODAL ALUNO PROF -->
 <div class="modal-overlay" id="modal-aluno">
@@ -1422,25 +1466,111 @@ function alunoTab(tab,snavId,isMobile=false,mnavId=''){
 // ══════════════════════════════════════
 function renderProf(){renderPAlunos();renderPAprovacoes();renderPRanking();renderPStats();renderPLoja();renderPResgates();renderPDesafio();renderSelects();}
 
+const TURMAS_ORDER=['6º Ano A','6º Ano B','7º Ano A','7º Ano B','8º Ano A','8º Ano B','9º Ano A','9º Ano B'];
+const TURMA_ICONS={'6º Ano A':'🌱','6º Ano B':'🌿','7º Ano A':'⚡','7º Ano B':'🔥','8º Ano A':'🚀','8º Ano B':'💫','9º Ano A':'🏆','9º Ano B':'👑'};
+
 function renderPAlunos(){
-  const el=document.getElementById('p-lista-alunos');
-  if(!S.alunos.length){el.innerHTML=`<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum aluno cadastrado.<br>Adicione acima!</div></div>`;return;}
-  el.innerHTML=S.alunos.map(a=>{
+  const el=document.getElementById('p-turmas-grid');if(!el)return;
+  if(!S.alunos.length){el.innerHTML=`<div class="empty" style="grid-column:1/-1;"><div class="empty-icon">👥</div><div class="empty-text">Nenhum aluno cadastrado.<br>Adicione acima!</div></div>`;return;}
+  const turmasComAlunos=TURMAS_ORDER.filter(t=>S.alunos.some(a=>a.turma===t));
+  if(!turmasComAlunos.length){el.innerHTML=`<div class="empty" style="grid-column:1/-1;"><div class="empty-icon">👥</div><div class="empty-text">Nenhum aluno cadastrado ainda.</div></div>`;return;}
+  const maxAlunos=Math.max(...turmasComAlunos.map(t=>S.alunos.filter(a=>a.turma===t).length));
+  el.innerHTML=turmasComAlunos.map(t=>{
+    const alunos=S.alunos.filter(a=>a.turma===t);
+    const xpMedio=alunos.length?Math.round(alunos.reduce((s,a)=>s+(a.xp||0),0)/alunos.length):0;
+    const pctBarra=maxAlunos>0?Math.round(alunos.length/maxAlunos*100):0;
+    const icon=TURMA_ICONS[t]||'📚';
+    return`<div class="turma-group-card" onclick="abrirModalTurma('${t}')">
+      <div class="turma-group-name">${icon} ${t}</div>
+      <div class="turma-group-count">${alunos.length}</div>
+      <div class="turma-group-sub">aluno${alunos.length!==1?'s':''} · ${xpMedio} XP médio</div>
+      <div class="turma-group-bar"><div class="turma-group-fill" style="width:${pctBarra}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+let _turmaModalAtual='';
+function abrirModalTurma(turma){
+  _turmaModalAtual=turma;
+  document.getElementById('modal-turma-title').textContent=`${TURMA_ICONS[turma]||'👥'} ${turma}`;
+  document.getElementById('turma-search').value='';
+  renderModalTurmaLista('');
+  document.getElementById('modal-turma').classList.add('active');
+}
+function filtrarAlunosTurma(){
+  const q=document.getElementById('turma-search')?.value||'';
+  renderModalTurmaLista(q);
+}
+function renderModalTurmaLista(query){
+  const el=document.getElementById('modal-turma-lista');if(!el)return;
+  let alunos=S.alunos.filter(a=>a.turma===_turmaModalAtual);
+  if(query.trim())alunos=alunos.filter(a=>a.nome.toLowerCase().includes(query.toLowerCase().trim()));
+  if(!alunos.length){el.innerHTML=`<div class="empty" style="padding:20px;"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum aluno encontrado.</div></div>`;return;}
+  alunos.sort((a,b)=>(b.xp||0)-(a.xp||0));
+  el.innerHTML=alunos.map((a,i)=>{
     const n=nivel(a.xp||0);
-    return `<div class="student-card">
+    const temSenha=a.senha?'✅':'❌';
+    return`<div class="student-card" style="margin-bottom:8px;">
+      <div style="font-family:'Orbitron',monospace;font-size:.8rem;color:${i===0?'var(--gold)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--muted)'};width:24px;text-align:center;flex-shrink:0;">${i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`}</div>
       <div class="avatar">${a.avatar||'👾'}</div>
       <div class="sinfo">
         <div class="sname">${a.nome}</div>
-        <div class="smeta">${a.turma} · ${n.e} ${n.n} · 🔥${a.streak||0} dias</div>
+        <div class="smeta">${n.e} ${n.n} · 🔥${a.streak||0} dias · Senha: ${temSenha}</div>
         <div class="xp-bar"><div class="xp-fill" style="width:${pct(a.xp||0)}%"></div></div>
       </div>
-      <div style="text-align:right;flex-shrink:0;"><div class="xp-val">${a.xp||0} XP</div><div style="font-size:.62rem;color:var(--muted);margin-top:2px;">${pct(a.xp||0)}% → próx.</div></div>
-      <div style="display:flex;gap:6px;flex-shrink:0;">
+      <div style="text-align:right;flex-shrink:0;"><div class="xp-val">${a.xp||0} XP</div></div>
+      <div style="display:flex;gap:5px;flex-shrink:0;flex-direction:column;">
+        <button class="btn btn-primary btn-sm" onclick="abrirEditarAluno('${a.id}')">✏️ Editar</button>
         <button class="btn btn-success btn-sm" onclick="abrirModalAluno('${a.id}')">+XP</button>
         <button class="btn btn-danger btn-sm" onclick="removerAluno('${a.id}')">✕</button>
       </div>
     </div>`;
   }).join('');
+}
+
+function abrirEditarAluno(id){
+  const a=S.alunos.find(x=>x.id===id);if(!a)return;
+  document.getElementById('modal-editar-aluno-content').innerHTML=`
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:2.8rem;">${a.avatar||'👾'}</div>
+      <div style="font-weight:900;font-size:1.1rem;margin-top:6px;">${a.nome}</div>
+      <div style="font-size:.75rem;color:var(--muted2);">${a.turma}</div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>Nome do Aluno</label>
+      <input id="edit-nome" type="text" value="${a.nome}" placeholder="Nome completo">
+    </div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>Turma</label>
+      <select id="edit-turma">
+        ${TURMAS_ORDER.map(t=>`<option value="${t}" ${a.turma===t?'selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label>🔑 Nova Senha (4 dígitos) ${a.senha?'— senha atual: <strong style="color:var(--accent);letter-spacing:2px;">'+a.senha+'</strong>':'— aluno ainda não criou senha'}</label>
+      <input id="edit-senha" type="text" maxlength="4" pattern="[0-9]{4}" placeholder="Digite 4 números para redefinir" style="letter-spacing:4px;font-family:'Orbitron',monospace;">
+      <div style="font-size:.65rem;color:var(--muted);margin-top:4px;">Deixe em branco para não alterar a senha</div>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="salvarEdicaoAluno('${id}')">💾 Salvar Alterações</button>
+    <button class="btn btn-outline btn-block" onclick="closeModal('modal-editar-aluno')" style="margin-bottom:0;">Cancelar</button>`;
+  document.getElementById('modal-editar-aluno').classList.add('active');
+}
+
+async function salvarEdicaoAluno(id){
+  const nome=document.getElementById('edit-nome')?.value.trim();
+  const turma=document.getElementById('edit-turma')?.value;
+  const senha=document.getElementById('edit-senha')?.value.trim();
+  if(!nome)return toast('⚠️ Digite o nome!');
+  if(senha&&(senha.length!==4||!/^\d{4}$/.test(senha)))return toast('⚠️ Senha deve ter exatamente 4 dígitos!');
+  setSyncing('syncing');
+  const update={nome,turma};
+  if(senha)update.senha=senha;
+  try{
+    await COL.alunos().doc(id).update(update);
+    closeModal('modal-editar-aluno');
+    renderModalTurmaLista(document.getElementById('turma-search')?.value||'');
+    toast('✅ Aluno atualizado!');setSyncing('ok');
+  }catch(e){toast('❌ Erro!');setSyncing('error');}
 }
 
 function renderPAprovacoes(){
@@ -1557,6 +1687,60 @@ function renderPStats(){
   document.getElementById('pin-display').textContent=S.pin;
   const n=S.pendentes.length;
   ['snav-badge','mnav-badge'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.style.display=n>0?'flex':'none';el.textContent=n;});
+  renderPSenhasTurmas();
+}
+
+function renderPSenhasTurmas(){
+  const el=document.getElementById('p-senhas-turmas');if(!el)return;
+  if(!S.alunos.length){el.innerHTML=`<div class="empty"><div class="empty-icon">🔑</div><div class="empty-text">Nenhum aluno cadastrado.</div></div>`;return;}
+  const turmasComAlunos=TURMAS_ORDER.filter(t=>S.alunos.some(a=>a.turma===t));
+  el.innerHTML=turmasComAlunos.map(turma=>{
+    const alunos=S.alunos.filter(a=>a.turma===turma).sort((a,b)=>a.nome.localeCompare(b.nome));
+    const icon=TURMA_ICONS[turma]||'📚';
+    const comSenha=alunos.filter(a=>a.senha).length;
+    return`<div class="card" style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-family:'Orbitron',monospace;font-size:.76rem;color:var(--accent);letter-spacing:2px;">${icon} ${turma}</div>
+          <div style="font-size:.65rem;color:var(--muted2);margin-top:2px;">${comSenha}/${alunos.length} com senha cadastrada</div>
+        </div>
+        <div style="font-size:.62rem;color:var(--muted);background:var(--s2);border:1px solid var(--border);padding:4px 10px;border-radius:6px;">
+          ${comSenha===alunos.length?'✅ Todos configurados':comSenha===0?'⚠️ Nenhuma senha ainda':'⏳ Configuração parcial'}
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="text-align:left;padding:6px 8px;color:var(--muted);font-size:.62rem;letter-spacing:1px;font-weight:700;">ALUNO</th>
+              <th style="text-align:center;padding:6px 8px;color:var(--muted);font-size:.62rem;letter-spacing:1px;font-weight:700;">SENHA</th>
+              <th style="text-align:center;padding:6px 8px;color:var(--muted);font-size:.62rem;letter-spacing:1px;font-weight:700;">STATUS</th>
+              <th style="text-align:right;padding:6px 8px;color:var(--muted);font-size:.62rem;letter-spacing:1px;font-weight:700;">AÇÃO</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${alunos.map(a=>`
+              <tr style="border-bottom:1px solid rgba(30,58,95,.4);">
+                <td style="padding:8px;"><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:1.2rem;">${a.avatar||'👾'}</span><span style="font-weight:700;">${a.nome}</span></div></td>
+                <td style="text-align:center;padding:8px;">
+                  ${a.senha
+                    ?`<span style="font-family:'Orbitron',monospace;font-size:.9rem;color:var(--accent);letter-spacing:4px;background:rgba(0,212,255,.08);padding:4px 10px;border-radius:6px;">${a.senha}</span>`
+                    :`<span style="color:var(--muted);font-size:.75rem;">—</span>`}
+                </td>
+                <td style="text-align:center;padding:8px;">
+                  ${a.senha
+                    ?`<span style="font-size:.6rem;color:var(--green);background:rgba(16,185,129,.1);padding:2px 8px;border-radius:4px;font-weight:800;">ATIVO</span>`
+                    :`<span style="font-size:.6rem;color:var(--orange);background:rgba(249,115,22,.1);padding:2px 8px;border-radius:4px;font-weight:800;">SEM SENHA</span>`}
+                </td>
+                <td style="text-align:right;padding:8px;">
+                  <button class="btn btn-outline btn-sm" onclick="abrirEditarAluno('${a.id}')" style="font-size:.65rem;padding:4px 8px;">✏️ Redefinir</button>
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  }).join('');
 }
 function renderSelects(){
   const sel=document.getElementById('p-xp-aluno');if(!sel)return;
@@ -1589,21 +1773,30 @@ function renderAluno(){
   const titleItem=eqTitle?WC_ITEMS.find(i=>i.id===eqTitle):null;
   const displayTitle=titleItem?`<span class="${titleItem.titleCls} patente">${titleItem.titleTxt}</span>`:`<span class="${pat.cls} patente">${pat.nome}</span>`;
   loadSavedTheme(a);
-  const bannerBg=banItem?.bg||'linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12))';
+  const bannerBg=a.profileBanner&&a.profileBanner.trim().length>0
+    ?`url('${a.profileBanner}') center/cover no-repeat`
+    :banItem?.imgUrl&&banItem.imgUrl.trim().length>0
+    ?`url('${banItem.imgUrl}') center/cover no-repeat`
+    :banItem?.bg||'linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12))';
   const heroEl=document.getElementById('a-hero');
   heroEl.className=`hero-card${bItem?' '+bItem.cls:''}${eItem?' '+eItem.cls:''}`;
-  heroEl.style.background='transparent';heroEl.style.border='none';heroEl.style.padding='0';heroEl.style.overflow='visible';
+  heroEl.style.background='';heroEl.style.border='';heroEl.style.padding='';heroEl.style.overflow='hidden';
   const badgesUnlocked=CONQ.filter(c=>c.check(a));
   const jogosCriados=S.missoes.filter(m=>(m.done||[]).includes(a.id)&&m.dif==='hard').length;
   const diasAtivo=a.historico?new Set(a.historico.map(h=>new Date(h.ts).toDateString())).size:1;
+  const eqAvatarItem=eqItem(a,'avatar')?WC_ITEMS.find(i=>i.id===eqItem(a,'avatar')):null;
+  const aiAvatarUrl=eqAvatarItem?.imgUrl&&eqAvatarItem.imgUrl.trim().length>0?eqAvatarItem.imgUrl:null;
   const avatarInner=a.profilePhoto
     ?`<img src="${a.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`
+    :aiAvatarUrl
+    ?`<img src="${aiAvatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.outerHTML='<span style=\\'font-size:2.4rem;line-height:1;\\'>${a.avatar||'👾'}</span>'">`
     :`<span style="font-size:2.4rem;line-height:1;">${a.avatar||'👾'}</span>`;
   heroEl.innerHTML=`
-    <div class="steam-banner-bg" style="background:${bannerBg};">
+    <div class="steam-banner-bg">
+      <div style="position:absolute;inset:0;background:${bannerBg};background-size:cover;background-position:center;"></div>
       <div class="steam-banner-overlay"></div>
     </div>
-    <div class="steam-profile-lower" style="position:relative;">
+    <div class="steam-profile-lower">
       ${petItem?`<div class="pet-wrap" title="${petItem.name}">${petItem.petEmoji}</div>`:''}
       <div class="steam-avatar-wrap" onclick="abrirAvatar()" style="cursor:pointer;" title="Clique para mudar avatar">
         <div class="steam-avatar">${avatarInner}</div>
@@ -1620,16 +1813,16 @@ function renderAluno(){
           </div>
         </div>
         <div style="text-align:right;flex-shrink:0;">
-          <div style="font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--gold);line-height:1;">${a.xp||0}</div>
-          <div style="font-size:.55rem;color:var(--muted);letter-spacing:3px;text-transform:uppercase;">XP total</div>
+          <div style="font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--gold);line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.8);">${a.xp||0}</div>
+          <div style="font-size:.55rem;color:rgba(255,255,255,.6);letter-spacing:3px;text-transform:uppercase;">XP total</div>
           <div style="margin-top:6px;">
             <div class="hero-bar" style="width:120px;"><div class="hero-bar-fill" style="width:${p}%"></div></div>
-            <div style="font-size:.56rem;color:var(--muted);margin-top:2px;text-align:right;">${p}% → ${n.prox?n.prox+' XP':'MAX 🎉'}</div>
+            <div style="font-size:.56rem;color:rgba(255,255,255,.5);margin-top:2px;text-align:right;">${p}% → ${n.prox?n.prox+' XP':'MAX 🎉'}</div>
           </div>
         </div>
       </div>
       <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-        <button class="btn btn-outline btn-sm" onclick="abrirCustomPerfil()">🎨 Customizar</button>
+        <button class="btn btn-outline btn-sm" onclick="abrirCustomPerfil()" style="backdrop-filter:blur(8px);background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.25);color:#fff;">🎨 Customizar</button>
       </div>
     </div>`;
 
@@ -1758,9 +1951,16 @@ function renderAluno(){
     const nv=nivel(al.xp||0);const isMe=al.id===a.id;
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rx';
     const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+    const eqAv=al['wc_eq_avatar']?WC_ITEMS.find(i=>i.id===al['wc_eq_avatar']):null;
+    const aiUrl=eqAv?.imgUrl&&eqAv.imgUrl.trim().length>0?eqAv.imgUrl:null;
+    const rankAvatarHtml=al.profilePhoto
+      ?`<div style="width:38px;height:38px;border-radius:50%;border:2px solid var(--border);overflow:hidden;flex-shrink:0;"><img src="${al.profilePhoto}" style="width:100%;height:100%;object-fit:cover;"></div>`
+      :aiUrl
+      ?`<div style="width:38px;height:38px;border-radius:50%;border:2px solid var(--border);overflow:hidden;flex-shrink:0;"><img src="${aiUrl}" style="width:100%;height:100%;object-fit:cover;"></div>`
+      :`<div class="avatar" style="width:38px;height:38px;font-size:1.3rem">${al.avatar||'👾'}</div>`;
     return `<div class="rank-item ${isMe?'me':''}">
       <div class="rnum ${rc}">${ri}</div>
-      <div class="avatar" style="width:38px;height:38px;font-size:1.3rem">${al.avatar||'👾'}</div>
+      ${rankAvatarHtml}
       <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.9rem;">${al.nome}${isMe?' 👈':''}</div><div style="font-size:.68rem;color:var(--muted2)">${nv.e} ${nv.n}${(al.streak||0)>=3?` · 🔥${al.streak}`:''}</div></div>
       <div style="font-family:'Orbitron',monospace;font-size:.88rem;color:var(--gold);font-weight:700;flex-shrink:0">${al.xp||0} XP</div>
     </div>`;
@@ -2155,6 +2355,54 @@ const WC_ITEMS=[
   {id:'hack_streak',cat:'hackpower',name:'Escudo de Streak',desc:'Protege seu streak por 1 dia de falta.',cost:300,icon:'🛡️',free:false,hackUses:1,hackId:'streak_shield'},
   {id:'hack_loot2',cat:'hackpower',name:'Loot Duplo',desc:'Próxima caixa de loot revela 2 prêmios.',cost:400,icon:'🎁',free:false,hackUses:1,hackId:'double_loot'},
   {id:'hack_xpboost2',cat:'hackpower',name:'Mega Turbo XP',desc:'+100% XP na próxima missão aprovada.',cost:900,icon:'💥',free:false,hackUses:1,hackId:'xpboost2'},
+
+  // ── AVATARES IA · LENDÁRIOS ──
+  {id:'av_ai_cyberpunk',cat:'avatar',name:'Cyberpunk Hacker',desc:'Retrato ultra-realista gerado com IA. Raridade Lendária.',cost:800,icon:'🤖',free:false,rarity:'lendario',
+   imgUrl:'',
+   aiPrompt:'A hyper-realistic portrait of a teenage cyberpunk hacker, wearing a futuristic dark hoodie with subtle glowing neon threads. Shot on 85mm lens, f/1.8 shallow depth of field. Dramatic lighting, vivid cyan and magenta color gels, strong rim lighting separating the character from a dark blurry server room background. 8k resolution, cinematic, highly detailed.'},
+  {id:'av_ai_robot_maker',cat:'avatar',name:'AI Robot Maker',desc:'Robô maker fotorrealista gerado com IA. Raridade Lendária.',cost:800,icon:'🤖',free:false,rarity:'lendario',
+   imgUrl:'',
+   aiPrompt:'A realistic close-up portrait of an advanced friendly AI robot built with sleek white metal and glowing orange optical sensors. Shot on 50mm lens. Studio lighting, softbox, highly detailed metallic textures and reflections. Clean dark background. 8k, photorealistic.'},
+
+  // ── AVATARES IA · ÉPICOS ──
+  {id:'av_ai_code_wizard',cat:'avatar',name:'Code Wizard',desc:'Mago do código em arte digital. Raridade Épica.',cost:400,icon:'🧙',free:false,rarity:'epico',
+   imgUrl:'',
+   aiPrompt:'A stylized portrait of a young tech wizard in a dark robe with glowing circuit-board patterns, holding a glowing laptop. Fantasy meets cyberpunk aesthetic. Dramatic blue and purple rim lighting. Digital painting, highly detailed, cinematic composition. 4k.'},
+  {id:'av_ai_space_coder',cat:'avatar',name:'Space Coder',desc:'Astronauta hacker do espaço. Raridade Épica.',cost:400,icon:'🚀',free:false,rarity:'epico',
+   imgUrl:'',
+   aiPrompt:'A close-up portrait of a young astronaut in a sleek dark spacesuit with glowing cyan LED accents and a transparent visor showing a determined face. Deep space background with stars. Dramatic lighting, hyper-detailed materials, cinematic. 4k.'},
+
+  // ── AVATARES IA · RAROS ──
+  {id:'av_ai_data_ninja',cat:'avatar',name:'Data Ninja',desc:'Guerreiro digital estilo anime. Raridade Rara.',cost:200,icon:'🥷',free:false,rarity:'raro',
+   imgUrl:'',
+   aiPrompt:'A stylized portrait of a young cyber ninja with a dark mask and glowing red eyes, wearing lightweight tactical gear with subtle neon trim. Urban night background. Anime-influenced with realistic lighting, dramatic shadows. 4k.'},
+  {id:'av_ai_pixel_hero',cat:'avatar',name:'Pixel Hero',desc:'Herói pixel art retrô. Raridade Comum.',cost:80,icon:'👾',free:false,rarity:'comum',
+   imgUrl:'',
+   aiPrompt:'A cute pixel art avatar of a young programmer hero, 32x32 style, vibrant colors, wearing glasses and a hoodie. Retro game aesthetic, clean pixel edges, transparent background.'},
+
+  // ── BANNERS IA · LENDÁRIOS ──
+  {id:'banner_ai_neon_city',cat:'banner',name:'Neon City',desc:'Cidade cyberpunk chuvosa — Banner Lendário.',cost:600,icon:'🌆',free:false,rarity:'lendario',
+   bg:'linear-gradient(135deg,#0a0a1a,#1a0a2e)',
+   imgUrl:'',
+   aiPrompt:'A cinematic wide shot of a futuristic cyberpunk city at night, rain on the neon-lit streets, glowing holographic billboards in the distance. Low angle dynamic composition, heavy atmosphere, dramatic neon pink and cyan color gels. 8k, photorealistic. --ar 3:1'},
+
+  // ── BANNERS IA · ÉPICOS ──
+  {id:'banner_ai_deep_space',cat:'banner',name:'Deep Space',desc:'Galáxia com código holográfico — Banner Épico.',cost:350,icon:'🌌',free:false,rarity:'epico',
+   bg:'linear-gradient(135deg,#020818,#0f2044)',
+   imgUrl:'',
+   aiPrompt:'A wide panoramic banner of deep space with colorful nebulae in purple and teal, floating holographic code fragments and circuit patterns. Cinematic wide angle, dramatic lighting, ultra-detailed. --ar 4:1'},
+  {id:'banner_ai_neon_forest',cat:'banner',name:'Neon Forest',desc:'Floresta bioluminescente cyberpunk — Banner Raro.',cost:180,icon:'🌿',free:false,rarity:'raro',
+   bg:'linear-gradient(135deg,#021a0a,#0a2e14)',
+   imgUrl:'',
+   aiPrompt:'A panoramic shot of a bioluminescent forest at night with glowing cyan and magenta plants, futuristic. Cinematic wide composition. --ar 3:1'},
+
+  // ── BORDAS IA · LENDÁRIAS ──
+  {id:'border_ai_plasma',cat:'border',name:'Borda Plasma IA',desc:'Anel de energia plasma gerado com IA. Lendária.',cost:500,cls:'b-neon',icon:'⚡',free:false,rarity:'lendario',
+   imgUrl:'',
+   aiPrompt:'A circular profile picture frame/border with a glowing plasma energy ring effect in vivid cyan and magenta. Transparent center, dark metallic rim with electric sparks. Isolated on transparent background. 512x512px.'},
+  {id:'border_ai_gold_circuit',cat:'border',name:'Borda Gold Circuit',desc:'Circuito dourado ornamentado. Épica.',cost:300,cls:'b-gold',icon:'🏅',free:false,rarity:'epico',
+   imgUrl:'',
+   aiPrompt:'A circular avatar frame with golden circuit board patterns glowing softly. Ornate tech aesthetic, transparent center. Isolated on transparent background. 512x512px.'},
 ];
 
 const LOOT_TABLE=[
@@ -2204,6 +2452,20 @@ function filtrarWC(cat,btn){
   if(btn){btn.className=btn.className.replace('btn-outline','btn-primary')+' active';}
   const a=S.alunos.find(x=>x.id===alunoAtual);if(a)renderWCLoja(a);
 }
+function wcRarityBadge(item){
+  if(!item.rarity)return'';
+  const lbl={comum:'COMUM',raro:'RARO',epico:'ÉPICO',lendario:'LENDÁRIO'}[item.rarity]||'';
+  return`<span class="wc-rarity-badge rb-${item.rarity}">${lbl}</span>`;
+}
+function wcRarityCls(item){
+  if(!item.rarity)return'';
+  return ' wc-rarity-'+item.rarity;
+}
+function wcCopiarPrompt(itemId){
+  const item=WC_ITEMS.find(i=>i.id===itemId);
+  if(!item||!item.aiPrompt)return;
+  navigator.clipboard?.writeText(item.aiPrompt).then(()=>toast('📋 Prompt copiado! Cole no Midjourney ou DALL-E 3.'));
+}
 function renderWCLoja(a){
   const el=document.getElementById('a-wc-items');if(!el)return;
   const saldo=wcSaldo(a);
@@ -2235,11 +2497,74 @@ function renderWCLoja(a){
     } else {
       action=`<span style="font-size:.68rem;color:var(--muted);">Faltam ${item.cost-saldo}🪙</span>`;
     }
-    let extra='';
-    if(item.cat==='theme'&&item.vars){const c1=item.vars['--accent']||'#00d4ff';const c2=item.vars['--purple']||'#7c3aed';const c3=item.vars['--bg']||'#07090f';extra=`<div class="theme-swatch"><span style="background:${c3};"></span><span style="background:${c1};"></span><span style="background:${c2};"></span></div>`;}
-    if(item.cat==='pet')extra=`<div style="font-size:2.2rem;margin-top:5px;">${item.petEmoji}</div>`;
-    const cardCls=item.cat==='hackpower'?`hack-card${hackActive?' active-hack':hackUsed?' used-hack':''}`:`wc-shop-card ${eq?'equipped':owns||item.free?'owned':''}`;
-    return`<div class="${cardCls}"><div style="display:flex;align-items:center;gap:12px;"><div style="font-size:2rem;flex-shrink:0;">${item.icon}${extra}</div><div style="flex:1;min-width:0;"><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:3px;"><div style="font-weight:900;font-size:.88rem;">${item.name}</div><span style="font-size:.58rem;color:var(--muted2);background:var(--s1);padding:2px 6px;border-radius:4px;">${catL[item.cat]||item.cat}</span>${badge}</div><div style="font-size:.73rem;color:var(--muted2);">${item.desc}</div></div><div style="flex-shrink:0;text-align:right;">${!owns&&!item.free?`<div class="wc-cost" style="margin-bottom:4px;">🪙 ${item.cost}</div>`:''}${action}</div></div></div>`;
+
+    // ── Render visual do item ──
+    let visualHtml='';
+    const hasImg=item.imgUrl&&item.imgUrl.trim().length>0;
+    if(item.cat==='banner'){
+      if(hasImg){
+        visualHtml=`<img src="${item.imgUrl}" class="wc-img-banner" alt="${item.name}" onerror="this.style.display='none'">`;
+      } else {
+        const bg=item.bg||'linear-gradient(135deg,var(--accent),var(--purple))';
+        visualHtml=`<div style="width:100%;height:54px;border-radius:8px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:8px;border:1px solid var(--border);">${item.icon}</div>`;
+      }
+    } else if(item.cat==='avatar'&&hasImg){
+      visualHtml=`<img src="${item.imgUrl}" class="wc-img-avatar" alt="${item.name}" onerror="this.style.display='none'">`;
+    } else if(item.cat==='border'&&hasImg){
+      visualHtml=`<img src="${item.imgUrl}" class="wc-img-border" alt="${item.name}" onerror="this.style.display='none'">`;
+    } else if(item.cat==='theme'&&item.vars){
+      const c1=item.vars['--accent']||'#00d4ff';const c2=item.vars['--purple']||'#7c3aed';const c3=item.vars['--bg']||'#07090f';
+      visualHtml=`<div style="font-size:2rem;flex-shrink:0;">${item.icon}<div class="theme-swatch"><span style="background:${c3};"></span><span style="background:${c1};"></span><span style="background:${c2};"></span></div></div>`;
+    } else if(item.cat==='pet'){
+      visualHtml=`<div style="font-size:2rem;flex-shrink:0;">${item.petEmoji||item.icon}</div>`;
+    } else {
+      visualHtml=`<div style="font-size:2rem;flex-shrink:0;">${item.icon}</div>`;
+    }
+
+    // ── Prompt IA copy btn ──
+    const promptBtn=item.aiPrompt?`<button class="btn btn-outline btn-sm" style="margin-top:6px;font-size:.6rem;padding:3px 8px;" onclick="wcCopiarPrompt('${item.id}')">📋 Prompt IA</button>`:'';
+
+    const cardCls=item.cat==='hackpower'
+      ?`hack-card${hackActive?' active-hack':hackUsed?' used-hack':''}`
+      :`wc-shop-card ${eq?'equipped':owns||item.free?'owned':''}${wcRarityCls(item)}`;
+
+    const rarBadge=wcRarityBadge(item);
+
+    if(item.cat==='banner'){
+      return`<div class="${cardCls}">
+        ${rarBadge}
+        ${visualHtml}
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:2px;">
+              <div style="font-weight:900;font-size:.88rem;">${item.name}</div>
+              <span style="font-size:.58rem;color:var(--muted2);background:var(--s1);padding:2px 6px;border-radius:4px;">${catL[item.cat]||item.cat}</span>
+              ${badge}
+            </div>
+            <div style="font-size:.73rem;color:var(--muted2);">${item.desc}</div>
+            ${promptBtn}
+          </div>
+          <div style="flex-shrink:0;text-align:right;">${!owns&&!item.free?`<div class="wc-cost" style="margin-bottom:4px;">🪙 ${item.cost}</div>`:''}${action}</div>
+        </div>
+      </div>`;
+    }
+
+    return`<div class="${cardCls}">
+      ${rarBadge}
+      <div style="display:flex;align-items:center;gap:12px;">
+        ${visualHtml}
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:3px;">
+            <div style="font-weight:900;font-size:.88rem;">${item.name}</div>
+            <span style="font-size:.58rem;color:var(--muted2);background:var(--s1);padding:2px 6px;border-radius:4px;">${catL[item.cat]||item.cat}</span>
+            ${badge}
+          </div>
+          <div style="font-size:.73rem;color:var(--muted2);">${item.desc}</div>
+          ${promptBtn}
+        </div>
+        <div style="flex-shrink:0;text-align:right;">${!owns&&!item.free?`<div class="wc-cost" style="margin-bottom:4px;">🪙 ${item.cost}</div>`:''}${action}</div>
+      </div>
+    </div>`;
   }).join('')||'<div class="empty"><div class="empty-icon">🪙</div><div class="empty-text">Nenhum item nesta categoria.</div></div>';
 }
 async function wcComprar(itemId){
@@ -2330,9 +2655,24 @@ function abrirCustomPerfil(){
       </div>
     </div>
     <div class="custom-section">
-      <div class="sec-title">🎖️ BANNER DO PERFIL</div>
+      <div class="sec-title">🖼️ BANNER DO PERFIL</div>
+      <div style="margin-bottom:12px;padding:12px;background:var(--s1);border-radius:var(--radius-sm);border:1px solid var(--border);">
+        <div style="font-size:.7rem;color:var(--muted2);margin-bottom:8px;">📁 Usar imagem do seu computador:</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div id="banner-preview-thumb" style="width:120px;height:40px;border-radius:6px;border:1px solid var(--border);background:${a.profileBanner?`url('${a.profileBanner}') center/cover`:a.wc_eq_banner?'var(--s2)':'linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12))'};flex-shrink:0;overflow:hidden;"></div>
+          <div>
+            <label class="btn btn-outline btn-sm" style="cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+              📁 Escolher Banner
+              <input type="file" accept="image/*" style="display:none;" onchange="uploadBannerPerfil(this)">
+            </label>
+            ${a.profileBanner?`<button class="btn btn-outline btn-sm" onclick="removerBannerPerfil()" style="margin-left:6px;border-color:var(--red);color:var(--red);">🗑️</button>`:''}
+            <div style="font-size:.62rem;color:var(--muted);margin-top:4px;">JPG, PNG · recomendado 800×200px</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:.68rem;color:var(--muted);margin-bottom:8px;letter-spacing:1px;">OU escolha um banner WarpCoins:</div>
       <div class="custom-options" style="flex-direction:column;gap:8px;">
-        ${banners.map(bn=>{const owns=temItem(a,bn.id)||bn.free;return`<div class="banner-opt ${eqBan===bn.id?'selected':''} ${!owns?'locked-opt':''}" onclick="${owns?`aplicarCustom('${bn.id}','banner',this)`:''}" style="background:${bn.bg};">${owns?bn.icon:'🔒'} ${bn.name}${bn.free?' · GRÁTIS':!owns?` · 🔒${bn.cost}🪙`:''}</div>`;}).join('')}
+        ${banners.map(bn=>{const owns=temItem(a,bn.id)||bn.free;return`<div class="banner-opt ${eqBan===bn.id&&!a.profileBanner?'selected':''} ${!owns?'locked-opt':''}" onclick="${owns?`aplicarCustom('${bn.id}','banner',this)`:''}" style="background:${bn.bg};">${owns?bn.icon:'🔒'} ${bn.name}${bn.free?' · GRÁTIS':!owns?` · 🔒${bn.cost}🪙`:''}</div>`;}).join('')}
       </div>
     </div>
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-custom')" style="margin-top:12px;margin-bottom:0;">Fechar</button>`;
@@ -2356,6 +2696,26 @@ async function removerFotoPerfil(){
   if(!confirm('Remover foto de perfil?'))return;
   setSyncing('syncing');
   try{await COL.alunos().doc(alunoAtual).update({profilePhoto:null});toast('🗑️ Foto removida.');setSyncing('ok');}
+  catch(err){toast('❌ Erro.');setSyncing('error');}
+}
+async function uploadBannerPerfil(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>4*1024*1024)return toast('⚠️ Imagem muito grande! Máx 4MB.');
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const dataUrl=e.target.result;
+    const thumb=document.getElementById('banner-preview-thumb');
+    if(thumb){thumb.style.background=`url('${dataUrl}') center/cover`;thumb.style.backgroundSize='cover';}
+    setSyncing('syncing');
+    try{await COL.alunos().doc(alunoAtual).update({profileBanner:dataUrl,wc_eq_banner:null});toast('✅ Banner atualizado!');setSyncing('ok');}
+    catch(err){toast('❌ Erro ao salvar banner.');setSyncing('error');}
+  };
+  reader.readAsDataURL(file);
+}
+async function removerBannerPerfil(){
+  if(!confirm('Remover banner personalizado?'))return;
+  setSyncing('syncing');
+  try{await COL.alunos().doc(alunoAtual).update({profileBanner:null});toast('🗑️ Banner removido.');setSyncing('ok');}
   catch(err){toast('❌ Erro.');setSyncing('error');}
 }
 async function aplicarCustom(itemId,cat,el){
@@ -2407,9 +2767,114 @@ function floatXP(amount){const el=document.createElement('div');el.className='xp
 function flashScreen(color='rgba(0,212,255,1)'){const el=document.createElement('div');el.className='screen-flash';el.style.background=color;document.body.appendChild(el);setTimeout(()=>el.remove(),800);}
 function burstParticles(x,y,color='#ffd700',count=18){for(let i=0;i<count;i++){const el=document.createElement('div');el.className='particle';const angle=(i/count)*Math.PI*2;const dist=60+Math.random()*80;el.style.cssText=`left:${x}px;top:${y}px;background:${color};--px:${Math.cos(angle)*dist}px;--py:${Math.sin(angle)*dist}px;width:${4+Math.random()*6}px;height:${4+Math.random()*6}px;animation-duration:${.8+Math.random()*.6}s;`;document.body.appendChild(el);setTimeout(()=>el.remove(),1500);}}
 
-// ── MUSIC ──
+// ── MUSIC · DARK AMBIENT SYNTH ──
 let _musicPlaying=false;
-function toggleMusic(){_musicPlaying=!_musicPlaying;const btn=document.getElementById('music-btn');if(btn){btn.textContent=_musicPlaying?'🎵':'🔇';btn.classList.toggle('playing',_musicPlaying);}toast(_musicPlaying?'🎵 Música ativada!':'🔇 Música desativada');}
+let _audioCtx=null;
+let _musicNodes=[];
+
+function _initAudio(){
+  if(_audioCtx)return;
+  _audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+}
+
+function _startDarkAmbient(){
+  _initAudio();
+  const ctx=_audioCtx;
+  const master=ctx.createGain();
+  master.gain.setValueAtTime(0,ctx.currentTime);
+  master.gain.linearRampToValueAtTime(0.72,ctx.currentTime+2.5);
+  master.connect(ctx.destination);
+
+  // Reverb convolver (simulated with delay network)
+  const conv=ctx.createConvolver();
+  const len=ctx.sampleRate*3.2;
+  const buf=ctx.createBuffer(2,len,ctx.sampleRate);
+  for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,1.8);}
+  conv.buffer=buf;
+  const convGain=ctx.createGain();convGain.gain.value=0.55;
+  conv.connect(convGain);convGain.connect(master);
+
+  // Deep sub drone — 28Hz
+  const sub=ctx.createOscillator();
+  const subGain=ctx.createGain();
+  sub.type='sine';sub.frequency.value=28;
+  subGain.gain.value=0.38;
+  sub.connect(subGain);subGain.connect(master);sub.start();
+
+  // Mid drone — 56Hz (sawtooth, filtered dark)
+  const mid=ctx.createOscillator();
+  const midFilt=ctx.createBiquadFilter();
+  const midGain=ctx.createGain();
+  mid.type='sawtooth';mid.frequency.value=56;
+  midFilt.type='lowpass';midFilt.frequency.value=190;midFilt.Q.value=4;
+  midGain.gain.value=0.22;
+  mid.connect(midFilt);midFilt.connect(midGain);midGain.connect(master);
+  midGain.connect(conv);mid.start();
+
+  // Tension drone — 84Hz square
+  const tns=ctx.createOscillator();
+  const tnsFilt=ctx.createBiquadFilter();
+  const tnsGain=ctx.createGain();
+  tns.type='square';tns.frequency.value=84;
+  tnsFilt.type='lowpass';tnsFilt.frequency.value=120;tnsFilt.Q.value=6;
+  tnsGain.gain.value=0.12;
+  tns.connect(tnsFilt);tnsFilt.connect(tnsGain);tnsGain.connect(conv);tnsGain.connect(master);tns.start();
+
+  // Slow haunting melody — random pentatonic minor notes
+  const notes=[98,110,123,131,147,165,175,196];
+  let noteIdx=0;
+  function playNote(){
+    if(!_musicPlaying)return;
+    const osc=ctx.createOscillator();
+    const env=ctx.createGain();
+    const filt=ctx.createBiquadFilter();
+    const now=ctx.currentTime;
+    osc.type='triangle';
+    osc.frequency.value=notes[noteIdx%notes.length];
+    noteIdx=Math.floor(Math.random()*notes.length);
+    filt.type='lowpass';filt.frequency.value=400;filt.Q.value=2;
+    env.gain.setValueAtTime(0,now);
+    env.gain.linearRampToValueAtTime(0.18,now+0.6);
+    env.gain.linearRampToValueAtTime(0,now+3.5);
+    osc.connect(filt);filt.connect(env);env.connect(conv);env.connect(master);
+    osc.start(now);osc.stop(now+4);
+    const delay=2800+Math.random()*2400;
+    setTimeout(playNote,delay);
+  }
+  setTimeout(playNote,1200);
+
+  // Dark wind noise layer
+  const noise=ctx.createScriptProcessor?null:null; // skip if not supported
+  const bufSrc=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);
+  const bd=bufSrc.getChannelData(0);for(let i=0;i<bd.length;i++)bd[i]=Math.random()*2-1;
+  const windSrc=ctx.createBufferSource();windSrc.buffer=bufSrc;windSrc.loop=true;
+  const windFilt=ctx.createBiquadFilter();windFilt.type='bandpass';windFilt.frequency.value=180;windFilt.Q.value=0.4;
+  const windGain=ctx.createGain();windGain.gain.value=0.08;
+  windSrc.connect(windFilt);windFilt.connect(windGain);windGain.connect(conv);windGain.connect(master);
+  windSrc.start();
+
+  _musicNodes=[sub,mid,tns,windSrc,master,conv];
+}
+
+function _stopDarkAmbient(){
+  if(!_audioCtx)return;
+  const ctx=_audioCtx;
+  _musicNodes.forEach(n=>{
+    try{
+      if(n.gain){n.gain.setValueAtTime(n.gain.value,ctx.currentTime);n.gain.linearRampToValueAtTime(0,ctx.currentTime+1.5);}
+      if(n.stop){setTimeout(()=>{try{n.stop();}catch(e){}},1600);}
+    }catch(e){}
+  });
+  _musicNodes=[];
+}
+
+function toggleMusic(){
+  _musicPlaying=!_musicPlaying;
+  const btn=document.getElementById('music-btn');
+  if(btn){btn.textContent=_musicPlaying?'🎵':'🔇';btn.classList.toggle('playing',_musicPlaying);}
+  if(_musicPlaying){_startDarkAmbient();toast('🎵 Música ativada!');}
+  else{_stopDarkAmbient();toast('🔇 Música desativada');}
+}
 
 // ══════════════════════════════════════
 //  AVATAR
