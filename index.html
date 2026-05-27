@@ -3607,33 +3607,60 @@ function chatToggleGif(){
 }
 
 let _chatGifDebounce = null;
+
+// Fetch helper that throws on non-ok responses
+async function _gifFetch(url){
+  const r = await fetch(url);
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  return r.json();
+}
+
 function chatBuscarGifs(query){
   clearTimeout(_chatGifDebounce);
   _chatGifDebounce = setTimeout(async()=>{
     const el = document.getElementById('chat-gif-results');
     if(!el || !query.trim()){ if(el) el.innerHTML=''; return; }
     el.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);font-size:.75rem;text-align:center;padding:14px;">🔍 Buscando GIFs...</div>';
-    // Try Tenor then Giphy
+
     let gifs = [];
-    try {
-      const r = await fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=AIzaSyAyimkuYQYF_FXVALexPzfiyvL7X-doABc&limit=12&media_filter=tinygif`);
-      const d = await r.json();
+    const q = encodeURIComponent(query);
+
+    // 1. Tenor v2 — official demo key from their quickstart docs
+    if(!gifs.length) try {
+      const d = await _gifFetch(`https://tenor.googleapis.com/v2/search?q=${q}&key=AIzaSyAyimkuYQYF_FXVALexPzfiyvL7X-doABc&limit=12&media_filter=tinygif&client_key=warpcode_edu`);
       gifs = (d.results||[]).map(g=>g.media_formats?.tinygif?.url||'').filter(Boolean);
-    } catch(e){}
+      console.log('[GIF] Tenor v2:', gifs.length, 'gifs');
+    } catch(e){ console.warn('[GIF] Tenor v2 falhou:', e.message); }
+
+    // 2. Tenor v1 — legacy endpoint, different key
+    if(!gifs.length) try {
+      const d = await _gifFetch(`https://g.tenor.com/v1/search?q=${q}&key=LIVDSRZULELA&limit=12&contentfilter=low`);
+      gifs = (d.results||[]).flatMap(g=>g.media||[]).map(m=>m.tinygif?.url||'').filter(Boolean);
+      console.log('[GIF] Tenor v1:', gifs.length, 'gifs');
+    } catch(e){ console.warn('[GIF] Tenor v1 falhou:', e.message); }
+
+    // 3. Giphy — public beta key
+    if(!gifs.length) try {
+      const d = await _gifFetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${q}&limit=12&rating=g&lang=pt`);
+      gifs = (d.data||[]).map(g=>g.images?.fixed_height_small?.url||g.images?.downsized?.url||'').filter(Boolean);
+      console.log('[GIF] Giphy:', gifs.length, 'gifs');
+    } catch(e){ console.warn('[GIF] Giphy falhou:', e.message); }
+
+    // 4. Giphy trending as last resort (no query)
+    if(!gifs.length) try {
+      const d = await _gifFetch(`https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=12&rating=g`);
+      gifs = (d.data||[]).map(g=>g.images?.fixed_height_small?.url||'').filter(Boolean);
+      console.log('[GIF] Giphy trending:', gifs.length, 'gifs');
+    } catch(e){ console.warn('[GIF] Giphy trending falhou:', e.message); }
+
     if(!gifs.length){
-      try {
-        const r2 = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=12&rating=g`);
-        const d2 = await r2.json();
-        gifs = (d2.data||[]).map(g=>g.images?.fixed_height_small?.url||'').filter(Boolean);
-      } catch(e){}
-    }
-    if(!gifs.length){
-      el.innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:.75rem;text-align:center;padding:14px;">Sem GIFs 😕</div>';
+      el.innerHTML='<div style="grid-column:1/-1;color:var(--orange);font-size:.75rem;text-align:center;padding:14px;">⚠️ Não foi possível carregar GIFs.<br><small style=\'opacity:.7\'>Verifique sua conexão.</small></div>';
       return;
     }
+
     el.innerHTML = gifs.map(src=>{
-      const safe = src.replace(/'/g,"\'");
-      return `<img src="${src}" loading="lazy" style="width:100%;border-radius:6px;cursor:pointer;aspect-ratio:1;object-fit:cover;" onclick="chatEnviarGif('${safe}')">`;
+      const safe = src.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      return `<img src="${src}" loading="lazy" style="width:100%;border-radius:6px;cursor:pointer;aspect-ratio:1;object-fit:cover;display:block;" onclick="chatEnviarGif('${safe}')" onerror="this.style.display='none'">`;
     }).join('');
   }, 500);
 }
