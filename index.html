@@ -28,6 +28,48 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
              repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,212,255,.018) 40px),
              repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(0,212,255,.018) 40px);}
 
+/* ══ GUILDA ══ */
+.guilda-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
+.guilda-card::before{content:"";position:absolute;inset:0;opacity:.04;pointer-events:none;background:linear-gradient(135deg,var(--purple),var(--accent));}
+.guilda-brasao{font-size:3rem;margin-bottom:6px;filter:drop-shadow(0 0 12px rgba(124,58,237,.5));}
+.guilda-nome{font-family:"Orbitron",monospace;font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.guilda-slogan{font-size:.75rem;color:var(--muted2);font-style:italic;margin-bottom:12px;}
+.guilda-membros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.guilda-membro{display:flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:.75rem;}
+.guilda-membro.lider{border-color:var(--gold);}
+.guilda-membro.lider::before{content:"👑 ";font-size:.7rem;}
+.guilda-xp{font-family:"Orbitron",monospace;font-size:.8rem;color:var(--gold);font-weight:700;}
+.convite-card{background:var(--s1);border:1px solid rgba(124,58,237,.4);border-radius:var(--radius);padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;}
+.convite-brasao{font-size:2rem;}
+/* ══ CHAT ══ */
+.chat-msg{display:flex;gap:8px;align-items:flex-start;animation:fadeUp .2s ease;}
+.chat-msg.own{flex-direction:row-reverse;}
+.chat-bubble{max-width:70%;padding:8px 12px;border-radius:12px;font-size:.83rem;line-height:1.5;word-break:break-word;}
+.chat-msg:not(.own) .chat-bubble{background:var(--s2);border:1px solid var(--border);border-radius:4px 12px 12px 12px;}
+.chat-msg.own .chat-bubble{background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(124,58,237,.15));border:1px solid rgba(0,212,255,.3);border-radius:12px 4px 12px 12px;}
+.chat-author{font-size:.65rem;color:var(--muted);margin-bottom:2px;}
+.chat-msg.own .chat-author{text-align:right;}
+.chat-time{font-size:.6rem;color:var(--muted);margin-top:2px;opacity:.7;}
+.chat-avatar-sm{font-size:1.3rem;width:30px;height:30px;background:var(--s2);border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.online-item{display:flex;align-items:center;gap:6px;font-size:.75rem;padding:4px 6px;background:var(--s2);border-radius:20px;border:1px solid var(--border);}
+.online-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);flex-shrink:0;}
+/* ══ VITRINE ══ */
+.vitrine-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;position:relative;overflow:hidden;}
+.vitrine-card::after{content:"★ DESTAQUE";position:absolute;top:12px;right:-22px;background:linear-gradient(90deg,var(--gold),#ff8c00);color:#000;font-size:.55rem;font-weight:900;font-family:"Orbitron",monospace;letter-spacing:1px;padding:3px 30px;transform:rotate(45deg);transform-origin:center;}
+.vitrine-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.vitrine-projeto-nome{font-size:1rem;font-weight:800;margin-bottom:2px;}
+.vitrine-link{color:var(--accent);font-size:.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
+.vitrine-link:hover{text-decoration:underline;}
+.vitrine-reactions{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.reaction-btn{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:.8rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px;}
+.reaction-btn:hover,.reaction-btn.active{border-color:var(--accent);background:rgba(0,212,255,.08);transform:scale(1.05);}
+.reaction-btn.active{box-shadow:0 0 8px rgba(0,212,255,.2);}
+.vitrine-comments{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+.vitrine-comment{background:var(--s2);border-radius:var(--radius-sm);padding:8px 12px;font-size:.78rem;border:1px solid var(--border);}
+.vitrine-comment-author{font-weight:800;font-size:.7rem;color:var(--accent);margin-bottom:2px;}
+.vitrine-add-comment{display:flex;gap:6px;margin-top:8px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* ══ LOADING SCREEN ══ */
 /* ── LOADING SCREEN ── */
 #screen-loading{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;position:relative;z-index:10;}
 .loading-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:2rem;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:4px;}
@@ -594,6 +636,7 @@ select option{background:var(--s1);}
         <button class="snav" id="snav-loja" onclick="profTab('loja','snav-loja')"><span class="snav-ic">🛒</span>Loja de Recompensas</button>
         <button class="snav" id="snav-ranking" onclick="profTab('ranking','snav-ranking')"><span class="snav-ic">🏆</span>Ranking</button>
         <button class="snav" id="snav-pin" onclick="profTab('pin','snav-pin')"><span class="snav-ic">🔑</span>Acesso Alunos</button>
+        <button class="snav" id="snav-vitrine" onclick="profTab('vitrine','snav-vitrine')"><span class="snav-ic">🌟</span>Vitrine</button>
       </nav>
       <div class="sidebar-back"><button onclick="goLogin()">← Sair</button></div>
     </aside>
@@ -695,6 +738,15 @@ select option{background:var(--s1);}
       <div id="ppage-ranking" class="page">
         <div class="page-hdr"><div><div class="page-title">🏆 Ranking Geral</div></div></div>
         <div id="p-ranking"></div>
+      </div>
+
+      <!-- VITRINE PROF -->
+      <div id="ppage-vitrine" class="page">
+        <div class="page-hdr"><div><div class="page-title">🌟 Vitrine de Projetos</div><div class="page-sub">Aprove projetos pendentes e destaque os melhores</div></div></div>
+        <div class="sec-title">⏳ Aguardando Destaque</div>
+        <div id="p-vitrine-pendentes"></div>
+        <div class="sec-title" style="margin-top:18px;">🌟 Projetos em Destaque</div>
+        <div id="p-vitrine-destaques"></div>
       </div>
 
       <!-- PIN -->
@@ -820,6 +872,9 @@ select option{background:var(--s1);}
         <button class="snav" id="asnav-ranking" onclick="alunoTab('ranking','asnav-ranking')"><span class="snav-ic">🏆</span>Ranking</button>
         <button class="snav" id="asnav-historico" onclick="alunoTab('historico','asnav-historico')"><span class="snav-ic">📜</span>Histórico</button>
         <button class="snav" id="asnav-badges" onclick="alunoTab('badges','asnav-badges')"><span class="snav-ic">🏅</span>Conquistas</button>
+        <button class="snav" id="asnav-guilda" onclick="alunoTab('guilda','asnav-guilda')"><span class="snav-ic">⚔️</span>Guilda<span id="guilda-badge-sb" class="snav-badge" style="display:none;background:var(--purple);"></span></button>
+        <button class="snav" id="asnav-chat" onclick="alunoTab('chat','asnav-chat')"><span class="snav-ic">💬</span>Chat<span id="chat-badge-sb" class="snav-badge" style="display:none;background:var(--green);"></span></button>
+        <button class="snav" id="asnav-vitrine" onclick="alunoTab('vitrine','asnav-vitrine')"><span class="snav-ic">🌟</span>Vitrine</button>
       </nav>
       <div class="sidebar-back"><button onclick="goLogin()">← Sair</button></div>
     </aside>
@@ -883,6 +938,35 @@ select option{background:var(--s1);}
         <div class="badge-grid" id="a-badges"></div>
       </div>
 
+      <!-- GUILDA -->
+      <div id="apage-guilda" class="page">
+        <div id="guilda-content"></div>
+      </div>
+
+      <!-- CHAT -->
+      <div id="apage-chat" class="page">
+        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com seus colegas</div></div><div id="online-count" style="font-size:.75rem;color:var(--green);font-weight:700;"></div></div>
+        <div style="display:flex;gap:14px;height:calc(100vh - 220px);min-height:400px;">
+          <div style="flex:1;display:flex;flex-direction:column;">
+            <div id="chat-msgs" style="flex:1;overflow-y:auto;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:14px;display:flex;flex-direction:column;gap:8px;"></div>
+            <div style="display:flex;gap:8px;background:var(--s2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:10px;">
+              <input id="chat-input" placeholder="Digite uma mensagem..." style="flex:1;" onkeydown="if(event.key==='Enter')enviarChat()" maxlength="300">
+              <button class="btn btn-primary btn-sm" onclick="enviarChat()">Enviar ►</button>
+            </div>
+          </div>
+          <div style="width:160px;flex-shrink:0;">
+            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online</div>
+            <div id="online-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VITRINE -->
+      <div id="apage-vitrine" class="page">
+        <div class="page-hdr"><div><div class="page-title">🌟 Vitrine de Projetos</div><div class="page-sub">Projetos aprovados e destacados pelo professor</div></div></div>
+        <div id="vitrine-items"></div>
+      </div>
+
       <!-- LOJA WARPCOINS -->
       <div id="apage-wcloja" class="page">
         <div class="page-hdr">
@@ -923,6 +1007,9 @@ select option{background:var(--s1);}
         <button class="mnav" id="amnav-ranking" onclick="alunoTab('ranking','asnav-ranking',true,'amnav-ranking')"><span class="mnav-ic">🏆</span>Ranking</button>
         <button class="mnav" id="amnav-historico" onclick="alunoTab('historico','asnav-historico',true,'amnav-historico')"><span class="mnav-ic">📜</span>Histórico</button>
         <button class="mnav" id="amnav-badges" onclick="alunoTab('badges','asnav-badges',true,'amnav-badges')"><span class="mnav-ic">🏅</span>Badges</button>
+        <button class="mnav" id="amnav-guilda" onclick="alunoTab('guilda','asnav-guilda',true,'amnav-guilda')"><span class="mnav-ic">⚔️</span>Guilda</button>
+        <button class="mnav" id="amnav-chat" onclick="alunoTab('chat','asnav-chat',true,'amnav-chat')"><span class="mnav-ic">💬</span>Chat</button>
+        <button class="mnav" id="amnav-vitrine" onclick="alunoTab('vitrine','asnav-vitrine',true,'amnav-vitrine')"><span class="mnav-ic">🌟</span>Vitrine</button>
       </div>
     </div>
   </div>
@@ -961,6 +1048,28 @@ select option{background:var(--s1);}
 </div>
 
 
+<!-- MODAL GUILDA -->
+<div class="modal-overlay" id="modal-guilda">
+  <div class="modal" style="max-width:520px;"><button class="modal-close" onclick="closeModal('modal-guilda')">✕</button>
+    <div id="modal-guilda-content"></div>
+  </div>
+</div>
+<!-- MODAL CRIAR GUILDA -->
+<div class="modal-overlay" id="modal-criar-guilda">
+  <div class="modal" style="max-width:460px;"><button class="modal-close" onclick="closeModal('modal-criar-guilda')">✕</button>
+    <div class="modal-title">⚔️ CRIAR GUILDA</div>
+    <div class="form-group" style="margin-bottom:10px;"><label>Nome da Guilda</label><input id="gn-nome" placeholder="Ex: Os Dragões do Código" maxlength="30"></div>
+    <div class="form-group" style="margin-bottom:10px;"><label>Brasão (emoji)</label><input id="gn-brasao" placeholder="🐉" maxlength="2" style="text-align:center;font-size:2rem;width:80px;"></div>
+    <div class="form-group" style="margin-bottom:16px;"><label>Grito de guerra</label><input id="gn-slogan" placeholder="Ex: Código ou nada!" maxlength="50"></div>
+    <button class="btn btn-primary btn-block" onclick="criarGuilda()">⚔️ Criar Guilda</button>
+  </div>
+</div>
+<!-- MODAL VITRINE COMENTAR -->
+<div class="modal-overlay" id="modal-vitrine">
+  <div class="modal" style="max-width:540px;"><button class="modal-close" onclick="closeModal('modal-vitrine')">✕</button>
+    <div id="modal-vitrine-content"></div>
+  </div>
+</div>
 <!-- MUSIC -->
 <button id="music-btn" onclick="toggleMusic()" title="Música Lo-Fi" style="position:fixed;bottom:76px;right:14px;z-index:8000;width:44px;height:44px;border-radius:50%;background:rgba(15,22,35,.9);border:1px solid rgba(0,212,255,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all .3s;backdrop-filter:blur(8px);">🎵</button>
 
@@ -1002,6 +1111,11 @@ const COL = {
   resgates:  () => db.collection('resgates'),
   loja:      () => db.collection('loja'),
   desafios:  () => db.collection('desafios'),
+  guildas:   () => db.collection('guildas'),
+  convites:  () => db.collection('convites'),
+  chat:      () => db.collection('chat'),
+  vitrine:   () => db.collection('vitrine'),
+  presence:  () => db.collection('presence'),
 };
 
 // ══════════════════════════════════════
@@ -1054,21 +1168,24 @@ function setSyncing(s){ // 'ok' | 'syncing' | 'error'
 // ══════════════════════════════════════
 async function inicializar(){
   document.getElementById('screen-loading').classList.add('active');
+  const setMsg = t => { const el=document.querySelector('.loading-msg'); if(el) el.textContent=t; console.log('[WC]',t); };
+
+  const withTimeout = (p, label, ms=10000) => Promise.race([p,
+    new Promise((_,rej)=>setTimeout(()=>rej(new Error('Timeout: '+label)), ms))
+  ]);
+
   try {
-    // Carrega config global (pin, desafio)
-    const cfgSnap = await COL.config().get();
+    setMsg('Conectando ao Firebase...');
+    const cfgSnap = await withTimeout(COL.config().get(), 'config');
     if(cfgSnap.exists){
-      const cfg = cfgSnap.data();
-      S.pin = cfg.pin || String(Math.floor(1000+Math.random()*9000));
-      S.desafio = cfg.desafio || null;
+      S.pin = cfgSnap.data().pin || String(Math.floor(1000+Math.random()*9000));
     } else {
-      // Primeiro uso: cria config
       S.pin = String(Math.floor(1000+Math.random()*9000));
       await COL.config().set({ pin: S.pin, desafio: null });
     }
 
-    // Carrega missões (ou cria padrão)
-    const missSnap = await COL.missoes().get();
+    setMsg('Carregando missões...');
+    const missSnap = await withTimeout(COL.missoes().get(), 'missoes');
     if(missSnap.empty){
       const batch = db.batch();
       MISSOES_PADRAO.forEach(m => batch.set(COL.missoes().doc(m.id), m));
@@ -1078,8 +1195,8 @@ async function inicializar(){
       S.missoes = missSnap.docs.map(d => ({id:d.id,...d.data()}));
     }
 
-    // Carrega loja (ou cria padrão)
-    const lojaSnap = await COL.loja().get();
+    setMsg('Carregando loja...');
+    const lojaSnap = await withTimeout(COL.loja().get(), 'loja');
     if(lojaSnap.empty){
       const batch = db.batch();
       LOJA_PADRAO.forEach(r => batch.set(COL.loja().doc(r.id), r));
@@ -1089,38 +1206,43 @@ async function inicializar(){
       S.loja = lojaSnap.docs.map(d => ({id:d.id,...d.data()}));
     }
 
-    // Carrega alunos
-    const alunosSnap = await COL.alunos().orderBy('nome').get();
-    S.alunos = alunosSnap.docs.map(d => ({id:d.id,...d.data()}));
+    setMsg('Carregando alunos...');
+    const alunosSnap = await withTimeout(COL.alunos().get(), 'alunos');
+    S.alunos = alunosSnap.docs.map(d => ({id:d.id,...d.data()}))
+      .sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR'));
 
-    // Carrega pendentes
-    const pendSnap = await COL.pendentes().where('aprovado','==',false).where('rejeitado','==',false).get();
-    S.pendentes = pendSnap.docs.map(d => ({id:d.id,...d.data()}));
-
-    // Carrega resgates ativos
-    const resgSnap = await COL.resgates().where('rejeitado','==',false).get();
-    S.resgates = resgSnap.docs.map(d => ({id:d.id,...d.data()}));
-
-    // Carrega desafios
-    const desafiosSnap = await COL.desafios().orderBy('ts','desc').get();
-    S.desafios = desafiosSnap.docs.map(d => ({id:d.id,...d.data()}));
-    // Compat: S.desafio aponta para o mais recente ativo
-    S.desafio = S.desafios.find(d=>new Date(d.expira)>new Date())||null;
+    setMsg('Carregando atividades...');
+    const [pendSnap, resgSnap, desSnap] = await withTimeout(
+      Promise.all([COL.pendentes().get(), COL.resgates().get(), COL.desafios().get()]),
+      'atividades'
+    );
+    S.pendentes = pendSnap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>!p.aprovado&&!p.rejeitado);
+    S.resgates  = resgSnap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>!r.rejeitado);
+    S.desafios  = desSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.ts||0)-(a.ts||0));
+    S.desafio   = S.desafios.find(d=>new Date(d.expira)>new Date())||null;
 
     setSyncing('ok');
-
-    // Listeners em tempo real
     ligarListeners();
-
-    // Vai para login
     showScreen('screen-login');
+
   } catch(err) {
-    console.error('Erro Firebase:', err);
+    console.error('[WC] Erro:', err);
     setSyncing('error');
-    document.querySelector('.loading-msg').textContent = 'Erro ao conectar. Verifique o Firestore.';
-    document.querySelector('.loading-msg').style.color = 'var(--red)';
+    const msg = err?.code ? err.code+': '+(err.message||'') : String(err);
+    const el = document.querySelector('.loading-msg');
+    if(el){
+      el.innerHTML = '❌ <strong>ERRO</strong>: '+msg+'<br><small style="opacity:.7">Verifique as Regras do Firestore e a conexão.</small>';
+      el.style.cssText='color:var(--red);font-size:.72rem;max-width:80vw;word-break:break-all;text-align:center;padding:0 20px;line-height:1.6';
+    }
+    const btn = document.createElement('button');
+    btn.textContent='🔄 Tentar Novamente';
+    btn.style.cssText='margin-top:16px;padding:10px 24px;background:var(--accent);color:#000;border:none;border-radius:8px;font-weight:800;cursor:pointer;font-size:.9rem;';
+    btn.onclick=()=>location.reload();
+    document.getElementById('screen-loading').appendChild(btn);
   }
 }
+
+
 
 // ══════════════════════════════════════
 //  LISTENERS EM TEMPO REAL
@@ -1132,13 +1254,13 @@ function ligarListeners(){
     renderSafe();
   });
   // Pendentes
-  COL.pendentes().where('aprovado','==',false).where('rejeitado','==',false).onSnapshot(snap => {
-    S.pendentes = snap.docs.map(d => ({id:d.id,...d.data()}));
+  COL.pendentes().onSnapshot(snap => {
+    S.pendentes = snap.docs.map(d => ({id:d.id,...d.data()})).filter(p=>!p.aprovado&&!p.rejeitado);
     renderSafe();
   });
   // Resgates
-  COL.resgates().where('rejeitado','==',false).onSnapshot(snap => {
-    S.resgates = snap.docs.map(d => ({id:d.id,...d.data()}));
+  COL.resgates().onSnapshot(snap => {
+    S.resgates = snap.docs.map(d => ({id:d.id,...d.data()})).filter(r=>!r.rejeitado);
     renderSafe();
   });
   // Config (pin, desafio legado)
@@ -1146,8 +1268,8 @@ function ligarListeners(){
     if(snap.exists){ const d=snap.data(); S.pin=d.pin||S.pin; renderSafe(); }
   });
   // Desafios (coleção independente)
-  COL.desafios().orderBy('ts','desc').onSnapshot(snap => {
-    S.desafios = snap.docs.map(d => ({id:d.id,...d.data()}));
+  COL.desafios().onSnapshot(snap => {
+    S.desafios = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(b.ts||0)-(a.ts||0));
     S.desafio = S.desafios.find(d=>new Date(d.expira)>new Date())||null;
     renderSafe();
   });
@@ -1438,27 +1560,32 @@ async function finalizarEntrada(){
   }
 }
 
-const PROF_LABELS={alunos:'Alunos',aprovar:'Aprovar Missões',desafio:'Desafio da Semana',loja:'Loja',ranking:'Ranking',pin:'Acesso Alunos'};
+const PROF_LABELS={alunos:'Alunos',aprovar:'Aprovar Missões',desafio:'Desafio da Semana',loja:'Loja',ranking:'Ranking',pin:'Acesso Alunos',vitrine:'Vitrine'};
 function profTab(tab,navId,isMobile=false){
   document.querySelectorAll('[id^="ppage-"]').forEach(p=>p.classList.remove('active'));
-  document.getElementById('ppage-'+tab).classList.add('active');
+  const pg=document.getElementById('ppage-'+tab);if(pg)pg.classList.add('active');
   document.querySelectorAll('.snav[id^="snav-"]').forEach(b=>b.classList.remove('active'));
   const sb=document.getElementById('snav-'+tab);if(sb)sb.classList.add('active');
   document.querySelectorAll('.mnav[id^="mnav-"]').forEach(b=>b.classList.remove('active'));
   const mb=document.getElementById('mnav-'+tab);if(mb)mb.classList.add('active');
   document.getElementById('prof-topbar-title').textContent=(PROF_LABELS[tab]||'').toUpperCase();
-  renderProf();
+  if(tab==='vitrine') renderPVitrine();
+  else renderProf();
 }
-const ALUNO_LABELS={perfil:'Perfil',missoes:'Missões',equipe:'Equipe',loja:'Loja XP',wcloja:'WarpCoins',ranking:'Ranking',historico:'Histórico',badges:'Conquistas'};
+const ALUNO_LABELS={perfil:'Perfil',missoes:'Missões',equipe:'Equipe',loja:'Loja XP',wcloja:'WarpCoins',ranking:'Ranking',historico:'Histórico',badges:'Conquistas',guilda:'Guilda',chat:'Chat',vitrine:'Vitrine'};
 function alunoTab(tab,snavId,isMobile=false,mnavId=''){
   document.querySelectorAll('[id^="apage-"]').forEach(p=>p.classList.remove('active'));
-  document.getElementById('apage-'+tab).classList.add('active');
+  const pg=document.getElementById('apage-'+tab);
+  if(pg) pg.classList.add('active');
   document.querySelectorAll('.snav[id^="asnav-"]').forEach(b=>b.classList.remove('active'));
   const sb=document.getElementById(snavId);if(sb)sb.classList.add('active');
   document.querySelectorAll('.mnav[id^="amnav-"]').forEach(b=>b.classList.remove('active'));
   if(mnavId){const mb=document.getElementById(mnavId);if(mb)mb.classList.add('active');}
   document.getElementById('a-topbar-title').textContent=(ALUNO_LABELS[tab]||'').toUpperCase();
-  renderAluno();
+  if(tab==='guilda') renderGuilda();
+  else if(tab==='chat'){ initChat(); }
+  else if(tab==='vitrine') renderVitrine();
+  else renderAluno();
 }
 
 // ══════════════════════════════════════
@@ -1595,6 +1722,7 @@ function renderPAprovacoes(){
       <div class="form-group" style="margin-bottom:10px;"><label>Feedback para o aluno (opcional)</label><input type="text" id="fb-${p.id}" placeholder="Ex: Ótimo uso dos loops!"></div>
       <div class="approval-actions">
         <button class="btn btn-success btn-sm" onclick="aprovar('${p.id}')">✓ Aprovar +${missao.xp} XP</button>
+        <button class="btn btn-primary btn-sm" onclick="aprovarEDestacar('${p.id}')">⭐ Aprovar e Destacar</button>
         <button class="btn btn-danger btn-sm" onclick="rejeitar('${p.id}')">✕ Rejeitar</button>
       </div>
     </div>`;
@@ -2072,6 +2200,22 @@ async function aprovar(pid){
   } catch(e){ toast('❌ Erro ao aprovar!'); setSyncing('error'); }
 }
 
+async function aprovarEDestacar(pid){
+  // Primeiro aprova normalmente
+  await aprovar(pid);
+  // Depois tenta colocar na vitrine automaticamente
+  const p = S.pendentes.find(x=>x.id===pid);
+  if(!p) return;
+  const missao = p.isDesafio ? (S.desafios.find(d=>d.id===p.desafioId)||{titulo:'Desafio'}) : S.missoes.find(m=>m.id===p.missaoId);
+  try {
+    await COL.vitrine().add({
+      alunoId:p.alunoId, titulo:missao?.titulo||'Projeto', link:p.link||'',
+      desc:'', ativo:true, destaqueEm:Date.now(), reactions:{}, reactors:{}, comentarios:[]
+    });
+    await COL.pendentes().doc(pid).update({naVitrine:true});
+    toast('⭐ Projeto aprovado e colocado na Vitrine!');
+  } catch(e){ toast('✓ Aprovado! Erro ao adicionar vitrine.'); }
+}
 async function rejeitar(pid){
   setSyncing('syncing');
   try {
@@ -2921,6 +3065,421 @@ function copiarLink(){navigator.clipboard?.writeText(window.location.href).then(
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);}
 
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('active');}));
+
+
+// ══════════════════════════════════════
+//  GUILDA — SISTEMA DE GUILDAS
+// ══════════════════════════════════════
+let guildaListeners = [];
+let chatListener = null;
+let presenceInterval = null;
+
+function renderGuilda(){
+  const el = document.getElementById('guilda-content');
+  if(!el) return;
+  const a = S.alunos.find(x => x.id === alunoAtual);
+  if(!a){ el.innerHTML='<div class="empty"><div class="empty-icon">⚔️</div><div class="empty-text">Faça login para ver guildas.</div></div>'; return; }
+  el.innerHTML='<div class="loading-spin" style="margin:40px auto;"></div>';
+  Promise.all([
+    COL.guildas().get(),
+    COL.convites().where('paraId','==',alunoAtual).get()
+  ]).then(([gSnap, cSnap]) => {
+    const guildas = gSnap.docs.map(d=>({id:d.id,...d.data()}));
+    const convites = cSnap.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.status==='pendente');
+    const minhaGuilda = guildas.find(g=>g.membros && g.membros.includes(alunoAtual));
+    let html = '<div class="page-hdr"><div><div class="page-title">⚔️ Guildas</div><div class="page-sub">Forme uma equipe, crie sua guilda e conquiste desafios juntos!</div></div>';
+    if(!minhaGuilda) html += '<button class="btn btn-primary btn-sm" onclick="document.getElementById(&quot;modal-criar-guilda&quot;).classList.add(&quot;active&quot;)">⚔️ Criar Guilda</button>';
+    html += '</div>';
+
+    // Convites recebidos
+    if(convites.length){
+      html += '<div class="sec-title">📨 Convites Recebidos</div>';
+      convites.forEach(c => {
+        const g = guildas.find(x => x.id === c.guildaId);
+        const remetente = S.alunos.find(x => x.id === c.deId);
+        if(!g || !remetente) return;
+        html += `<div class="convite-card">
+          <div class="convite-brasao">${g.brasao||'⚔️'}</div>
+          <div style="flex:1"><div style="font-weight:800">${g.nome}</div><div style="font-size:.75rem;color:var(--muted2)">Convite de ${remetente.avatar||'👾'} ${remetente.nome}</div></div>
+          <button class="btn btn-success btn-sm" onclick="responderConvite('${c.id}','aceitar','${g.id}')">✓ Aceitar</button>
+          <button class="btn btn-danger btn-sm" onclick="responderConvite('${c.id}','recusar','')">✕</button>
+        </div>`;
+      });
+    }
+
+    // Minha guilda
+    if(minhaGuilda){
+      const membros = (minhaGuilda.membros||[]).map(mid => {
+        const m = S.alunos.find(x=>x.id===mid);
+        return m ? `<div class="guilda-membro ${mid===minhaGuilda.liderId?'lider':''}">${m.avatar||'👾'} ${m.nome}</div>` : '';
+      }).join('');
+      const naoMembros = S.alunos.filter(a2=> a2.turma===a.turma && !(minhaGuilda.membros||[]).includes(a2.id));
+      const podeConvidar = minhaGuilda.liderId === alunoAtual;
+      html += `<div class="sec-title">🛡️ Minha Guilda</div>
+        <div class="guilda-card">
+          <div style="text-align:center;margin-bottom:12px;">
+            <div class="guilda-brasao">${minhaGuilda.brasao||'⚔️'}</div>
+            <div class="guilda-nome">${minhaGuilda.nome}</div>
+            ${minhaGuilda.slogan?`<div class="guilda-slogan">"${minhaGuilda.slogan}"</div>`:''}
+            <div class="guilda-xp">⚡ ${minhaGuilda.xpTotal||0} XP da Guilda</div>
+          </div>
+          <div class="guilda-membros">${membros}</div>
+          ${podeConvidar && naoMembros.length ? `<div class="form-group" style="margin-bottom:8px;"><label>Convidar colega da turma</label>
+            <div style="display:flex;gap:6px;"><select id="conv-sel">${naoMembros.map(m=>`<option value="${m.id}">${m.avatar||'👾'} ${m.nome}</option>`).join('')}</select>
+            <button class="btn btn-primary btn-sm" onclick="enviarConvite('${minhaGuilda.id}')">📨 Convidar</button></div></div>`:''}
+          ${minhaGuilda.liderId===alunoAtual ? `<button class="btn btn-danger btn-sm btn-block" style="margin-top:8px;" onclick="dissolvGuilda('${minhaGuilda.id}')">💣 Dissolver Guilda</button>` :
+            `<button class="btn btn-outline btn-sm btn-block" style="margin-top:8px;" onclick="sairGuilda('${minhaGuilda.id}')">🚪 Sair da Guilda</button>`}
+        </div>`;
+    }
+
+    // Outras guildas
+    const outras = guildas.filter(g=> !minhaGuilda || g.id !== minhaGuilda.id);
+    if(outras.length){
+      html += '<div class="sec-title" style="margin-top:18px;">🏰 Guildas da Escola</div>';
+      outras.forEach(g => {
+        const membros = (g.membros||[]).map(mid => {
+          const m = S.alunos.find(x=>x.id===mid);
+          return m ? `<div class="guilda-membro">${m.avatar||'👾'} ${m.nome}</div>` : '';
+        }).join('');
+        html += `<div class="guilda-card">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+            <div style="font-size:2.5rem">${g.brasao||'⚔️'}</div>
+            <div><div class="guilda-nome">${g.nome}</div>${g.slogan?`<div class="guilda-slogan">"${g.slogan}"</div>`:''}
+            <div class="guilda-xp">⚡ ${g.xpTotal||0} XP</div></div>
+          </div>
+          <div class="guilda-membros">${membros}</div>
+        </div>`;
+      });
+    }
+    if(!guildas.length && !convites.length){
+      html += '<div class="empty"><div class="empty-icon">⚔️</div><div class="empty-text">Nenhuma guilda ainda. Crie a primeira!</div></div>';
+    }
+    el.innerHTML = html;
+  }).catch(e=>{ el.innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar guildas.</div></div>'; console.error(e); });
+}
+
+async function criarGuilda(){
+  const nome = document.getElementById('gn-nome')?.value.trim();
+  const brasao = document.getElementById('gn-brasao')?.value.trim()||'⚔️';
+  const slogan = document.getElementById('gn-slogan')?.value.trim();
+  if(!nome) return toast('⚠️ Dê um nome para a guilda!');
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  if(!a) return;
+  // Check se já está em guilda
+  const snap = await COL.guildas().where('membros','array-contains',alunoAtual).get();
+  if(!snap.empty) return toast('⚠️ Você já está em uma guilda!');
+  setSyncing('syncing');
+  try {
+    await COL.guildas().add({nome,brasao,slogan,liderId:alunoAtual,membros:[alunoAtual],xpTotal:a.xp||0,criadoEm:Date.now()});
+    closeModal('modal-criar-guilda');
+    toast('⚔️ Guilda criada com sucesso!');
+    setSyncing('ok');
+    renderGuilda();
+  } catch(e){ toast('❌ Erro ao criar guilda.'); setSyncing('error'); }
+}
+
+async function enviarConvite(guildaId){
+  const paraId = document.getElementById('conv-sel')?.value;
+  if(!paraId) return;
+  // Verifica convite duplicado
+  const existeSnap = await COL.convites().where('guildaId','==',guildaId).get();
+  const jaExiste = existeSnap.docs.some(d=>{const c=d.data();return c.paraId===paraId&&c.status==='pendente';});
+  if(jaExiste) return toast('⚠️ Convite já enviado!');
+  setSyncing('syncing');
+  try {
+    await COL.convites().add({guildaId,paraId,deId:alunoAtual,status:'pendente',ts:Date.now()});
+    toast('📨 Convite enviado!');
+    setSyncing('ok');
+    renderGuilda();
+  } catch(e){ toast('❌ Erro ao enviar convite.'); setSyncing('error'); }
+}
+
+async function responderConvite(conviteId, acao, guildaId){
+  setSyncing('syncing');
+  try {
+    await COL.convites().doc(conviteId).update({status:acao==='aceitar'?'aceito':'recusado'});
+    if(acao==='aceitar' && guildaId){
+      // Sai de guilda anterior
+      const snap = await COL.guildas().where('membros','array-contains',alunoAtual).get();
+      for(const d of snap.docs){
+        if(d.id !== guildaId) await d.ref.update({membros: firebase.firestore.FieldValue.arrayRemove(alunoAtual)});
+      }
+      const a = S.alunos.find(x=>x.id===alunoAtual);
+      await COL.guildas().doc(guildaId).update({
+        membros: firebase.firestore.FieldValue.arrayUnion(alunoAtual),
+        xpTotal: firebase.firestore.FieldValue.increment(a?.xp||0)
+      });
+      toast('⚔️ Você entrou na guilda!');
+    } else { toast('Convite recusado.'); }
+    setSyncing('ok');
+    renderGuilda();
+  } catch(e){ toast('❌ Erro.'); setSyncing('error'); }
+}
+
+async function sairGuilda(guildaId){
+  if(!confirm('Tem certeza que deseja sair da guilda?')) return;
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  setSyncing('syncing');
+  try {
+    await COL.guildas().doc(guildaId).update({
+      membros: firebase.firestore.FieldValue.arrayRemove(alunoAtual),
+      xpTotal: firebase.firestore.FieldValue.increment(-((a?.xp)||0))
+    });
+    toast('🚪 Você saiu da guilda.');
+    setSyncing('ok');
+    renderGuilda();
+  } catch(e){ toast('❌ Erro.'); setSyncing('error'); }
+}
+
+async function dissolvGuilda(guildaId){
+  if(!confirm('Tem certeza que deseja dissolver a guilda? Esta ação é irreversível.')) return;
+  setSyncing('syncing');
+  try {
+    await COL.guildas().doc(guildaId).delete();
+    toast('💣 Guilda dissolvida.');
+    setSyncing('ok');
+    renderGuilda();
+  } catch(e){ toast('❌ Erro.'); setSyncing('error'); }
+}
+
+// ══════════════════════════════════════
+//  CHAT — SISTEMA DE MENSAGENS
+// ══════════════════════════════════════
+function initChat(){
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  if(!a) return;
+  // Presence — marcar online
+  updatePresence(a);
+  if(presenceInterval) clearInterval(presenceInterval);
+  presenceInterval = setInterval(()=>updatePresence(a), 30000);
+  // Listener de mensagens (últimas 60)
+  if(chatListener) chatListener();
+  chatListener = COL.chat().limit(80).onSnapshot(snap=>{
+    const msgs = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.ts-b.ts).slice(-60);
+    renderChatMsgs(msgs);
+  });
+  // Listener de presença
+  listenPresence();
+}
+
+async function updatePresence(a){
+  try {
+    await COL.presence().doc(alunoAtual).set({
+      id:alunoAtual, nome:a.nome, avatar:a.avatar||'👾', ts:Date.now(), turma:a.turma
+    });
+  } catch(e){}
+}
+
+function listenPresence(){
+  const cutoff = Date.now() - 65000;
+  COL.presence().onSnapshot(snap=>{
+    const online = snap.docs.map(d=>d.data()).filter(p=>p.ts > cutoff);
+    const el = document.getElementById('online-list');
+    const cnt = document.getElementById('online-count');
+    if(!el) return;
+    if(cnt) cnt.textContent = `🟢 ${online.length} online`;
+    el.innerHTML = online.map(p=>`<div class="online-item"><div class="online-dot"></div>${p.avatar} ${p.nome.split(' ')[0]}</div>`).join('');
+  });
+}
+
+function renderChatMsgs(msgs){
+  const el = document.getElementById('chat-msgs');
+  if(!el) return;
+  el.innerHTML = msgs.map(m=>{
+    const own = m.autorId === alunoAtual;
+    const time = new Date(m.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    return `<div class="chat-msg ${own?'own':''}">
+      <div class="chat-avatar-sm">${m.avatar||'👾'}</div>
+      <div>
+        <div class="chat-author">${own?'Você':m.autorNome} · ${time}</div>
+        <div class="chat-bubble">${escapeHtml(m.texto)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+async function enviarChat(){
+  const input = document.getElementById('chat-input');
+  const texto = input?.value.trim();
+  if(!texto) return;
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  if(!a) return;
+  input.value='';
+  setSyncing('syncing');
+  try {
+    await COL.chat().add({autorId:alunoAtual,autorNome:a.nome,avatar:a.avatar||'👾',turma:a.turma,texto,ts:Date.now()});
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro ao enviar.'); setSyncing('error'); }
+}
+
+function escapeHtml(t){ const d=document.createElement('div');d.textContent=t;return d.innerHTML; }
+
+// ══════════════════════════════════════
+//  VITRINE — ALUNO
+// ══════════════════════════════════════
+function renderVitrine(){
+  const el = document.getElementById('vitrine-items');
+  if(!el) return;
+  el.innerHTML='<div class="loading-spin" style="margin:40px auto;"></div>';
+  COL.vitrine().get()
+    .then(snap=>{
+      const allVitrine = snap.docs.map(d=>({id:d.id,...d.data()})).filter(v=>v.ativo).sort((a,b)=>(b.destaqueEm||0)-(a.destaqueEm||0)).slice(0,30);
+      if(!allVitrine.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌟</div><div class="empty-text">Nenhum projeto em destaque ainda. Envie suas missões e conquiste um lugar aqui!</div></div>';return;}
+      el.innerHTML = allVitrine.map(v=>{
+        const a2 = S.alunos.find(x=>x.id===v.alunoId);
+        const EMOJIS = ['❤️','🔥','⭐','🚀','💡'];
+        const reactions = EMOJIS.map(e=>{
+          const count = (v.reactions&&v.reactions[e])||0;
+          const active = v.reactors&&v.reactors[e]&&v.reactors[e].includes(alunoAtual);
+          return `<button class="reaction-btn ${active?'active':''}" onclick="reagir('${v.id}','${e}')">${e} ${count}</button>`;
+        }).join('');
+        const comments = (v.comentarios||[]).slice(-5).map(c=>`<div class="vitrine-comment"><div class="vitrine-comment-author">${c.avatar} ${c.nome}</div>${escapeHtml(c.texto)}</div>`).join('');
+        return `<div class="vitrine-card">
+          <div class="vitrine-header">
+            <div style="font-size:2rem">${a2?.avatar||'👾'}</div>
+            <div style="flex:1"><div class="vitrine-projeto-nome">${v.titulo||'Projeto'}</div>
+              <div style="font-size:.72rem;color:var(--muted2)">${a2?.nome||'?'} · ${a2?.turma||''}</div>
+              ${v.link?`<a class="vitrine-link" href="${v.link}" target="_blank">🔗 Ver projeto</a>`:''}
+            </div>
+          </div>
+          ${v.desc?`<div style="font-size:.82rem;color:var(--muted2);margin-bottom:10px;">${escapeHtml(v.desc)}</div>`:''}
+          <div class="vitrine-reactions">${reactions}</div>
+          <div class="vitrine-comments">${comments}</div>
+          <div class="vitrine-add-comment">
+            <input id="cmt-${v.id}" placeholder="Deixe um comentário..." maxlength="150" style="flex:1;" onkeydown="if(event.key==='Enter')comentarVitrine('${v.id}')">
+            <button class="btn btn-outline btn-sm" onclick="comentarVitrine('${v.id}')">💬</button>
+          </div>
+        </div>`;
+      }).join('');
+    }).catch(e=>{ el.innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar vitrine.</div></div>'; console.error(e); });
+}
+
+async function reagir(vitrineId, emoji){
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  if(!a) return;
+  try {
+    const ref = COL.vitrine().doc(vitrineId);
+    const snap = await ref.get();
+    if(!snap.exists) return;
+    const v = snap.data();
+    const reactors = v.reactors||{};
+    const list = reactors[emoji]||[];
+    const jaReagiu = list.includes(alunoAtual);
+    const batch = db.batch();
+    if(jaReagiu){
+      batch.update(ref, {
+        [`reactions.${emoji}`]: firebase.firestore.FieldValue.increment(-1),
+        [`reactors.${emoji}`]: firebase.firestore.FieldValue.arrayRemove(alunoAtual)
+      });
+    } else {
+      batch.update(ref, {
+        [`reactions.${emoji}`]: firebase.firestore.FieldValue.increment(1),
+        [`reactors.${emoji}`]: firebase.firestore.FieldValue.arrayUnion(alunoAtual)
+      });
+    }
+    await batch.commit();
+    renderVitrine();
+  } catch(e){ toast('❌ Erro.'); }
+}
+
+async function comentarVitrine(vitrineId){
+  const input = document.getElementById('cmt-'+vitrineId);
+  const texto = input?.value.trim();
+  if(!texto) return;
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  if(!a) return;
+  input.value='';
+  try {
+    const comentario = {nome:a.nome,avatar:a.avatar||'👾',texto,ts:Date.now()};
+    await COL.vitrine().doc(vitrineId).update({
+      comentarios: firebase.firestore.FieldValue.arrayUnion(comentario)
+    });
+    toast('💬 Comentário enviado!');
+    renderVitrine();
+  } catch(e){ toast('❌ Erro ao comentar.'); }
+}
+
+// ══════════════════════════════════════
+//  VITRINE — PROFESSOR
+// ══════════════════════════════════════
+function renderPVitrine(){
+  renderPVitrinePendentes();
+  renderPVitrineDestaques();
+}
+
+function renderPVitrinePendentes(){
+  const el = document.getElementById('p-vitrine-pendentes');
+  if(!el) return;
+  // Projetos aprovados (pendentes.aprovado=true) que não estão na vitrine
+  const aprovados = S.pendentes.filter(p=>p.aprovado && p.link && !p.naVitrine);
+  if(!aprovados.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Nenhum projeto aprovado disponível para destaque.</div></div>';return;}
+  el.innerHTML = aprovados.map(p=>{
+    const aluno = S.alunos.find(a=>a.id===p.alunoId);
+    const missao = p.isDesafio ? (S.desafios.find(d=>d.id===p.desafioId)||{titulo:'Desafio'}) : S.missoes.find(m=>m.id===p.missaoId);
+    if(!aluno||!missao) return '';
+    return `<div class="approval-card">
+      <div class="approval-meta">
+        <div><div style="font-weight:800">${aluno.avatar||'👾'} ${aluno.nome} <span style="color:var(--muted2);font-weight:400;font-size:.8rem">${aluno.turma}</span></div>
+        <div style="font-size:.75rem;color:var(--muted2)">${missao.titulo}</div></div>
+      </div>
+      ${p.link?`<a class="approval-link" href="${p.link}" target="_blank">🔗 ${p.link}</a>`:''}
+      <div class="form-group" style="margin-bottom:10px;margin-top:8px;"><label>Descrição para a vitrine (opcional)</label><input id="vd-${p.id}" placeholder="Ex: Projeto incrível com loops e variáveis!"></div>
+      <button class="btn btn-primary btn-sm" onclick="adicionarVitrine('${p.id}')">⭐ Colocar em Destaque</button>
+    </div>`;
+  }).join('');
+}
+
+async function adicionarVitrine(pendId){
+  const p = S.pendentes.find(x=>x.id===pendId);
+  const aluno = p ? S.alunos.find(a=>a.id===p.alunoId) : null;
+  const missao = p && !p.isDesafio ? S.missoes.find(m=>m.id===p.missaoId) : (p ? S.desafios.find(d=>d.id===p.desafioId)||{titulo:'Desafio'} : null);
+  if(!p||!aluno||!missao) return toast('❌ Erro.');
+  const desc = document.getElementById('vd-'+pendId)?.value.trim()||'';
+  setSyncing('syncing');
+  try {
+    await COL.vitrine().add({
+      alunoId:aluno.id, titulo:missao.titulo, link:p.link||'', desc,
+      ativo:true, destaqueEm:Date.now(), reactions:{}, reactors:{}, comentarios:[]
+    });
+    await COL.pendentes().doc(pendId).update({naVitrine:true});
+    toast('🌟 Projeto adicionado à vitrine!');
+    setSyncing('ok');
+    renderPVitrine();
+  } catch(e){ toast('❌ Erro ao adicionar.'); setSyncing('error'); }
+}
+
+function renderPVitrineDestaques(){
+  const el = document.getElementById('p-vitrine-destaques');
+  if(!el) return;
+  COL.vitrine().get()
+    .then(snap=>{
+      const destaquesAtivos = snap.docs.map(d=>({id:d.id,...d.data()})).filter(v=>v.ativo).sort((a,b)=>(b.destaqueEm||0)-(a.destaqueEm||0));
+      if(!destaquesAtivos.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌟</div><div class="empty-text">Nenhum projeto em destaque ainda.</div></div>';return;}
+      el.innerHTML = destaquesAtivos.map(v=>{
+        const a2 = S.alunos.find(x=>x.id===v.alunoId);
+        return `<div class="approval-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <div style="font-size:1.8rem">${a2?.avatar||'👾'}</div>
+            <div><div style="font-weight:800">${v.titulo||'Projeto'}</div><div style="font-size:.72rem;color:var(--muted2)">${a2?.nome||'?'} · ${a2?.turma||''}</div></div>
+          </div>
+          ${v.link?`<a class="approval-link" href="${v.link}" target="_blank" style="display:block;margin-bottom:8px;">🔗 ${v.link}</a>`:''}
+          <button class="btn btn-danger btn-sm" onclick="removerVitrine('${v.id}')">✕ Remover da Vitrine</button>
+        </div>`;
+      }).join('');
+    }).catch(e=>{ el.innerHTML='<div class="empty"><div class="empty-text">Erro.</div></div>'; });
+}
+
+async function removerVitrine(id){
+  if(!confirm('Remover da vitrine?')) return;
+  setSyncing('syncing');
+  try {
+    await COL.vitrine().doc(id).update({ativo:false});
+    toast('Removido da vitrine.');
+    setSyncing('ok');
+    renderPVitrine();
+  } catch(e){ toast('❌ Erro.'); setSyncing('error'); }
+}
 
 // ── INICIAR ──
 inicializar();
