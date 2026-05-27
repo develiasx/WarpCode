@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WarpCode — ScratchQuest Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
- 
+
 <!-- Firebase SDK v10 (módulos via CDN compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
- 
+
 <style>
 :root{
   --bg:#07090f;--s1:#0f1623;--s2:#162033;--s3:#1c2a42;
@@ -27,18 +27,18 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
              radial-gradient(ellipse at 90% 90%,rgba(124,58,237,.05) 0%,transparent 45%),
              repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,212,255,.018) 40px),
              repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(0,212,255,.018) 40px);}
- 
+
 /* ── LOADING SCREEN ── */
 #screen-loading{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;position:relative;z-index:10;}
 .loading-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:2rem;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:4px;}
 .loading-spin{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-msg{font-size:.78rem;color:var(--muted);letter-spacing:2px;}
- 
+
 /* ── SCREENS ── */
 .screen{display:none;min-height:100vh;position:relative;z-index:1;}
 .screen.active{display:flex;flex-direction:column;}
- 
+
 /* ── LOGIN ── */
 #screen-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
 .login-wrap{width:100%;max-width:460px;}
@@ -47,7 +47,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   letter-spacing:4px;margin-bottom:4px;}
 .logo-sub{color:var(--muted);font-size:.76rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:44px;}
- 
+
 /* ── LOGIN HERO LOGO ── */
 .login-logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:44px;}
 .login-bolt{font-size:3.2rem;line-height:1;margin-bottom:2px;
@@ -69,7 +69,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .mode-emoji{font-size:2.2rem;flex-shrink:0;}
 .mode-title{font-size:1rem;font-weight:800;margin-bottom:2px;}
 .mode-desc{font-size:.76rem;color:var(--muted2);}
- 
+
 /* ── SYNC INDICATOR ── */
 .sync-indicator{position:fixed;top:12px;right:12px;z-index:9999;display:flex;align-items:center;gap:6px;
   background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.65rem;color:var(--muted);
@@ -78,7 +78,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .sync-dot.syncing{background:var(--orange);animation:pulse .8s ease infinite alternate;}
 .sync-dot.error{background:var(--red);}
 @keyframes pulse{from{opacity:.4}to{opacity:1}}
- 
+
 /* ── APP SHELL ── */
 .app-shell{display:flex;flex:1;min-height:100vh;position:relative;z-index:1;}
 .sidebar{width:var(--sidebar);flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);
@@ -116,7 +116,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .mnav-ic{font-size:1.15rem;}
 .mnav.active{color:var(--accent);}
 .mnav-badge{position:absolute;top:5px;right:calc(50% - 20px);background:var(--red);color:#fff;font-size:.52rem;font-weight:900;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
- 
+
 @media(max-width:768px){
   .sidebar{display:none;}
   .mobile-topbar{display:flex;}
@@ -124,12 +124,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   .main-content{padding:14px;padding-bottom:88px;}
   .app-shell{flex-direction:column;}
 }
- 
+
 /* ── PAGES ── */
 .page{display:none;animation:fadeUp .25s ease;}
 .page.active{display:block;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
- 
+
 /* ── COMPONENTS ── */
 .sec-title{font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;margin-top:2px;}
 .page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
@@ -166,7 +166,7 @@ select option{background:var(--s1);}
 .stat-box{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;}
 .stat-val{font-family:'Orbitron',monospace;font-size:1.7rem;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .stat-lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
- 
+
 /* ── STUDENT CARD ── */
 .student-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:9px;display:flex;align-items:center;gap:12px;transition:border-color .2s;}
 .student-card:hover{border-color:var(--border2);}
@@ -177,7 +177,7 @@ select option{background:var(--s1);}
 .xp-bar{height:3px;background:var(--s1);border-radius:2px;margin-top:6px;overflow:hidden;}
 .xp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:2px;transition:width .6s;}
 .xp-val{font-family:'Orbitron',monospace;font-size:.8rem;color:var(--gold);font-weight:700;white-space:nowrap;}
- 
+
 /* ── MISSION CARD ── */
 .mission-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:15px;margin-bottom:9px;transition:border-color .2s;position:relative;}
 .mission-card.done{border-color:rgba(16,185,129,.35);}
@@ -198,20 +198,20 @@ select option{background:var(--s1);}
 .tag-done{background:rgba(16,185,129,.15);color:var(--green);}
 .tag-pending{background:rgba(251,191,36,.15);color:var(--yellow);}
 .tag-open{background:rgba(100,116,139,.12);color:var(--muted);}
- 
+
 /* ── APPROVAL CARD ── */
 .approval-card{background:var(--s2);border:1px solid rgba(251,191,36,.35);border-radius:var(--radius);padding:15px;margin-bottom:9px;}
 .approval-meta{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;gap:8px;flex-wrap:wrap;}
 .approval-link{font-size:.73rem;color:var(--accent);word-break:break-all;display:block;margin-bottom:9px;}
 .approval-actions{display:flex;gap:8px;flex-wrap:wrap;}
- 
+
 /* ── RANKING ── */
 .rank-item{display:flex;align-items:center;gap:11px;padding:12px 14px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:7px;transition:all .2s;}
 .rank-item:hover{transform:translateX(3px);}
 .rank-item.me{border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.04);}
 .rnum{font-family:'Orbitron',monospace;font-size:1.05rem;font-weight:900;width:32px;text-align:center;flex-shrink:0;}
 .r1{color:var(--gold);}.r2{color:#c0c0c0;}.r3{color:#cd7f32;}.rx{color:var(--muted);}
- 
+
 /* ── BADGES ── */
 .badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px;}
 .badge-item{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:13px 7px;text-align:center;transition:all .2s;cursor:default;}
@@ -220,7 +220,7 @@ select option{background:var(--s1);}
 .badge-icon{font-size:1.7rem;margin-bottom:5px;}
 .badge-name{font-size:.63rem;font-weight:800;}
 .badge-req{font-size:.57rem;color:var(--muted);margin-top:2px;line-height:1.4;}
- 
+
 /* ── HERO ── */
 .hero-card{background:linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12));border:1px solid rgba(0,212,255,.25);border-radius:var(--radius);padding:0;text-align:left;margin-bottom:14px;position:relative;overflow:hidden;min-height:200px;}
 .hero-card::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(0,212,255,.07),transparent 70%);pointer-events:none;}
@@ -234,13 +234,13 @@ select option{background:var(--s1);}
 .hero-bar{height:5px;background:rgba(255,255,255,.07);border-radius:3px;margin-top:13px;overflow:hidden;}
 .hero-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:3px;transition:width .7s;}
 .hero-bar-lbl{display:flex;justify-content:space-between;font-size:.6rem;color:var(--muted);margin-top:3px;}
- 
+
 /* ── STREAK CARD ── */
 .streak-card{background:linear-gradient(135deg,rgba(249,115,22,.12),rgba(239,68,68,.08));border:1px solid rgba(249,115,22,.3);border-radius:var(--radius);padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;}
 .streak-fire{font-size:2.2rem;}
 .streak-num{font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:900;color:var(--orange);}
 .streak-lbl{font-size:.7rem;color:var(--muted2);margin-top:2px;}
- 
+
 /* ── HISTORY ── */
 .history-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
 .history-item:last-child{border-bottom:none;}
@@ -248,7 +248,7 @@ select option{background:var(--s1);}
 .history-desc{flex:1;font-size:.82rem;}
 .history-xp{font-family:'Orbitron',monospace;font-size:.78rem;color:var(--gold);font-weight:700;flex-shrink:0;}
 .history-date{font-size:.65rem;color:var(--muted);margin-top:2px;}
- 
+
 /* ── SHOP ── */
 .shop-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:15px;margin-bottom:9px;transition:all .2s;}
 .shop-card:hover{border-color:var(--gold);box-shadow:0 0 20px rgba(255,215,0,.08);}
@@ -257,24 +257,24 @@ select option{background:var(--s1);}
 .shop-desc{font-size:.78rem;color:var(--muted2);margin-bottom:10px;line-height:1.5;}
 .shop-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
 .shop-cost{font-family:'Orbitron',monospace;font-size:.8rem;color:var(--gold);font-weight:700;}
- 
+
 /* ── PIN ── */
 .pin-display{font-family:'Orbitron',monospace;font-size:2.8rem;font-weight:900;letter-spacing:12px;color:var(--gold);text-align:center;background:var(--s2);border:2px dashed rgba(255,215,0,.35);border-radius:var(--radius);padding:16px;margin:8px 0;}
- 
+
 /* ── SCRATCH BTN ── */
 .scratch-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px;border:none;border-radius:var(--radius-sm);background:linear-gradient(135deg,#ff6b2b,#ff9500);color:#fff;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;text-decoration:none;transition:all .2s;margin-bottom:10px;}
 .scratch-btn:hover{box-shadow:0 4px 20px rgba(255,107,43,.35);transform:translateY(-1px);}
- 
+
 /* ── DESAFIO SEMANA ── */
 .weekly-card{background:linear-gradient(135deg,rgba(249,115,22,.15),rgba(239,68,68,.1));border:2px solid rgba(249,115,22,.4);border-radius:var(--radius);padding:18px;margin-bottom:14px;position:relative;overflow:hidden;}
 .weekly-card::before{content:'⚡ DESAFIO DA SEMANA';position:absolute;top:10px;right:10px;font-size:.58rem;font-family:'Orbitron',monospace;letter-spacing:2px;color:var(--orange);background:rgba(249,115,22,.15);padding:3px 8px;border-radius:5px;}
 .weekly-timer{font-family:'Orbitron',monospace;font-size:.72rem;color:var(--orange);margin-top:8px;}
- 
+
 /* ── AVATAR PICKER ── */
 .avatar-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0;}
 .av-opt{font-size:1.8rem;padding:10px;border:2px solid var(--border);border-radius:10px;cursor:pointer;text-align:center;transition:all .2s;background:var(--s2);}
 .av-opt:hover,.av-opt.selected{border-color:var(--accent);background:rgba(0,212,255,.1);}
- 
+
 /* ── MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:500;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.active{display:flex;}
@@ -286,7 +286,7 @@ select option{background:var(--s1);}
   .modal-overlay{align-items:flex-end;padding:0;}
   .modal{border-radius:20px 20px 0 0;max-height:92vh;max-width:100%;}
 }
- 
+
 /* ── LEVEL UP OVERLAY ── */
 #levelup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9000;align-items:center;justify-content:center;flex-direction:column;text-align:center;}
 #levelup-overlay.active{display:flex;}
@@ -296,26 +296,26 @@ select option{background:var(--s1);}
 .levelup-stars{font-size:2rem;animation:starSpin 1s ease infinite;}
 @keyframes bounce{from{transform:scale(1)}to{transform:scale(1.15)}}
 @keyframes starSpin{0%{opacity:1;transform:rotate(0)}50%{opacity:.5}100%{opacity:1;transform:rotate(360deg)}}
- 
+
 /* ── EMPTY / TOAST ── */
 .empty{text-align:center;padding:44px 20px;color:var(--muted);}
 .empty-icon{font-size:2.8rem;margin-bottom:10px;}
 .empty-text{font-size:.86rem;line-height:1.7;}
 .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--s1);border:1px solid var(--accent);border-radius:var(--radius);padding:12px 22px;font-size:.86rem;color:var(--text);box-shadow:0 8px 32px rgba(0,212,255,.2);z-index:9999;text-align:center;animation:toastIn .3s ease;white-space:nowrap;max-width:90vw;}
 @keyframes toastIn{from{transform:translateX(-50%) translateY(16px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
- 
+
 /* ── FEEDBACK BUBBLE ── */
 .feedback-bubble{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:10px;padding:10px 13px;font-size:.8rem;color:var(--muted2);line-height:1.6;margin-top:8px;}
 .feedback-bubble strong{color:var(--accent);}
- 
+
 /* ── TABS (aluno login) ── */
 #screen-aluno-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
 .aluno-login-wrap{width:100%;max-width:400px;}
- 
+
 /* ── TELA SENHA PROFESSOR ── */
 #screen-prof-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
 .prof-login-wrap{width:100%;max-width:380px;position:relative;}
- 
+
 /* ── TELA TURMA ── */
 #screen-turma-sel{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
 .turma-sel-wrap{width:100%;max-width:420px;}
@@ -326,7 +326,7 @@ select option{background:var(--s1);}
 .turma-card-icon{font-size:1.8rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
   background:rgba(0,212,255,.08);border-radius:50%;border:1px solid var(--border);flex-shrink:0;}
 .turma-card-count{font-size:.68rem;color:var(--muted2);margin-top:2px;}
- 
+
 /* ── TELA ALUNOS DA TURMA ── */
 #screen-aluno-lista{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
 .aluno-lista-wrap{width:100%;max-width:420px;}
@@ -334,7 +334,7 @@ select option{background:var(--s1);}
   background:var(--s2);color:var(--text);font-family:'Nunito',sans-serif;cursor:pointer;
   margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:all .2s;text-align:left;}
 .aluno-pick-card:hover{border-color:var(--accent);background:rgba(0,212,255,.05);transform:translateX(4px);}
- 
+
 /* ── TELA SENHA ── */
 #screen-senha{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
 .senha-wrap{width:100%;max-width:400px;}
@@ -352,7 +352,7 @@ select option{background:var(--s1);}
 .kbtn.del{font-family:'Nunito',sans-serif;font-size:.9rem;}
 .senha-hint{font-size:.72rem;color:var(--muted);margin-top:14px;line-height:1.6;}
 .senha-error{font-size:.78rem;color:var(--red);margin-top:8px;min-height:20px;}
- 
+
 /* ══ WC ══ */
 :root{--wc:#ffd700;--wc2:#f59e0b;}
 .sb-wc{font-family:'Orbitron',monospace;font-size:.6rem;color:var(--wc);margin-top:2px;}
@@ -369,7 +369,7 @@ select option{background:var(--s1);}
 .wc-exchange-box{background:linear-gradient(135deg,rgba(16,185,129,.07),rgba(0,212,255,.05));border:1px solid rgba(16,185,129,.25);border-radius:var(--radius);padding:16px;margin-top:14px;}
 .btn-wc{background:linear-gradient(135deg,var(--wc),var(--wc2));color:#111;font-weight:900;}
 .mwc{font-family:'Orbitron',monospace;font-size:.68rem;color:var(--wc);}
- 
+
 /* ══ STEAM PROFILE ══ */
 .steam-banner-bg{position:absolute;inset:0;border-radius:var(--radius);overflow:hidden;z-index:0;}
 .steam-banner-bg img,.steam-banner-bg>div:first-child{width:100%;height:100%;object-fit:cover;display:block;}
@@ -387,7 +387,7 @@ select option{background:var(--s1);}
 .steam-stat:hover{border-color:var(--border2);}
 .steam-stat-val{font-family:'Orbitron',monospace;font-size:1.15rem;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .steam-stat-lbl{font-size:.52rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
- 
+
 /* ══ ACTIVITY FEED ══ */
 .activity-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--s2);border-radius:8px;margin-bottom:5px;border:1px solid var(--border);transition:border-color .2s;}
 .activity-item:hover{border-color:var(--border2);}
@@ -395,11 +395,11 @@ select option{background:var(--s1);}
 .activity-text{flex:1;font-size:.78rem;}
 .activity-time{font-size:.6rem;color:var(--muted);flex-shrink:0;white-space:nowrap;}
 .activity-xp{font-family:'Orbitron',monospace;font-size:.7rem;color:var(--gold);flex-shrink:0;}
- 
+
 /* ══ PET ══ */
 .pet-wrap{position:absolute;bottom:12px;right:14px;font-size:2rem;z-index:5;animation:petBounce 2.2s ease-in-out infinite;cursor:help;filter:drop-shadow(0 2px 10px rgba(0,0,0,.6));user-select:none;}
 @keyframes petBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.08)}}
- 
+
 /* ══ HACK POWER ══ */
 .hack-card{background:linear-gradient(135deg,rgba(16,185,129,.07),rgba(0,212,255,.04));border:1px solid rgba(16,185,129,.35);border-radius:var(--radius);padding:13px;margin-bottom:9px;position:relative;overflow:hidden;transition:all .2s;}
 .hack-card::after{content:'⚡ HACK';position:absolute;top:8px;right:10px;font-size:.5rem;font-family:'Orbitron',monospace;color:var(--green);background:rgba(16,185,129,.12);padding:2px 7px;border-radius:4px;}
@@ -407,7 +407,7 @@ select option{background:var(--s1);}
 .hack-card.used-hack{opacity:.4;filter:grayscale(.5);}
 .hack-name{font-weight:900;font-size:.88rem;margin-bottom:3px;}
 .hack-desc{font-size:.73rem;color:var(--muted2);line-height:1.5;}
- 
+
 /* ══ COSMETIC BORDERS ══ */
 .hero-card.b-neon{box-shadow:0 0 0 2px var(--accent),0 0 32px rgba(0,212,255,.65),0 0 60px rgba(0,212,255,.25)!important;}
 .hero-card.b-gold{box-shadow:0 0 0 2px var(--gold),0 0 32px rgba(255,215,0,.65),0 0 60px rgba(255,215,0,.25)!important;}
@@ -422,13 +422,13 @@ select option{background:var(--s1);}
 .hero-card.e-lightning::before{content:'⚡';position:absolute;top:8px;right:10px;font-size:1.5rem;animation:boltFloat 1.5s ease-in-out infinite;z-index:1;}
 @keyframes boltFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.05)}}
 @keyframes firePulse{0%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(249,115,22,.6))}50%{transform:scale(1.22);filter:drop-shadow(0 0 12px rgba(249,115,22,1))}100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(249,115,22,.6))}}
- 
+
 /* ══ PATENTE ══ */
 .patente{font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:1px;font-weight:900;display:inline-block;padding:3px 9px;border-radius:6px;margin-top:4px;}
 .p-recruta{background:rgba(100,116,139,.15);color:#64748b;}.p-soldado{background:rgba(16,185,129,.12);color:var(--green);}
 .p-tenente{background:rgba(0,212,255,.12);color:var(--accent);}.p-capitao{background:rgba(168,85,247,.12);color:#a855f7;}
 .p-general{background:rgba(255,215,0,.12);color:var(--gold);}.p-lenda{background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(168,85,247,.15));color:var(--pink);}
- 
+
 /* ══ LOOT ══ */
 .loot-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9800;align-items:center;justify-content:center;flex-direction:column;}
 .loot-overlay.active{display:flex;}
@@ -441,26 +441,26 @@ select option{background:var(--s1);}
 .loot-day-dot{width:30px;height:30px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:900;color:var(--muted);}
 .loot-day-dot.claimed{background:rgba(255,215,0,.18);border-color:var(--gold);color:var(--gold);}
 .loot-day-dot.today{background:rgba(0,212,255,.18);border-color:var(--accent);color:var(--accent);}
- 
+
 /* ══ SEASON ══ */
 .season-bar{background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(124,58,237,.08));border:1px solid rgba(0,212,255,.2);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
 .season-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--purple),var(--pink));}
 .season-prog-wrap{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin:8px 0;}
 .season-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:3px;transition:width .7s;}
- 
+
 /* ══ WELCOME ══ */
 .welcome-back{background:linear-gradient(90deg,rgba(0,212,255,.08),rgba(124,58,237,.08));border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:14px;}
 .welcome-icon{font-size:2rem;}
 .welcome-text{font-size:.85rem;font-weight:800;}
 .welcome-sub{font-size:.72rem;color:var(--muted2);margin-top:2px;}
- 
+
 /* ══ STREAK V2 ══ */
 .streak-card-v2{background:linear-gradient(135deg,rgba(249,115,22,.18),rgba(239,68,68,.1));border:1px solid rgba(249,115,22,.45);border-radius:var(--radius);padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;}
 .streak-card-v2::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),var(--red));}
 .streak-big{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--orange);line-height:1;}
 .streak-label{font-size:.68rem;color:var(--muted2);margin-top:3px;}
 .streak-fire-anim{display:inline-block;animation:firePulse 1.1s ease-in-out infinite;}
- 
+
 /* ══ CUSTOM MODAL ══ */
 .custom-section{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
 .custom-options{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
@@ -471,7 +471,7 @@ select option{background:var(--s1);}
 .banner-opt.selected{border-color:white;}.banner-opt.locked-opt{opacity:.35;cursor:not-allowed;}
 .border-opt-prev{width:56px;height:56px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid transparent;cursor:pointer;background:var(--s1);transition:all .2s;font-size:1.3rem;}
 .border-opt-prev.selected{background:rgba(0,212,255,.1);}.border-opt-prev.locked-opt{opacity:.35;cursor:not-allowed;}
- 
+
 /* ══ TURMA CARDS PROFESSOR ══ */
 .turma-group-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
 .turma-group-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--purple));}
@@ -483,7 +483,7 @@ select option{background:var(--s1);}
 .turma-group-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:2px;}
 .prof-search{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.9rem;outline:none;margin-bottom:12px;transition:border-color .2s;}
 .prof-search:focus{border-color:var(--accent);}
- 
+
 /* ══ COSMETIC RARITY ══ */
 .wc-rarity-comum{border-left:3px solid #64748b!important;}
 .wc-rarity-raro{border-left:3px solid var(--accent)!important;}
@@ -497,12 +497,12 @@ select option{background:var(--s1);}
 .wc-img-avatar{width:60px;height:60px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
 .wc-img-banner{width:100%;height:54px;border-radius:8px;object-fit:cover;margin-bottom:8px;border:1px solid var(--border);}
 .wc-img-border{width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
- 
+
 /* ══ THEME + TITLE ══ */
 .theme-swatch{display:flex;gap:3px;margin-top:6px;height:20px;border-radius:6px;overflow:hidden;}
 .theme-swatch span{flex:1;}
 .title-badge{display:inline-block;font-family:'Orbitron',monospace;font-size:.65rem;font-weight:900;letter-spacing:1px;padding:4px 12px;border-radius:20px;}
- 
+
 /* ══ VISUAL FEEDBACK ══ */
 .xp-float{position:fixed;pointer-events:none;z-index:99999;font-family:'Orbitron',monospace;font-weight:900;font-size:1.5rem;color:var(--gold);text-shadow:0 0 24px rgba(255,215,0,.9);animation:xpRise 1.8s ease-out forwards;}
 @keyframes xpRise{0%{opacity:1;transform:translateY(0) scale(.8)}30%{opacity:1;transform:translateY(-40px) scale(1.3)}70%{opacity:.8;transform:translateY(-110px) scale(1)}100%{opacity:0;transform:translateY(-180px) scale(.7)}}
@@ -510,17 +510,17 @@ select option{background:var(--s1);}
 @keyframes flashOut{0%{opacity:.5}100%{opacity:0}}
 .particle{position:fixed;pointer-events:none;z-index:99997;width:8px;height:8px;border-radius:50%;animation:particleFly 1.3s ease-out forwards;}
 @keyframes particleFly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(0)}}
- 
+
 </style>
 </head>
 <body>
- 
+
 <!-- SYNC INDICATOR -->
 <div class="sync-indicator" id="sync-indicator">
   <div class="sync-dot" id="sync-dot"></div>
   <span id="sync-text">Conectado</span>
 </div>
- 
+
 <!-- LEVEL UP OVERLAY -->
 <div id="levelup-overlay">
   <div class="levelup-stars">⭐✨🌟</div>
@@ -529,14 +529,14 @@ select option{background:var(--s1);}
   <div class="levelup-sub" id="lu-sub">Você agora é Explorador</div>
   <button class="btn btn-gold" onclick="closeLevelUp()" style="font-size:1rem;padding:14px 32px;">🎉 Incrível!</button>
 </div>
- 
+
 <!-- LOADING -->
 <div id="screen-loading" class="screen active">
   <div class="loading-logo">⚡ WARPCODE</div>
   <div class="loading-spin"></div>
   <div class="loading-msg">Conectando ao servidor...</div>
 </div>
- 
+
 <!-- LOGIN -->
 <div id="screen-login" class="screen">
   <div class="login-wrap">
@@ -562,7 +562,7 @@ select option{background:var(--s1);}
     </div>
   </div>
 </div>
- 
+
 <!-- PROFESSOR LOGIN -->
 <div id="screen-prof-login" class="screen">
   <div class="prof-login-wrap">
@@ -580,7 +580,7 @@ select option{background:var(--s1);}
     </div>
   </div>
 </div>
- 
+
 <!-- PROFESSOR -->
 <div id="screen-prof" class="screen" style="flex-direction:row;">
   <div class="app-shell" style="flex:1;min-height:100vh;">
@@ -603,7 +603,7 @@ select option{background:var(--s1);}
       <div style="width:36px"></div>
     </div>
     <main class="main-content">
- 
+
       <!-- ALUNOS -->
       <div id="ppage-alunos" class="page active">
         <div class="page-hdr"><div><div class="page-title">👥 Alunos</div><div class="page-sub">Clique numa turma para ver e gerenciar os alunos</div></div></div>
@@ -625,7 +625,7 @@ select option{background:var(--s1);}
         <div class="sec-title">Turmas</div>
         <div id="p-turmas-grid" class="grid-4" style="margin-bottom:14px;"></div>
       </div>
- 
+
       <!-- APROVAR -->
       <div id="ppage-aprovar" class="page">
         <div class="page-hdr"><div><div class="page-title">✅ Aprovar Missões</div><div class="page-sub">Valide os projetos e dê feedback</div></div></div>
@@ -650,7 +650,7 @@ select option{background:var(--s1);}
           </div>
         </div>
       </div>
- 
+
       <!-- DESAFIO DA SEMANA -->
       <div id="ppage-desafio" class="page">
         <div class="page-hdr"><div><div class="page-title">🔥 Desafio da Semana</div><div class="page-sub">Uma missão especial com XP bônus e tempo limitado</div></div></div>
@@ -670,7 +670,7 @@ select option{background:var(--s1);}
         <div class="sec-title">Desafios Ativos</div>
         <div id="p-desafio-atual"></div>
       </div>
- 
+
       <!-- LOJA -->
       <div id="ppage-loja" class="page">
         <div class="page-hdr"><div><div class="page-title">🛒 Loja de Recompensas</div><div class="page-sub">Alunos trocam XP por recompensas reais</div></div></div>
@@ -690,13 +690,13 @@ select option{background:var(--s1);}
         <div class="sec-title" style="margin-top:18px;">📋 Resgates Pendentes</div>
         <div id="p-resgates"></div>
       </div>
- 
+
       <!-- RANKING -->
       <div id="ppage-ranking" class="page">
         <div class="page-hdr"><div><div class="page-title">🏆 Ranking Geral</div></div></div>
         <div id="p-ranking"></div>
       </div>
- 
+
       <!-- PIN -->
       <div id="ppage-pin" class="page">
         <div class="page-hdr"><div><div class="page-title">🔑 Acesso dos Alunos</div></div></div>
@@ -731,7 +731,7 @@ select option{background:var(--s1);}
         <div class="sec-title">🔐 Senhas por Turma</div>
         <div id="p-senhas-turmas"></div>
       </div>
- 
+
     </main>
     <div class="mobile-bottomnav">
       <div class="mobile-nav-inner">
@@ -744,7 +744,7 @@ select option{background:var(--s1);}
     </div>
   </div>
 </div>
- 
+
 <!-- ALUNO LOGIN (selecionar turma diretamente) -->
 <div id="screen-aluno-login" class="screen">
   <div class="aluno-login-wrap">
@@ -754,7 +754,7 @@ select option{background:var(--s1);}
     <div id="turma-lista-inline"></div>
   </div>
 </div>
- 
+
 <!-- SELECIONAR ALUNO DA TURMA -->
 <div id="screen-aluno-lista" class="screen">
   <div class="aluno-lista-wrap">
@@ -765,7 +765,7 @@ select option{background:var(--s1);}
     <div id="aluno-lista-nomes"></div>
   </div>
 </div>
- 
+
 <!-- TELA DE SENHA -->
 <div id="screen-senha" class="screen">
   <div class="senha-wrap">
@@ -801,7 +801,7 @@ select option{background:var(--s1);}
     </div>
   </div>
 </div>
- 
+
 <!-- ALUNO DASHBOARD -->
 <div id="screen-aluno" class="screen" style="flex-direction:row;">
   <div class="app-shell" style="flex:1;min-height:100vh;">
@@ -829,7 +829,7 @@ select option{background:var(--s1);}
       <div style="width:36px"></div>
     </div>
     <main class="main-content">
- 
+
       <!-- PERFIL -->
       <div id="apage-perfil" class="page active">
         <div id="a-season-bar"></div>
@@ -842,20 +842,20 @@ select option{background:var(--s1);}
         <div class="sec-title">📡 Atividade Recente</div>
         <div id="a-activity-feed" style="margin-bottom:14px;"></div>
       </div>
- 
+
       <!-- MISSÕES -->
       <div id="apage-missoes" class="page">
         <div class="page-hdr"><div><div class="page-title">🎯 Missões Individuais</div><div class="page-sub">Complete no Scratch e envie para aprovação</div></div></div>
         <div id="a-weekly-banner"></div>
         <div id="a-missoes"></div>
       </div>
- 
+
       <!-- EQUIPE -->
       <div id="apage-equipe" class="page">
         <div class="page-hdr"><div><div class="page-title">🤝 Missões em Equipe</div><div class="page-sub">Colabore com colegas e dividam o XP</div></div></div>
         <div id="a-equipe-missoes"></div>
       </div>
- 
+
       <!-- LOJA -->
       <div id="apage-loja" class="page">
         <div class="page-hdr">
@@ -864,25 +864,25 @@ select option{background:var(--s1);}
         </div>
         <div id="a-loja-items"></div>
       </div>
- 
+
       <!-- RANKING -->
       <div id="apage-ranking" class="page">
         <div class="page-hdr"><div><div class="page-title">🏆 Ranking da Turma</div></div></div>
         <div id="a-ranking"></div>
       </div>
- 
+
       <!-- HISTÓRICO -->
       <div id="apage-historico" class="page">
         <div class="page-hdr"><div><div class="page-title">📜 Histórico de XP</div><div class="page-sub">Tudo que você ganhou até agora</div></div></div>
         <div class="card"><div id="a-historico"></div></div>
       </div>
- 
+
       <!-- BADGES -->
       <div id="apage-badges" class="page">
         <div class="page-hdr"><div><div class="page-title">🏅 Conquistas</div></div></div>
         <div class="badge-grid" id="a-badges"></div>
       </div>
- 
+
       <!-- LOJA WARPCOINS -->
       <div id="apage-wcloja" class="page">
         <div class="page-hdr">
@@ -911,7 +911,7 @@ select option{background:var(--s1);}
         </div>
         <div id="a-wc-items"></div>
       </div>
- 
+
     </main>
     <div class="mobile-bottomnav">
       <div class="mobile-nav-inner">
@@ -927,7 +927,7 @@ select option{background:var(--s1);}
     </div>
   </div>
 </div>
- 
+
 <!-- MODAL MISSÃO -->
 <div class="modal-overlay" id="modal-missao">
   <div class="modal"><button class="modal-close" onclick="closeModal('modal-missao')">✕</button><div id="modal-missao-content"></div></div>
@@ -959,16 +959,16 @@ select option{background:var(--s1);}
     <button class="btn btn-primary btn-block" onclick="confirmarAvatar()">✓ Confirmar</button>
   </div>
 </div>
- 
- 
+
+
 <!-- MUSIC -->
 <button id="music-btn" onclick="toggleMusic()" title="Música Lo-Fi" style="position:fixed;bottom:76px;right:14px;z-index:8000;width:44px;height:44px;border-radius:50%;background:rgba(15,22,35,.9);border:1px solid rgba(0,212,255,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all .3s;backdrop-filter:blur(8px);">🎵</button>
- 
+
 <!-- LOOT OVERLAY -->
 <div class="loot-overlay" id="loot-overlay">
   <div style="max-width:380px;width:100%;padding:30px 24px;text-align:center;" id="loot-content"></div>
 </div>
- 
+
 <!-- MODAL CUSTOM PERFIL -->
 <div class="modal-overlay" id="modal-custom">
   <div class="modal" style="max-width:540px;"><button class="modal-close" onclick="closeModal('modal-custom')">✕</button>
@@ -976,7 +976,7 @@ select option{background:var(--s1);}
     <div id="modal-custom-content"></div>
   </div>
 </div>
- 
+
 <script>
 // ══════════════════════════════════════
 //  FIREBASE CONFIG
@@ -989,10 +989,10 @@ const firebaseConfig = {
   messagingSenderId: "996625951550",
   appId: "1:996625951550:web:aee05a0bd0949373185a6f"
 };
- 
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
- 
+
 // Refs das coleções
 const COL = {
   config:    () => db.collection('config').doc('global'),
@@ -1003,19 +1003,19 @@ const COL = {
   loja:      () => db.collection('loja'),
   desafios:  () => db.collection('desafios'),
 };
- 
+
 // ══════════════════════════════════════
 //  STATE LOCAL (cache em memória)
 // ══════════════════════════════════════
 const AVATARS=['🤖','🦾','👾','🐱','🦊','🐉','⚡','🚀','🦁','🐺','🦋','🐸','🦄','🐙','🦖','🐧','🦅','🐯','🦊','🌟'];
- 
+
 let S = {
   alunos:[], pin:'----',
   pendentes:[], resgates:[],
   loja:[], desafio:null,
   missoes:[], desafios:[]
 };
- 
+
 const MISSOES_PADRAO = [
   {id:'m1',titulo:"Olá, Mundo Scratch!",desc:"Crie seu primeiro projeto com um personagem se movendo.",xp:100,dif:"easy",done:[],tipo:'individual'},
   {id:'m2',titulo:"O Gato Falante",desc:"Faça o gato dizer seu nome e uma frase quando clicado.",xp:150,dif:"easy",done:[],tipo:'individual'},
@@ -1036,9 +1036,9 @@ const LOJA_PADRAO = [
   {id:'l3',emoji:'🏆',nome:'Dar nome ao projeto da turma',desc:'Você escolhe o nome do próximo projeto coletivo.',custo:500,ativo:true},
   {id:'l4',emoji:'📸',nome:'Foto no mural da fama',desc:'Seu avatar vai para o mural de destaque por 1 semana.',custo:400,ativo:true},
 ];
- 
+
 let alunoAtual=null, avatarSelecionado=null;
- 
+
 // ══════════════════════════════════════
 //  SYNC INDICATOR
 // ══════════════════════════════════════
@@ -1048,7 +1048,7 @@ function setSyncing(s){ // 'ok' | 'syncing' | 'error'
   dot.className='sync-dot'+(s==='syncing'?' syncing':s==='error'?' error':'');
   txt.textContent=s==='syncing'?'Salvando...':s==='error'?'Sem conexão':'Conectado';
 }
- 
+
 // ══════════════════════════════════════
 //  INICIALIZAÇÃO — carrega dados do Firestore
 // ══════════════════════════════════════
@@ -1066,7 +1066,7 @@ async function inicializar(){
       S.pin = String(Math.floor(1000+Math.random()*9000));
       await COL.config().set({ pin: S.pin, desafio: null });
     }
- 
+
     // Carrega missões (ou cria padrão)
     const missSnap = await COL.missoes().get();
     if(missSnap.empty){
@@ -1077,7 +1077,7 @@ async function inicializar(){
     } else {
       S.missoes = missSnap.docs.map(d => ({id:d.id,...d.data()}));
     }
- 
+
     // Carrega loja (ou cria padrão)
     const lojaSnap = await COL.loja().get();
     if(lojaSnap.empty){
@@ -1088,30 +1088,30 @@ async function inicializar(){
     } else {
       S.loja = lojaSnap.docs.map(d => ({id:d.id,...d.data()}));
     }
- 
+
     // Carrega alunos
     const alunosSnap = await COL.alunos().orderBy('nome').get();
     S.alunos = alunosSnap.docs.map(d => ({id:d.id,...d.data()}));
- 
+
     // Carrega pendentes
     const pendSnap = await COL.pendentes().where('aprovado','==',false).where('rejeitado','==',false).get();
     S.pendentes = pendSnap.docs.map(d => ({id:d.id,...d.data()}));
- 
+
     // Carrega resgates ativos
     const resgSnap = await COL.resgates().where('rejeitado','==',false).get();
     S.resgates = resgSnap.docs.map(d => ({id:d.id,...d.data()}));
- 
+
     // Carrega desafios
     const desafiosSnap = await COL.desafios().orderBy('ts','desc').get();
     S.desafios = desafiosSnap.docs.map(d => ({id:d.id,...d.data()}));
     // Compat: S.desafio aponta para o mais recente ativo
     S.desafio = S.desafios.find(d=>new Date(d.expira)>new Date())||null;
- 
+
     setSyncing('ok');
- 
+
     // Listeners em tempo real
     ligarListeners();
- 
+
     // Vai para login
     showScreen('screen-login');
   } catch(err) {
@@ -1121,7 +1121,7 @@ async function inicializar(){
     document.querySelector('.loading-msg').style.color = 'var(--red)';
   }
 }
- 
+
 // ══════════════════════════════════════
 //  LISTENERS EM TEMPO REAL
 // ══════════════════════════════════════
@@ -1162,14 +1162,14 @@ function ligarListeners(){
     renderSafe();
   });
 }
- 
+
 function renderSafe(){
   const screen = document.querySelector('.screen.active');
   if(!screen) return;
   if(screen.id==='screen-prof') renderProf();
   else if(screen.id==='screen-aluno') renderAluno();
 }
- 
+
 // ══════════════════════════════════════
 //  NÍVEIS & STREAK
 // ══════════════════════════════════════
@@ -1181,7 +1181,7 @@ function nivel(xp){
   return {n:"Iniciante",e:"🌱",prox:500,base:0,idx:0};
 }
 function pct(xp){const n=nivel(xp);if(!n.prox)return 100;return Math.round(((xp-n.base)/(n.prox-n.base))*100);}
- 
+
 // ══════════════════════════════════════
 //  CONQUISTAS
 // ══════════════════════════════════════
@@ -1202,7 +1202,7 @@ const CONQ=[
   {icon:"🎯",nome:"Dedicado",req:"5 missões",check:a=>S.missoes.filter(m=>(m.done||[]).includes(a.id)).length>=5},
   {icon:"⭐",nome:"Desafiador",req:"Complete desafio semanal",check:a=>(a.desafiosConcluidos||0)>0},
 ];
- 
+
 // ══════════════════════════════════════
 //  NAVEGAÇÃO
 // ══════════════════════════════════════
@@ -1234,16 +1234,16 @@ function goAlunoLogin(){
   renderTurmasSel();
   showScreen('screen-aluno-login');
 }
- 
+
 // ══════════════════════════════════════
 //  FLUXO DE LOGIN DO ALUNO
 //  Turma → Aluno → Senha (4 dígitos)
 // ══════════════════════════════════════
- 
+
 let alunoSenhaBuffer = '';
 let senhaEtapa = 'login';  // 'login' | 'criar' | 'confirmar'
 let senhaCriada = '';
- 
+
 // ── ETAPA 1: Listar turmas disponíveis ──
 function renderTurmasSel(){
   const turmasMap = {};
@@ -1272,7 +1272,7 @@ function renderTurmasSel(){
     </button>`;
   }).join('');
 }
- 
+
 // ── ETAPA 2: Listar alunos da turma ──
 function selecionarTurma(turma){
   const alunosTurma = S.alunos.filter(a => a.turma === turma).sort((a,b)=>a.nome.localeCompare(b.nome));
@@ -1293,7 +1293,7 @@ function selecionarTurma(turma){
   }).join('');
   showScreen('screen-aluno-lista');
 }
- 
+
 // ── ETAPA 3: Tela de senha ──
 function selecionarAluno(id){
   const a = S.alunos.find(x=>x.id===id);
@@ -1301,11 +1301,11 @@ function selecionarAluno(id){
   alunoAtual = id;
   alunoSenhaBuffer = '';
   senhaCriada = '';
- 
+
   document.getElementById('senha-avatar').textContent = a.avatar||'👾';
   document.getElementById('senha-nome').textContent = a.nome;
   document.getElementById('senha-turma').textContent = a.turma;
- 
+
   if(a.senha){
     senhaEtapa = 'login';
     document.getElementById('senha-modo-titulo').textContent = 'ENTRAR';
@@ -1321,7 +1321,7 @@ function selecionarAluno(id){
   atualizarDots();
   showScreen('screen-senha');
 }
- 
+
 // ── TECLADO NUMÉRICO ──
 function digitarSenha(d){
   if(alunoSenhaBuffer.length >= 4) return;
@@ -1345,12 +1345,12 @@ function atualizarDots(){
     el.classList.toggle('filled', i < alunoSenhaBuffer.length);
   }
 }
- 
+
 // ── PROCESSAMENTO DA SENHA ──
 async function processarSenha(){
   const a = S.alunos.find(x=>x.id===alunoAtual);
   if(!a) return;
- 
+
   if(senhaEtapa === 'login'){
     if(alunoSenhaBuffer === a.senha){
       await finalizarEntrada();
@@ -1391,18 +1391,18 @@ async function processarSenha(){
     }
   }
 }
- 
+
 // ── ENTRADA FINAL (streak, level up, etc.) ──
 async function finalizarEntrada(){
   const a = S.alunos.find(x=>x.id===alunoAtual);
   if(!a) return;
- 
+
   const hoje = new Date().toDateString();
   let novoStreak = a.streak||0;
   let bonusXP = 0;
   const hist = [...(a.historico||[])];
   let mostrarLootBox = false;
- 
+
   if(!a.lastLogin){
     novoStreak = 1;
     mostrarLootBox = true;
@@ -1417,7 +1417,7 @@ async function finalizarEntrada(){
       mostrarLootBox = (a.lastDailyLoot !== hoje);
     }
   }
- 
+
   const nivAntes = nivel(a.xp||0).idx;
   try {
     const update = {streak:novoStreak, lastLogin:new Date().toISOString()};
@@ -1425,11 +1425,11 @@ async function finalizarEntrada(){
     if(hist.length !== a.historico?.length) update.historico = hist.slice(0,30);
     await COL.alunos().doc(alunoAtual).update(update);
   } catch(e){ console.warn('Erro ao atualizar streak',e); }
- 
+
   document.getElementById('a-topbar-title').textContent = a.nome.split(' ')[0].toUpperCase();
   showScreen('screen-aluno');
   renderAluno();
- 
+
   const aAtual = S.alunos.find(x=>x.id===alunoAtual);
   if(aAtual){
     const nivDepois = nivel(aAtual.xp||0);
@@ -1437,7 +1437,7 @@ async function finalizarEntrada(){
     if(mostrarLootBox) setTimeout(()=>mostrarLoot(aAtual, rollLoot()), 1200);
   }
 }
- 
+
 const PROF_LABELS={alunos:'Alunos',aprovar:'Aprovar Missões',desafio:'Desafio da Semana',loja:'Loja',ranking:'Ranking',pin:'Acesso Alunos'};
 function profTab(tab,navId,isMobile=false){
   document.querySelectorAll('[id^="ppage-"]').forEach(p=>p.classList.remove('active'));
@@ -1460,15 +1460,15 @@ function alunoTab(tab,snavId,isMobile=false,mnavId=''){
   document.getElementById('a-topbar-title').textContent=(ALUNO_LABELS[tab]||'').toUpperCase();
   renderAluno();
 }
- 
+
 // ══════════════════════════════════════
 //  RENDER PROFESSOR
 // ══════════════════════════════════════
 function renderProf(){renderPAlunos();renderPAprovacoes();renderPRanking();renderPStats();renderPLoja();renderPResgates();renderPDesafio();renderSelects();}
- 
+
 const TURMAS_ORDER=['6º Ano A','6º Ano B','7º Ano A','7º Ano B','8º Ano A','8º Ano B','9º Ano A','9º Ano B'];
 const TURMA_ICONS={'6º Ano A':'🌱','6º Ano B':'🌿','7º Ano A':'⚡','7º Ano B':'🔥','8º Ano A':'🚀','8º Ano B':'💫','9º Ano A':'🏆','9º Ano B':'👑'};
- 
+
 function renderPAlunos(){
   const el=document.getElementById('p-turmas-grid');if(!el)return;
   if(!S.alunos.length){el.innerHTML=`<div class="empty" style="grid-column:1/-1;"><div class="empty-icon">👥</div><div class="empty-text">Nenhum aluno cadastrado.<br>Adicione acima!</div></div>`;return;}
@@ -1488,7 +1488,7 @@ function renderPAlunos(){
     </div>`;
   }).join('');
 }
- 
+
 let _turmaModalAtual='';
 function abrirModalTurma(turma){
   _turmaModalAtual=turma;
@@ -1527,7 +1527,7 @@ function renderModalTurmaLista(query){
     </div>`;
   }).join('');
 }
- 
+
 function abrirEditarAluno(id){
   const a=S.alunos.find(x=>x.id===id);if(!a)return;
   document.getElementById('modal-editar-aluno-content').innerHTML=`
@@ -1555,7 +1555,7 @@ function abrirEditarAluno(id){
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-editar-aluno')" style="margin-bottom:0;">Cancelar</button>`;
   document.getElementById('modal-editar-aluno').classList.add('active');
 }
- 
+
 async function salvarEdicaoAluno(id){
   const nome=document.getElementById('edit-nome')?.value.trim();
   const turma=document.getElementById('edit-turma')?.value;
@@ -1572,7 +1572,7 @@ async function salvarEdicaoAluno(id){
     toast('✅ Aluno atualizado!');setSyncing('ok');
   }catch(e){toast('❌ Erro!');setSyncing('error');}
 }
- 
+
 function renderPAprovacoes(){
   const el=document.getElementById('p-aprovacoes');
   if(!S.pendentes.length){el.innerHTML=`<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">Nenhuma missão pendente.</div></div>`;return;}
@@ -1600,7 +1600,7 @@ function renderPAprovacoes(){
     </div>`;
   }).join('');
 }
- 
+
 function renderPRanking(){
   const sorted=[...S.alunos].sort((a,b)=>(b.xp||0)-(a.xp||0));
   const el=document.getElementById('p-ranking');
@@ -1617,7 +1617,7 @@ function renderPRanking(){
     </div>`;
   }).join('');
 }
- 
+
 function renderPLoja(){
   const el=document.getElementById('p-loja-items');
   if(!S.loja.length){el.innerHTML=`<div class="empty"><div class="empty-icon">🛒</div><div class="empty-text">Adicione itens acima.</div></div>`;return;}
@@ -1636,7 +1636,7 @@ function renderPLoja(){
       </div>
     </div>`).join('');
 }
- 
+
 function renderPResgates(){
   const el=document.getElementById('p-resgates');
   const pendentes=S.resgates.filter(r=>!r.aprovado&&!r.rejeitado);
@@ -1655,7 +1655,7 @@ function renderPResgates(){
     </div>`;
   }).join('');
 }
- 
+
 function renderPDesafio(){
   const el=document.getElementById('p-desafio-atual');
   const ativos=S.desafios.filter(d=>new Date(d.expira)>new Date());
@@ -1676,7 +1676,7 @@ function renderPDesafio(){
     </div>`;
   }).join('');
 }
- 
+
 function renderPStats(){
   const xpTotal=S.alunos.reduce((s,a)=>s+(a.xp||0),0);
   const missOk=S.missoes.reduce((s,m)=>s+(m.done||[]).length,0);
@@ -1689,7 +1689,7 @@ function renderPStats(){
   ['snav-badge','mnav-badge'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.style.display=n>0?'flex':'none';el.textContent=n;});
   renderPSenhasTurmas();
 }
- 
+
 function renderPSenhasTurmas(){
   const el=document.getElementById('p-senhas-turmas');if(!el)return;
   if(!S.alunos.length){el.innerHTML=`<div class="empty"><div class="empty-icon">🔑</div><div class="empty-text">Nenhum aluno cadastrado.</div></div>`;return;}
@@ -1747,7 +1747,7 @@ function renderSelects(){
   const cur=sel.value;
   sel.innerHTML=S.alunos.length?S.alunos.map(a=>`<option value="${a.id}" ${a.id==cur?'selected':''}>${a.avatar||'👾'} ${a.nome}</option>`).join(''):'<option>— Nenhum —</option>';
 }
- 
+
 // ══════════════════════════════════════
 //  RENDER ALUNO
 // ══════════════════════════════════════
@@ -1758,11 +1758,11 @@ function renderAluno(){
   const missFeitas=S.missoes.filter(m=>(m.done||[]).includes(a.id)).length;
   const pos=[...S.alunos].sort((x,y)=>(y.xp||0)-(x.xp||0)).findIndex(x=>x.id===a.id)+1;
   const streak=a.streak||0;
- 
+
   document.getElementById('aluno-sb-av').textContent=a.avatar||'👾';
   document.getElementById('aluno-sb-name').textContent=a.nome;
   document.getElementById('aluno-sb-xp').textContent=`${a.xp||0} XP · ${n.e} ${n.n}`;
- 
+
   const saldo=wcSaldo(a);
   const pat=patente(a.xp||0);
   const eqBorder=eqItem(a,'border');const eqEffect=eqItem(a,'effect');const eqBanner=eqItem(a,'banner');
@@ -1825,21 +1825,21 @@ function renderAluno(){
         <button class="btn btn-outline btn-sm" onclick="abrirCustomPerfil()" style="backdrop-filter:blur(8px);background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.25);color:#fff;">🎨 Customizar</button>
       </div>
     </div>`;
- 
+
   // WC sidebar sync
   const wcSb=document.getElementById('aluno-sb-wc');if(wcSb)wcSb.textContent=`🪙 ${saldo} WC`;
   const wcSaldoEl=document.getElementById('a-wc-saldo');if(wcSaldoEl)wcSaldoEl.textContent=saldo;
   renderWCLoja(a);
- 
+
   // Season bar
   const seasonEl=document.getElementById('a-season-bar');
   if(seasonEl&&S.season){const ss=S.season;const now2=new Date();const end2=new Date(ss.end);const start2=new Date(ss.start);const total2=Math.max(1,(end2-start2)/86400000);const elapsed2=(now2-start2)/86400000;const pc2=Math.min(100,Math.round(elapsed2/total2*100));const dias2=Math.max(0,Math.ceil((end2-now2)/86400000));seasonEl.innerHTML=`<div class="season-bar"><div style="font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:3px;color:var(--accent);margin-bottom:2px;">🏆 ${ss.nome}</div><div style="font-size:.7rem;color:var(--muted2);">${ss.periodo} · ⏱ ${dias2} dias restantes</div><div class="season-prog-wrap"><div class="season-prog-fill" style="width:${pc2}%"></div></div></div>`;}
   else if(seasonEl)seasonEl.innerHTML='';
- 
+
   // Welcome card
   const welcomeEl=document.getElementById('a-welcome');
   if(welcomeEl){const hora=new Date().getHours();const saudacao=hora<12?'Bom dia':hora<18?'Boa tarde':'Boa noite';welcomeEl.innerHTML=`<div class="welcome-back"><div class="welcome-icon">${a.avatar||'👾'}</div><div style="flex:1;"><div class="welcome-text">${saudacao}, ${a.nome.split(' ')[0]}! 👋</div><div class="welcome-sub">${n.e} ${n.n} · ${a.xp||0} XP · #${pos} · <span class="${pat.cls} patente">${pat.nome}</span></div></div><div class="wc-badge">🪙 ${saldo}</div></div>`;}
- 
+
   document.getElementById('a-stats').innerHTML=`
     <div class="steam-stat"><div class="steam-stat-val">${a.xp||0}</div><div class="steam-stat-lbl">XP Total</div></div>
     <div class="steam-stat"><div class="steam-stat-val">#${pos}</div><div class="steam-stat-lbl">Ranking</div></div>
@@ -1849,7 +1849,7 @@ function renderAluno(){
     <div class="steam-stat"><div class="steam-stat-val">${badgesUnlocked.length}</div><div class="steam-stat-lbl">Badges</div></div>
     <div class="steam-stat"><div class="steam-stat-val">${streak}</div><div class="steam-stat-lbl">🔥 Streak</div></div>
     <div class="steam-stat"><div class="steam-stat-val">${diasAtivo}</div><div class="steam-stat-lbl">Dias Ativo</div></div>`;
- 
+
   document.getElementById('a-streak-card').innerHTML=streak>=1?`
     <div class="streak-card-v2">
       <div style="font-size:2.4rem;line-height:1;"><span class="streak-fire-anim">🔥</span></div>
@@ -1858,14 +1858,14 @@ function renderAluno(){
         <div class="streak-label">Acesso consecutivo · ${streak>=7?'Incrível! 🌟':streak>=3?'Continue assim! 💪':'Bom começo! ⚡'}</div>
       </div>
     </div>`:'';
- 
+
   const desbloq=CONQ.filter(c=>c.check(a)).slice(0,6);
   document.getElementById('a-badges-mini').innerHTML=desbloq.map(c=>`<div class="badge-item"><div class="badge-icon">${c.icon}</div><div class="badge-name">${c.nome}</div></div>`).join('')||`<p style="color:var(--muted);font-size:.8rem">Complete missões para ganhar badges!</p>`;
- 
+
   // ACTIVITY FEED
   const feedEl=document.getElementById('a-activity-feed');
   if(feedEl){const hist2=(a.historico||[]).slice(0,5);if(hist2.length){feedEl.innerHTML=hist2.map(h=>{const dt=new Date(h.ts);const now3=new Date();const diff=Math.floor((now3-dt)/60000);const ago=diff<1?'agora':diff<60?diff+'min':diff<1440?Math.floor(diff/60)+'h':Math.floor(diff/1440)+'d';const icon=h.xp>200?'🚀':h.xp>0?'⚡':h.xp<0?'💸':'🎁';return`<div class="activity-item"><div class="activity-icon">${icon}</div><div class="activity-text">${h.desc}</div><div class="activity-time">${ago}</div>${h.xp?`<div class="activity-xp">${h.xp>0?'+':''}${h.xp}</div>`:''}</div>`;}).join('');}else{feedEl.innerHTML=`<div class="empty" style="padding:20px;"><div class="empty-icon">📡</div><div class="empty-text">Nenhuma atividade ainda.</div></div>`;}}
- 
+
   // DESAFIO BANNER — todos os desafios ativos
   const wb=document.getElementById('a-weekly-banner');
   const desafiosAtivos=S.desafios.filter(d=>new Date(d.expira)>new Date());
@@ -1886,7 +1886,7 @@ function renderAluno(){
       </div>`;
     }).join('');
   } else wb.innerHTML='';
- 
+
   // MISSÕES INDIVIDUAIS
   const indiv=S.missoes.filter(m=>m.tipo==='individual');
   document.getElementById('a-missoes').innerHTML=indiv.map(m=>{
@@ -1906,7 +1906,7 @@ function renderAluno(){
       <div class="mtags"><span class="mdiff ${dc}">${dl}</span><span class="mxp">+${m.xp} XP</span>${statusTag}</div>
       ${action}</div>`;
   }).join('');
- 
+
   // MISSÕES EQUIPE
   const equipe=S.missoes.filter(m=>m.tipo==='equipe');
   document.getElementById('a-equipe-missoes').innerHTML=equipe.map(m=>{
@@ -1924,7 +1924,7 @@ function renderAluno(){
       <div class="mtags"><span class="mdiff ${dc}">${dl}</span><span class="mxp">+${m.xp} XP/membro</span><span class="mdiff diff-team">👥 ${m.vagas} pessoas</span>${statusTag}</div>
       ${action}</div>`;
   }).join('');
- 
+
   // LOJA
   document.getElementById('a-saldo-loja').textContent=a.xp||0;
   const lojaAtiva=S.loja.filter(r=>r.ativo);
@@ -1944,7 +1944,7 @@ function renderAluno(){
       </div>
     </div>`;
   }).join(''):`<div class="empty"><div class="empty-icon">🛒</div><div class="empty-text">Loja vazia por enquanto.</div></div>`;
- 
+
   // RANKING
   const sorted=[...S.alunos].sort((x,y)=>(y.xp||0)-(x.xp||0));
   document.getElementById('a-ranking').innerHTML=sorted.map((al,i)=>{
@@ -1965,7 +1965,7 @@ function renderAluno(){
       <div style="font-family:'Orbitron',monospace;font-size:.88rem;color:var(--gold);font-weight:700;flex-shrink:0">${al.xp||0} XP</div>
     </div>`;
   }).join('');
- 
+
   // HISTÓRICO
   const hist=a.historico||[];
   document.getElementById('a-historico').innerHTML=hist.length?hist.map(h=>`
@@ -1974,14 +1974,14 @@ function renderAluno(){
       <div style="flex:1;"><div class="history-desc">${h.desc}</div><div class="history-date">${new Date(h.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div></div>
       <div class="history-xp" style="color:${h.xp>0?'var(--gold)':'var(--red)'};">${h.xp>0?'+':''}${h.xp} XP</div>
     </div>`).join(''):`<div class="empty" style="padding:20px;"><div class="empty-icon">📜</div><div class="empty-text">Seu histórico aparecerá aqui.</div></div>`;
- 
+
   // BADGES
   document.getElementById('a-badges').innerHTML=CONQ.map(c=>{
     const ok=c.check(a);
     return `<div class="badge-item ${ok?'':'locked'}"><div class="badge-icon">${c.icon}</div><div class="badge-name">${c.nome}</div><div class="badge-req">${c.req}</div></div>`;
   }).join('');
 }
- 
+
 // ══════════════════════════════════════
 //  AÇÕES PROFESSOR — FIREBASE
 // ══════════════════════════════════════
@@ -1997,7 +1997,7 @@ async function cadastrarAluno(){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro ao cadastrar!'); setSyncing('error'); }
 }
- 
+
 async function removerAluno(id){
   if(!confirm('Remover este aluno? Isso apagará todos os dados dele.')) return;
   setSyncing('syncing');
@@ -2022,7 +2022,7 @@ async function removerAluno(id){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro ao remover!'); setSyncing('error'); }
 }
- 
+
 async function darXP(){
   const id=document.getElementById('p-xp-aluno').value;
   const xp=parseInt(document.getElementById('p-xp-motivo').value);
@@ -2039,7 +2039,7 @@ async function darXP(){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
 }
- 
+
 async function aprovar(pid){
   const pend=S.pendentes.find(p=>p.id===pid);if(!pend)return;
   const aluno=S.alunos.find(a=>a.id===pend.alunoId);
@@ -2071,7 +2071,7 @@ async function aprovar(pid){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro ao aprovar!'); setSyncing('error'); }
 }
- 
+
 async function rejeitar(pid){
   setSyncing('syncing');
   try {
@@ -2080,7 +2080,7 @@ async function rejeitar(pid){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
 }
- 
+
 function abrirModalAluno(id){
   const a=S.alunos.find(x=>x.id===id);const n=nivel(a.xp||0);
   document.getElementById('modal-aluno-content').innerHTML=`
@@ -2098,7 +2098,7 @@ function abrirModalAluno(id){
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-aluno')" style="margin-bottom:0">Cancelar</button>`;
   document.getElementById('modal-aluno').classList.add('active');
 }
- 
+
 async function ajustarXP(id,sinal){
   const v=parseInt(document.getElementById('modal-xp-v').value);if(!v||v<1)return toast('⚠️ Digite um valor!');
   const a=S.alunos.find(x=>x.id===id);
@@ -2112,7 +2112,7 @@ async function ajustarXP(id,sinal){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
 }
- 
+
 async function addRecompensa(){
   const emoji=document.getElementById('r-emoji').value.trim()||'🎁';
   const nome=document.getElementById('r-nome').value.trim();
@@ -2129,17 +2129,17 @@ async function addRecompensa(){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
 }
- 
+
 async function toggleLoja(id){
   const r=S.loja.find(x=>x.id===id);if(!r)return;
   try { await COL.loja().doc(id).update({ativo:!r.ativo}); } catch(e){ toast('❌ Erro!'); }
 }
- 
+
 async function removerLoja(id){
   if(!confirm('Remover item?'))return;
   try { await COL.loja().doc(id).delete(); } catch(e){ toast('❌ Erro!'); }
 }
- 
+
 async function aprovarResgate(rid){
   const r=S.resgates.find(x=>x.id===rid);if(!r)return;
   const aluno=S.alunos.find(a=>a.id===r.alunoId);
@@ -2155,7 +2155,7 @@ async function aprovarResgate(rid){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
 }
- 
+
 async function rejeitarResgate(rid){
   const r=S.resgates.find(x=>x.id===rid);if(!r)return;
   const aluno=S.alunos.find(a=>a.id===r.alunoId);
@@ -2172,7 +2172,7 @@ async function rejeitarResgate(rid){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
 }
- 
+
 async function salvarDesafio(){
   const titulo=document.getElementById('d-titulo').value.trim();
   const desc=document.getElementById('d-desc').value.trim();
@@ -2193,7 +2193,7 @@ async function salvarDesafio(){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
 }
- 
+
 async function removerDesafio(id){
   if(!confirm('Encerrar este desafio?'))return;
   try {
@@ -2201,13 +2201,13 @@ async function removerDesafio(id){
     toast('Desafio encerrado.');
   } catch(e){ toast('❌ Erro!'); }
 }
- 
+
 // ══════════════════════════════════════
 //  AÇÕES ALUNO — FIREBASE
 // ══════════════════════════════════════
 // entrarAluno mantida por compatibilidade
 async function entrarAluno(){ goAlunoLogin(); }
- 
+
 function abrirMissao(mid){
   const a=S.alunos.find(x=>x.id===alunoAtual);
   const m=S.missoes.find(x=>x.id===mid);
@@ -2237,7 +2237,7 @@ function abrirMissao(mid){
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-missao')" style="margin-bottom:0">Cancelar</button>`;
   document.getElementById('modal-missao').classList.add('active');
 }
- 
+
 async function enviarAprovacao(mid){
   const a=S.alunos.find(x=>x.id===alunoAtual);
   if(!a)return;
@@ -2251,7 +2251,7 @@ async function enviarAprovacao(mid){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro ao enviar!'); setSyncing('error'); }
 }
- 
+
 function abrirDesafio(desafioId){
   const d=S.desafios.find(x=>x.id===desafioId);
   if(!d)return;
@@ -2276,7 +2276,7 @@ function abrirDesafio(desafioId){
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-missao')" style="margin-bottom:0">Cancelar</button>`;
   document.getElementById('modal-missao').classList.add('active');
 }
- 
+
 async function enviarDesafio(desafioId){
   const d=S.desafios.find(x=>x.id===desafioId);
   if(!d)return;
@@ -2292,7 +2292,7 @@ async function enviarDesafio(desafioId){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
 }
- 
+
 async function resgatar(itemId){
   const a=S.alunos.find(x=>x.id===alunoAtual);
   const item=S.loja.find(x=>x.id===itemId);
@@ -2309,7 +2309,7 @@ async function resgatar(itemId){
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
 }
- 
+
 // ══════════════════════════════════════
 //  WARPCOINS SYSTEM
 // ══════════════════════════════════════
@@ -2355,7 +2355,7 @@ const WC_ITEMS=[
   {id:'hack_streak',cat:'hackpower',name:'Escudo de Streak',desc:'Protege seu streak por 1 dia de falta.',cost:300,icon:'🛡️',free:false,hackUses:1,hackId:'streak_shield'},
   {id:'hack_loot2',cat:'hackpower',name:'Loot Duplo',desc:'Próxima caixa de loot revela 2 prêmios.',cost:400,icon:'🎁',free:false,hackUses:1,hackId:'double_loot'},
   {id:'hack_xpboost2',cat:'hackpower',name:'Mega Turbo XP',desc:'+100% XP na próxima missão aprovada.',cost:900,icon:'💥',free:false,hackUses:1,hackId:'xpboost2'},
- 
+
   // ── AVATARES IA · LENDÁRIOS ──
   {id:'av_ai_cyberpunk',cat:'avatar',name:'Cyberpunk Hacker',desc:'Retrato ultra-realista gerado com IA. Raridade Lendária.',cost:800,icon:'🤖',free:false,rarity:'lendario',
    imgUrl:'',
@@ -2363,7 +2363,7 @@ const WC_ITEMS=[
   {id:'av_ai_robot_maker',cat:'avatar',name:'AI Robot Maker',desc:'Robô maker fotorrealista gerado com IA. Raridade Lendária.',cost:800,icon:'🤖',free:false,rarity:'lendario',
    imgUrl:'',
    aiPrompt:'A realistic close-up portrait of an advanced friendly AI robot built with sleek white metal and glowing orange optical sensors. Shot on 50mm lens. Studio lighting, softbox, highly detailed metallic textures and reflections. Clean dark background. 8k, photorealistic.'},
- 
+
   // ── AVATARES IA · ÉPICOS ──
   {id:'av_ai_code_wizard',cat:'avatar',name:'Code Wizard',desc:'Mago do código em arte digital. Raridade Épica.',cost:400,icon:'🧙',free:false,rarity:'epico',
    imgUrl:'',
@@ -2371,7 +2371,7 @@ const WC_ITEMS=[
   {id:'av_ai_space_coder',cat:'avatar',name:'Space Coder',desc:'Astronauta hacker do espaço. Raridade Épica.',cost:400,icon:'🚀',free:false,rarity:'epico',
    imgUrl:'',
    aiPrompt:'A close-up portrait of a young astronaut in a sleek dark spacesuit with glowing cyan LED accents and a transparent visor showing a determined face. Deep space background with stars. Dramatic lighting, hyper-detailed materials, cinematic. 4k.'},
- 
+
   // ── AVATARES IA · RAROS ──
   {id:'av_ai_data_ninja',cat:'avatar',name:'Data Ninja',desc:'Guerreiro digital estilo anime. Raridade Rara.',cost:200,icon:'🥷',free:false,rarity:'raro',
    imgUrl:'',
@@ -2379,13 +2379,13 @@ const WC_ITEMS=[
   {id:'av_ai_pixel_hero',cat:'avatar',name:'Pixel Hero',desc:'Herói pixel art retrô. Raridade Comum.',cost:80,icon:'👾',free:false,rarity:'comum',
    imgUrl:'',
    aiPrompt:'A cute pixel art avatar of a young programmer hero, 32x32 style, vibrant colors, wearing glasses and a hoodie. Retro game aesthetic, clean pixel edges, transparent background.'},
- 
+
   // ── BANNERS IA · LENDÁRIOS ──
   {id:'banner_ai_neon_city',cat:'banner',name:'Neon City',desc:'Cidade cyberpunk chuvosa — Banner Lendário.',cost:600,icon:'🌆',free:false,rarity:'lendario',
    bg:'linear-gradient(135deg,#0a0a1a,#1a0a2e)',
    imgUrl:'',
    aiPrompt:'A cinematic wide shot of a futuristic cyberpunk city at night, rain on the neon-lit streets, glowing holographic billboards in the distance. Low angle dynamic composition, heavy atmosphere, dramatic neon pink and cyan color gels. 8k, photorealistic. --ar 3:1'},
- 
+
   // ── BANNERS IA · ÉPICOS ──
   {id:'banner_ai_deep_space',cat:'banner',name:'Deep Space',desc:'Galáxia com código holográfico — Banner Épico.',cost:350,icon:'🌌',free:false,rarity:'epico',
    bg:'linear-gradient(135deg,#020818,#0f2044)',
@@ -2395,7 +2395,7 @@ const WC_ITEMS=[
    bg:'linear-gradient(135deg,#021a0a,#0a2e14)',
    imgUrl:'',
    aiPrompt:'A panoramic shot of a bioluminescent forest at night with glowing cyan and magenta plants, futuristic. Cinematic wide composition. --ar 3:1'},
- 
+
   // ── BORDAS IA · LENDÁRIAS ──
   {id:'border_ai_plasma',cat:'border',name:'Borda Plasma IA',desc:'Anel de energia plasma gerado com IA. Lendária.',cost:500,cls:'b-neon',icon:'⚡',free:false,rarity:'lendario',
    imgUrl:'',
@@ -2404,7 +2404,7 @@ const WC_ITEMS=[
    imgUrl:'',
    aiPrompt:'A circular avatar frame with golden circuit board patterns glowing softly. Ornate tech aesthetic, transparent center. Isolated on transparent background. 512x512px.'},
 ];
- 
+
 const LOOT_TABLE=[
   {r:'comum',w:35,type:'xp',v:50,label:'+50 XP',icon:'⚡'},
   {r:'comum',w:25,type:'xp',v:80,label:'+80 XP',icon:'⚡'},
@@ -2418,9 +2418,9 @@ const LOOT_TABLE=[
   {r:'lendário',w:2,type:'xp',v:500,label:'+500 XP LENDÁRIO!',icon:'🏆'},
   {r:'lendário',w:1,type:'item',v:'border_cosmic',label:'Borda Cósmica 🌸!',icon:'🌸'},
 ];
- 
+
 let wcFilterAtual='todos';
- 
+
 function wcTotal(a){return Math.floor((a.xp||0)/10)+(a.wc_bonus||0);}
 function wcSaldo(a){return Math.max(0,wcTotal(a)-(a.wc_spent||0));}
 function temItem(a,id){const it=WC_ITEMS.find(i=>i.id===id);return(a.wc_owned||[]).includes(id)||(it&&it.free);}
@@ -2434,7 +2434,7 @@ function patente(xp){
   return{nome:'⬜ Recruta',cls:'p-recruta'};
 }
 function rollLoot(){const tot=LOOT_TABLE.reduce((s,i)=>s+i.w,0);let r=Math.random()*tot;for(const it of LOOT_TABLE){r-=it.w;if(r<=0)return it;}return LOOT_TABLE[0];}
- 
+
 function applyTheme(themeId){
   const item=WC_ITEMS.find(i=>i.id===themeId);if(!item||!item.vars)return;
   Object.entries(item.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
@@ -2444,7 +2444,7 @@ function loadSavedTheme(a){
   if(eq)applyTheme(eq);
   else{const def=WC_ITEMS.find(i=>i.id==='theme_default');if(def&&def.vars)Object.entries(def.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}
 }
- 
+
 // ── WC LOJA ──
 function filtrarWC(cat,btn){
   wcFilterAtual=cat;
@@ -2497,7 +2497,7 @@ function renderWCLoja(a){
     } else {
       action=`<span style="font-size:.68rem;color:var(--muted);">Faltam ${item.cost-saldo}🪙</span>`;
     }
- 
+
     // ── Render visual do item ──
     let visualHtml='';
     const hasImg=item.imgUrl&&item.imgUrl.trim().length>0;
@@ -2520,16 +2520,16 @@ function renderWCLoja(a){
     } else {
       visualHtml=`<div style="font-size:2rem;flex-shrink:0;">${item.icon}</div>`;
     }
- 
+
     // ── Prompt IA copy btn ──
     const promptBtn=item.aiPrompt?`<button class="btn btn-outline btn-sm" style="margin-top:6px;font-size:.6rem;padding:3px 8px;" onclick="wcCopiarPrompt('${item.id}')">📋 Prompt IA</button>`:'';
- 
+
     const cardCls=item.cat==='hackpower'
       ?`hack-card${hackActive?' active-hack':hackUsed?' used-hack':''}`
       :`wc-shop-card ${eq?'equipped':owns||item.free?'owned':''}${wcRarityCls(item)}`;
- 
+
     const rarBadge=wcRarityBadge(item);
- 
+
     if(item.cat==='banner'){
       return`<div class="${cardCls}">
         ${rarBadge}
@@ -2548,7 +2548,7 @@ function renderWCLoja(a){
         </div>
       </div>`;
     }
- 
+
     return`<div class="${cardCls}">
       ${rarBadge}
       <div style="display:flex;align-items:center;gap:12px;">
@@ -2596,7 +2596,7 @@ async function wcDesequipar(cat){
     toast('Removido.');
   }catch(e){toast('❌ Erro!');}
 }
- 
+
 // ── TROCAR XP → WC ──
 function previewTroca(){const amt=parseInt(document.getElementById('wc-troca')?.value)||0;const el=document.getElementById('wc-troca-preview');if(!el)return;if(amt<50){el.textContent='Mínimo: 50 XP';return;}if(amt%50!==0){el.textContent='Use múltiplos de 50 XP';return;}const a=S.alunos.find(x=>x.id===alunoAtual);const xpAtual=a?a.xp||0:0;if(amt>xpAtual){el.textContent=`⚠️ XP insuficiente (você tem ${xpAtual})`;return;}el.textContent=`${amt} XP → +${Math.floor(amt/50)*10}🪙`;}
 async function trocarXPporWC(){
@@ -2613,7 +2613,7 @@ async function trocarXPporWC(){
     toast(`✅ +${wcGain}🪙 por ${amt} XP!`);setSyncing('ok');
   }catch(e){toast('❌ Erro!');setSyncing('error');}
 }
- 
+
 // ── CUSTOMIZAR PERFIL ──
 function abrirCustomPerfil(){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
@@ -2724,7 +2724,7 @@ async function aplicarCustom(itemId,cat,el){
   el.classList.add('selected');
   try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});toast('✅ Aplicado!');}catch(e){toast('❌ Erro!');}
 }
- 
+
 // ── LOOT BOX ──
 function mostrarLoot(a,loot){
   const streak=a.streak||1;const diasLabel=[20,30,40,50,60,75,100];
@@ -2761,22 +2761,22 @@ async function abrirLoot(){
   },700);
 }
 function fecharLoot(){document.getElementById('loot-overlay').classList.remove('active');window._lootData=null;}
- 
+
 // ── VISUAL FEEDBACK ──
 function floatXP(amount){const el=document.createElement('div');el.className='xp-float';el.textContent='+'+amount+' XP';el.style.left=(window.innerWidth/2-50)+'px';el.style.top=(window.innerHeight/2)+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1900);}
 function flashScreen(color='rgba(0,212,255,1)'){const el=document.createElement('div');el.className='screen-flash';el.style.background=color;document.body.appendChild(el);setTimeout(()=>el.remove(),800);}
 function burstParticles(x,y,color='#ffd700',count=18){for(let i=0;i<count;i++){const el=document.createElement('div');el.className='particle';const angle=(i/count)*Math.PI*2;const dist=60+Math.random()*80;el.style.cssText=`left:${x}px;top:${y}px;background:${color};--px:${Math.cos(angle)*dist}px;--py:${Math.sin(angle)*dist}px;width:${4+Math.random()*6}px;height:${4+Math.random()*6}px;animation-duration:${.8+Math.random()*.6}s;`;document.body.appendChild(el);setTimeout(()=>el.remove(),1500);}}
- 
+
 // ── MUSIC · DARK AMBIENT SYNTH ──
 let _musicPlaying=false;
 let _audioCtx=null;
 let _musicNodes=[];
- 
+
 function _initAudio(){
   if(_audioCtx)return;
   _audioCtx=new(window.AudioContext||window.webkitAudioContext)();
 }
- 
+
 function _startDarkAmbient(){
   _initAudio();
   const ctx=_audioCtx;
@@ -2784,7 +2784,7 @@ function _startDarkAmbient(){
   master.gain.setValueAtTime(0,ctx.currentTime);
   master.gain.linearRampToValueAtTime(0.72,ctx.currentTime+2.5);
   master.connect(ctx.destination);
- 
+
   // Reverb convolver (simulated with delay network)
   const conv=ctx.createConvolver();
   const len=ctx.sampleRate*3.2;
@@ -2793,14 +2793,14 @@ function _startDarkAmbient(){
   conv.buffer=buf;
   const convGain=ctx.createGain();convGain.gain.value=0.55;
   conv.connect(convGain);convGain.connect(master);
- 
+
   // Deep sub drone — 28Hz
   const sub=ctx.createOscillator();
   const subGain=ctx.createGain();
   sub.type='sine';sub.frequency.value=28;
   subGain.gain.value=0.38;
   sub.connect(subGain);subGain.connect(master);sub.start();
- 
+
   // Mid drone — 56Hz (sawtooth, filtered dark)
   const mid=ctx.createOscillator();
   const midFilt=ctx.createBiquadFilter();
@@ -2810,7 +2810,7 @@ function _startDarkAmbient(){
   midGain.gain.value=0.22;
   mid.connect(midFilt);midFilt.connect(midGain);midGain.connect(master);
   midGain.connect(conv);mid.start();
- 
+
   // Tension drone — 84Hz square
   const tns=ctx.createOscillator();
   const tnsFilt=ctx.createBiquadFilter();
@@ -2819,7 +2819,7 @@ function _startDarkAmbient(){
   tnsFilt.type='lowpass';tnsFilt.frequency.value=120;tnsFilt.Q.value=6;
   tnsGain.gain.value=0.12;
   tns.connect(tnsFilt);tnsFilt.connect(tnsGain);tnsGain.connect(conv);tnsGain.connect(master);tns.start();
- 
+
   // Slow haunting melody — random pentatonic minor notes
   const notes=[98,110,123,131,147,165,175,196];
   let noteIdx=0;
@@ -2842,7 +2842,7 @@ function _startDarkAmbient(){
     setTimeout(playNote,delay);
   }
   setTimeout(playNote,1200);
- 
+
   // Dark wind noise layer
   const noise=ctx.createScriptProcessor?null:null; // skip if not supported
   const bufSrc=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);
@@ -2852,10 +2852,10 @@ function _startDarkAmbient(){
   const windGain=ctx.createGain();windGain.gain.value=0.08;
   windSrc.connect(windFilt);windFilt.connect(windGain);windGain.connect(conv);windGain.connect(master);
   windSrc.start();
- 
+
   _musicNodes=[sub,mid,tns,windSrc,master,conv];
 }
- 
+
 function _stopDarkAmbient(){
   if(!_audioCtx)return;
   const ctx=_audioCtx;
@@ -2867,7 +2867,7 @@ function _stopDarkAmbient(){
   });
   _musicNodes=[];
 }
- 
+
 function toggleMusic(){
   _musicPlaying=!_musicPlaying;
   const btn=document.getElementById('music-btn');
@@ -2875,7 +2875,7 @@ function toggleMusic(){
   if(_musicPlaying){_startDarkAmbient();toast('🎵 Música ativada!');}
   else{_stopDarkAmbient();toast('🔇 Música desativada');}
 }
- 
+
 // ══════════════════════════════════════
 //  AVATAR
 // ══════════════════════════════════════
@@ -2897,7 +2897,7 @@ async function confirmarAvatar(){
     closeModal('modal-avatar');toast('✅ Avatar atualizado!');
   } catch(e){ toast('❌ Erro!'); }
 }
- 
+
 // ══════════════════════════════════════
 //  LEVEL UP
 // ══════════════════════════════════════
@@ -2908,7 +2908,7 @@ function showLevelUp(n){
   document.getElementById('levelup-overlay').classList.add('active');
 }
 function closeLevelUp(){document.getElementById('levelup-overlay').classList.remove('active');}
- 
+
 // ══════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════
@@ -2919,9 +2919,9 @@ async function gerarPin(){
 }
 function copiarLink(){navigator.clipboard?.writeText(window.location.href).then(()=>toast('📋 Link copiado!')).catch(()=>toast('📋 Copie o link da barra do navegador!'));}
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);}
- 
+
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('active');}));
- 
+
 // ── INICIAR ──
 inicializar();
 </script>
