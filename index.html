@@ -44,13 +44,32 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 /* ══ CHAT ══ */
 .chat-msg{display:flex;gap:8px;align-items:flex-start;animation:fadeUp .2s ease;}
 .chat-msg.own{flex-direction:row-reverse;}
-.chat-bubble{max-width:70%;padding:8px 12px;border-radius:12px;font-size:.83rem;line-height:1.5;word-break:break-word;}
-.chat-msg:not(.own) .chat-bubble{background:var(--s2);border:1px solid var(--border);border-radius:4px 12px 12px 12px;}
-.chat-msg.own .chat-bubble{background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(124,58,237,.15));border:1px solid rgba(0,212,255,.3);border-radius:12px 4px 12px 12px;}
+.chat-bubble{max-width:70%;padding:8px 12px;border-radius:12px;font-size:.83rem;line-height:1.6;word-break:break-word;white-space:pre-wrap;overflow-wrap:anywhere;min-width:60px;}
+.chat-msg:not(.own) .chat-bubble{background:var(--s2);border:1px solid var(--border);border-radius:4px 12px 12px 12px;min-width:80px;}
+.chat-msg.own .chat-bubble{background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(124,58,237,.15));border:1px solid rgba(0,212,255,.3);border-radius:12px 4px 12px 12px;min-width:80px;}
 .chat-author{font-size:.65rem;color:var(--muted);margin-bottom:2px;}
 .chat-msg.own .chat-author{text-align:right;}
 .chat-time{font-size:.6rem;color:var(--muted);margin-top:2px;opacity:.7;}
-.chat-avatar-sm{font-size:1.3rem;width:30px;height:30px;background:var(--s2);border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chat-avatar-sm{font-size:1.3rem;width:34px;height:34px;background:var(--s2);border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+.chat-avatar-sm img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.chat-gif{max-width:200px;border-radius:8px;margin-top:4px;display:block;cursor:pointer;}
+.emoji-btn{background:none;border:none;font-size:1.25rem;cursor:pointer;padding:3px;border-radius:4px;transition:transform .12s;line-height:1;}
+.emoji-btn:hover{transform:scale(1.35);background:rgba(255,255,255,.06);}
+/* ep-overlay removed — using mousedown outside detection instead */
+.ep-popup{position:fixed;z-index:9002;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 8px 32px rgba(0,0,0,.5);width:320px;overflow:hidden;display:none;}
+.ep-popup.active{display:flex;flex-direction:column;}
+.ep-search{background:var(--s2);border:none;border-bottom:1px solid var(--border);padding:9px 12px;color:var(--text);font-size:.82rem;width:100%;outline:none;}
+.ep-search::placeholder{color:var(--muted);}
+.ep-cats{display:flex;gap:2px;padding:6px 8px;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;}
+.ep-cat{background:none;border:none;font-size:1rem;cursor:pointer;padding:4px 6px;border-radius:6px;opacity:.6;transition:all .15s;}
+.ep-cat:hover,.ep-cat.active{opacity:1;background:rgba(0,212,255,.12);}
+.ep-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;padding:8px;overflow-y:auto;max-height:200px;}
+.gif-popup{position:fixed;z-index:9002;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 8px 32px rgba(0,0,0,.5);width:300px;overflow:hidden;display:none;flex-direction:column;}
+.gif-popup.active{display:flex;}
+.gif-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:8px;overflow-y:auto;max-height:220px;}
+.gif-item{border-radius:6px;overflow:hidden;cursor:pointer;aspect-ratio:1;background:var(--s3);}
+.gif-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s;}
+.gif-item:hover img{transform:scale(1.05);}
 .online-item{display:flex;align-items:center;gap:6px;font-size:.75rem;padding:4px 6px;background:var(--s2);border-radius:20px;border:1px solid var(--border);}
 .online-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);flex-shrink:0;}
 /* ══ VITRINE ══ */
@@ -170,6 +189,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 /* ── PAGES ── */
 .page{display:none;animation:fadeUp .25s ease;}
 .page.active{display:block;}
+#apage-chat{height:calc(100vh - 60px);}
+#apage-chat.active{display:flex;flex-direction:column;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── COMPONENTS ── */
@@ -720,7 +741,10 @@ select option{background:var(--s1);}
         <div class="card">
           <div class="sec-title">➕ Nova Recompensa</div>
           <div class="form-row">
-            <div class="form-group"><label>Emoji</label><input id="r-emoji" placeholder="🎁" maxlength="2" style="text-align:center;font-size:1.4rem;"></div>
+            <div class="form-group"><label>Emoji</label>
+              <button id="r-emoji-btn" onclick="abrirEmojiPicker(this,'r-emoji')" style="font-size:1.6rem;width:52px;height:44px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;display:block;">🎁</button>
+              <input id="r-emoji" type="hidden" value="🎁">
+            </div>
             <div class="form-group" style="flex:2;"><label>Nome da Recompensa</label><input id="r-nome" placeholder="Ex: Escolher o projeto livre"></div>
             <div class="form-group"><label>Custo em XP</label><input id="r-custo" type="number" placeholder="300" min="50"></div>
             <div style="display:flex;align-items:flex-end;flex-shrink:0;">
@@ -945,16 +969,30 @@ select option{background:var(--s1);}
 
       <!-- CHAT -->
       <div id="apage-chat" class="page">
-        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com seus colegas</div></div><div id="online-count" style="font-size:.75rem;color:var(--green);font-weight:700;"></div></div>
-        <div style="display:flex;gap:14px;height:calc(100vh - 220px);min-height:400px;">
-          <div style="flex:1;display:flex;flex-direction:column;">
+        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com seus colegas em tempo real</div></div><div id="online-count" style="font-size:.75rem;color:var(--green);font-weight:700;"></div></div>
+        <div style="display:flex;gap:14px;flex:1;min-height:0;overflow:hidden;">
+          <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
             <div id="chat-msgs" style="flex:1;overflow-y:auto;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:14px;display:flex;flex-direction:column;gap:8px;"></div>
-            <div style="display:flex;gap:8px;background:var(--s2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:10px;">
-              <input id="chat-input" placeholder="Digite uma mensagem..." style="flex:1;" onkeydown="if(event.key==='Enter')enviarChat()" maxlength="300">
-              <button class="btn btn-primary btn-sm" onclick="enviarChat()">Enviar ►</button>
+            <!-- Inline emoji panel (toggled, not fixed) -->
+            <div id="chat-emoji-panel" style="display:none;background:var(--s2);border:1px solid var(--border);border-top:none;max-height:220px;overflow:hidden;flex-direction:column;">
+              <div style="display:flex;gap:2px;padding:6px 8px;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;" id="chat-ep-cats"></div>
+              <div id="chat-ep-grid" style="display:grid;grid-template-columns:repeat(10,1fr);gap:1px;padding:6px;overflow-y:auto;flex:1;"></div>
+            </div>
+            <!-- Inline GIF panel -->
+            <div id="chat-gif-panel" style="display:none;background:var(--s2);border:1px solid var(--border);border-top:none;max-height:240px;overflow:hidden;flex-direction:column;">
+              <div style="padding:8px;border-bottom:1px solid var(--border);flex-shrink:0;">
+                <input id="chat-gif-search" placeholder="🔍 Buscar GIF..." style="width:100%;" oninput="chatBuscarGifs(this.value)">
+              </div>
+              <div id="chat-gif-results" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;padding:8px;overflow-y:auto;flex:1;"></div>
+            </div>
+            <div style="display:flex;gap:6px;background:var(--s2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:8px;align-items:center;flex-shrink:0;">
+              <button class="btn btn-outline btn-sm" onclick="chatToggleEmoji()" title="Emojis" style="font-size:1.1rem;padding:6px 10px;flex-shrink:0;">😊</button>
+              <button class="btn btn-outline btn-sm" onclick="chatToggleGif()" title="GIF" style="font-size:.68rem;font-weight:900;padding:6px 9px;letter-spacing:1px;flex-shrink:0;">GIF</button>
+              <input id="chat-input" placeholder="Digite uma mensagem..." style="flex:1;min-width:0;" onkeydown="if(event.key==='Enter')enviarChat()" maxlength="300">
+              <button class="btn btn-primary btn-sm" onclick="enviarChat()" style="flex-shrink:0;">➤</button>
             </div>
           </div>
-          <div style="width:160px;flex-shrink:0;">
+          <div style="width:150px;flex-shrink:0;">
             <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online</div>
             <div id="online-list" style="display:flex;flex-direction:column;gap:6px;"></div>
           </div>
@@ -1059,7 +1097,13 @@ select option{background:var(--s1);}
   <div class="modal" style="max-width:460px;"><button class="modal-close" onclick="closeModal('modal-criar-guilda')">✕</button>
     <div class="modal-title">⚔️ CRIAR GUILDA</div>
     <div class="form-group" style="margin-bottom:10px;"><label>Nome da Guilda</label><input id="gn-nome" placeholder="Ex: Os Dragões do Código" maxlength="30"></div>
-    <div class="form-group" style="margin-bottom:10px;"><label>Brasão (emoji)</label><input id="gn-brasao" placeholder="🐉" maxlength="2" style="text-align:center;font-size:2rem;width:80px;"></div>
+    <div class="form-group" style="margin-bottom:10px;"><label>Brasão (emoji)</label>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button id="gn-brasao-btn" onclick="abrirEmojiPicker(this,'gn-brasao')" style="font-size:2.2rem;width:60px;height:60px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;">🐉</button>
+        <input id="gn-brasao" type="hidden" value="🐉">
+        <span style="font-size:.75rem;color:var(--muted2);">Clique para escolher</span>
+      </div>
+    </div>
     <div class="form-group" style="margin-bottom:16px;"><label>Grito de guerra</label><input id="gn-slogan" placeholder="Ex: Código ou nada!" maxlength="50"></div>
     <button class="btn btn-primary btn-block" onclick="criarGuilda()">⚔️ Criar Guilda</button>
   </div>
@@ -1718,6 +1762,7 @@ function renderPAprovacoes(){
         <span class="mdiff ${dc}">${dl}</span>
       </div>
       <div style="font-size:.82rem;color:var(--muted2);margin-bottom:8px;">📋 ${missao.titulo} <span style="color:var(--gold);font-family:'Orbitron',monospace;font-size:.7rem">+${missao.xp} XP</span></div>
+      ${p.isGuilda?`<div style="background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);border-radius:6px;padding:6px 10px;font-size:.72rem;margin-bottom:8px;">⚔️ Missão de Guilda — aprovação dará XP a todos os membros</div>`:''}
       ${p.link?`<a class="approval-link" href="${p.link}" target="_blank">🔗 ${p.link}</a>`:''}
       <div class="form-group" style="margin-bottom:10px;"><label>Feedback para o aluno (opcional)</label><input type="text" id="fb-${p.id}" placeholder="Ex: Ótimo uso dos loops!"></div>
       <div class="approval-actions">
@@ -2188,6 +2233,22 @@ async function aprovar(pid){
     // Marca missão como done (se não for desafio)
     if(!pend.isDesafio){
       await COL.missoes().doc(pend.missaoId).update({done:firebase.firestore.FieldValue.arrayUnion(aluno.id)});
+      // Se for missão de guilda: dá XP a todos os membros da guilda
+      if(pend.isGuilda && pend.guildaId){
+        const gSnap = await COL.guildas().doc(pend.guildaId).get();
+        if(gSnap.exists){
+          const membros = (gSnap.data().membros||[]).filter(mid=>mid!==aluno.id);
+          for(const mid of membros){
+            const m2 = S.alunos.find(x=>x.id===mid);
+            if(!m2) continue;
+            const novoXP2 = (m2.xp||0)+missao.xp;
+            const hist2 = [{desc:`⚔️ Missão de guilda aprovada: ${missao.titulo} (via ${aluno.nome}) +${wcGanho}🪙`,xp:missao.xp,ts:Date.now()},...(m2.historico||[])].slice(0,30);
+            await COL.alunos().doc(mid).update({xp:novoXP2,historico:hist2});
+            await COL.missoes().doc(pend.missaoId).update({done:firebase.firestore.FieldValue.arrayUnion(mid)});
+          }
+          if(membros.length) toast(`⚔️ XP distribuído para ${membros.length+1} membros da guilda!`);
+        }
+      }
     } else {
       await COL.alunos().doc(aluno.id).update({desafiosConcluidos:firebase.firestore.FieldValue.increment(1)});
     }
@@ -2201,20 +2262,31 @@ async function aprovar(pid){
 }
 
 async function aprovarEDestacar(pid){
-  // Primeiro aprova normalmente
-  await aprovar(pid);
-  // Depois tenta colocar na vitrine automaticamente
+  // Captura dados ANTES de aprovar (aprovar() deleta o pendente)
   const p = S.pendentes.find(x=>x.id===pid);
-  if(!p) return;
-  const missao = p.isDesafio ? (S.desafios.find(d=>d.id===p.desafioId)||{titulo:'Desafio'}) : S.missoes.find(m=>m.id===p.missaoId);
+  if(!p) return toast('❌ Pendente não encontrado.');
+  const missao = p.isDesafio
+    ? (S.desafios.find(d=>d.id===p.desafioId)||{titulo:'Desafio da Semana'})
+    : S.missoes.find(m=>m.id===p.missaoId);
+  const alunoId  = p.alunoId;
+  const titulo   = missao?.titulo || 'Projeto';
+  const link     = p.link || '';
+
+  // Aprova normalmente (XP, etc.)
+  await aprovar(pid);
+
+  // Adiciona à vitrine com dados já salvos
   try {
     await COL.vitrine().add({
-      alunoId:p.alunoId, titulo:missao?.titulo||'Projeto', link:p.link||'',
-      desc:'', ativo:true, destaqueEm:Date.now(), reactions:{}, reactors:{}, comentarios:[]
+      alunoId, titulo, link,
+      desc:'', ativo:true, destaqueEm:Date.now(),
+      reactions:{}, reactors:{}, comentarios:[]
     });
-    await COL.pendentes().doc(pid).update({naVitrine:true});
     toast('⭐ Projeto aprovado e colocado na Vitrine!');
-  } catch(e){ toast('✓ Aprovado! Erro ao adicionar vitrine.'); }
+  } catch(e){
+    console.error('Erro vitrine:', e);
+    toast('✓ Aprovado! Falha ao adicionar na vitrine: ' + (e.message||e));
+  }
 }
 async function rejeitar(pid){
   setSyncing('syncing');
@@ -3130,6 +3202,36 @@ function renderGuilda(){
           ${minhaGuilda.liderId===alunoAtual ? `<button class="btn btn-danger btn-sm btn-block" style="margin-top:8px;" onclick="dissolvGuilda('${minhaGuilda.id}')">💣 Dissolver Guilda</button>` :
             `<button class="btn btn-outline btn-sm btn-block" style="margin-top:8px;" onclick="sairGuilda('${minhaGuilda.id}')">🚪 Sair da Guilda</button>`}
         </div>`;
+      // Missões em equipe disponíveis para a guilda
+      const missoesEquipe = S.missoes.filter(m=>m.tipo==='equipe');
+      if(missoesEquipe.length){
+        html += '<div class="sec-title" style="margin-top:18px;">⚔️ Missões da Guilda</div>';
+        html += '<div style="font-size:.75rem;color:var(--muted2);margin-bottom:10px;">Complete missões em equipe com sua guilda e dividam o XP!</div>';
+        html += missoesEquipe.map(m=>{
+          const todosFeitos = (m.done||[]).includes(alunoAtual);
+          const membrosFeitos = (m.done||[]).filter(id=>(minhaGuilda.membros||[]).includes(id));
+          const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[m.dif]||'diff-hard';
+          const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[m.dif]||'Difícil';
+          const podeEnviar = (minhaGuilda.membros||[]).length >= (m.vagas||2);
+          return `<div class="mission-card ${todosFeitos?'done':''}">
+            <div class="mc-header">
+              <div class="mc-title">${m.titulo}</div>
+              <div class="mtags">
+                <span class="mdiff ${dc}">${dl}</span>
+                <span class="mxp">+${m.xp} XP/membro</span>
+                <span class="mdiff diff-team">👥 ${m.vagas} vagas · ${membrosFeitos.length} da guilda concluíram</span>
+              </div>
+            </div>
+            <div class="mc-desc">${m.desc}</div>
+            ${todosFeitos
+              ? '<div style="color:var(--green);font-size:.78rem;font-weight:700;margin-top:8px;">✅ Você já concluiu esta missão!</div>'
+              : podeEnviar
+                ? `<button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="abrirMissaoGuilda('${m.id}','${minhaGuilda.id}')">⚔️ Enviar como Guilda</button>`
+                : `<div style="color:var(--orange);font-size:.75rem;margin-top:8px;">⚠️ Sua guilda precisa de pelo menos ${m.vagas} membros para esta missão (atual: ${(minhaGuilda.membros||[]).length})</div>`
+            }
+          </div>`;
+        }).join('');
+      }
     }
 
     // Outras guildas
@@ -3245,27 +3347,344 @@ async function dissolvGuilda(guildaId){
 // ══════════════════════════════════════
 //  CHAT — SISTEMA DE MENSAGENS
 // ══════════════════════════════════════
+// ══════════════════════════════════════
+//  EMOJI PICKER GLOBAL
+// ══════════════════════════════════════
+const EMOJI_CATS = [
+  {icon:'😀', label:'Rostos', emojis:['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','🥲','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🤧','🥵','🥶','🥴','😵','🤯','🤠','🥳','🥸','😎','🤓','🧐','😕','😟','🙁','☹','😮','😯','😲','😳','🥺','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','💀','☠','💩','🤡','👹','👺','👻','👽','👾','🤖']},
+  {icon:'👋', label:'Gestos', emojis:['👋','🤚','🖐','✋','🖖','👌','🤌','🤏','✌','🤞','🤟','🤘','🤙','👈','👉','👆','👇','☝','👍','👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✍','💅','🤳','💪','🦾','🦵','🦶','👀','👁','👅','👄']},
+  {icon:'❤️', label:'Corações', emojis:['❤️','🧡','💛','💚','💙','💜','🤎','🖤','🤍','💔','❤️‍🔥','❤️‍🩹','💘','💝','💖','💗','💓','💞','💕','💟','❣','💌','💋']},
+  {icon:'🐶', label:'Animais', emojis:['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐔','🐧','🐦','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛','🦋','🐌','🐞','🐜','🦟','🦗','🕷','🦂','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦞','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦓','🦍','🦧','🦣','🐘','🦛','🦏','🐪','🐫','🦒','🦘','🦬','🐃','🐂','🐄','🐎','🐖','🐏','🐑','🦙','🐐','🦌','🐕','🐩','🦮','🐕‍🦺','🐈','🐈‍⬛','🪶','🐓','🦃','🦤','🦚','🦜','🦢','🦩','🕊','🐇','🦝','🦨','🦡','🦫','🦦','🦥','🐁','🐀','🐿','🦔']},
+  {icon:'🍕', label:'Comida', emojis:['🍎','🍊','🍋','🍇','🍓','🫐','🍈','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🥑','🍆','🥦','🧄','🧅','🥕','🌽','🌶','🫑','🥒','🫒','🧅','🥬','🥗','🥙','🧆','🥚','🍳','🥘','🍲','🫕','🥣','🧇','🥞','🧈','🍞','🥐','🧀','🍖','🍗','🥩','🥓','🌮','🌯','🍔','🍟','🍕','🫔','🌭','🥪','🧆','🍝','🍜','🍛','🍣','🍱','🥟','🦪','🍤','🍙','🍚','🍘','🍥','🥮','🍢','🍡','🍧','🍨','🍦','🥧','🧁','🎂','🍰','🍮','🍭','🍬','🍫','🍿','🍩','🍪','🌰','🥜','🍯','🧃','🥤','🧋','☕','🍵','🫖','🍶','🍺','🍻','🥂','🍷','🥃','🍹','🍾','🧉','🧊']},
+  {icon:'⚽', label:'Esportes', emojis:['⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🏒','🥊','🥋','⛳','🎣','🏹','🎿','🛷','🥌','🎯','🎽','🎖','🏆','🥇','🥈','🥉','🎗','🎟','🎪','🤸','⛹','🏋','🚴','🏊','🏄','🧗','🏇','🤺','🥅','🎠','🎡','🎢','🎭','🎨']},
+  {icon:'🌍', label:'Lugares', emojis:['🌍','🌎','🌏','🗺','🧭','🏔','⛰','🌋','🗻','🏕','🏖','🏜','🏝','🏞','🏟','🏛','🏗','🧱','🪨','🪵','🛖','🏠','🏡','🏢','🏣','🏤','🏥','🏦','🏨','🏩','🏪','🏫','🏬','🏭','🏯','🏰','💒','🗼','🗽','⛪','🕌','🛕','🕍','⛩','🕋','⛲','⛺','🌁','🌃','🏙','🌄','🌅','🌆','🌇','🌉','♨','🎠','🎡','🎢','💈','🎪']},
+  {icon:'💡', label:'Objetos', emojis:['💡','🔦','🕯','🪔','💰','💵','💴','💶','💷','💸','💳','🪙','💹','📱','💻','🖥','🖨','⌨','🖱','🖲','💾','💿','📀','🎥','📷','📸','📹','📞','☎','📟','📠','📺','📻','🧭','⏱','⏲','⏰','🕰','⌚','📡','🔋','🪫','🔌','💡','🔦','🕯','🪔','🧲','💊','💉','🩺','🩻','🩹','🩼','💄','🪮','💅','👓','🕶','🥽','🌡','🔬','🔭','🩱','👒','🎓','⛑','🪖','💎','🔑','🗝','🔐','🔒','🔓','🔨','🪓','⛏','⚒','🛠','🗡','⚔','🛡','🪃','🏹','🔧','🪛','🔩','⚙','🗜','⚖','🦯','🔗','⛓','🪝','🧲','🪜','🧰','🧲']},
+  {icon:'🎮', label:'Símbolos', emojis:['🎮','🕹','🎲','🧩','♟','🎭','🎨','🖼','🎰','🚀','⭐','🌟','✨','💥','🔥','🌈','⚡','❄','🌊','💫','⚽','🏆','🥇','🎯','💯','✅','❌','⚠','🆕','🔴','🟡','🟢','🔵','🟣','⬛','⬜','🔶','🔷','🔸','🔹','🔺','🔻','💠','♻','🔰','✔','❎','🔄','🔃','➡','⬅','⬆','⬇','↗','↘','↙','↖','↕','↔','🔀','🔁','🔂','⏸','⏹','⏺','⏭','⏮','⏩','⏪','🔇','🔈','🔉','🔊','📣','📢','🔔','🔕','🎵','🎶','🎼','🎤','🎧','📻','🎷','🎸','🎹','🎺','🎻','🪘','🥁','🪗']}
+];
+
+let _epTargetInput = null;
+let _epTargetBtn   = null;
+let _epMode        = 'input'; // 'input' or 'field'
+
+function _popupPos(popup, btn, w, h){
+  const r = btn.getBoundingClientRect();
+  let top = r.top - h - 8;
+  if(top < 8) top = r.bottom + 8;
+  let left = r.left;
+  if(left + w > window.innerWidth - 8) left = window.innerWidth - w - 8;
+  if(left < 8) left = 8;
+  popup.style.top  = top + 'px';
+  popup.style.left = left + 'px';
+}
+
+function abrirEmojiPicker(btn, targetId){
+  // Fecha gif se aberto
+  document.getElementById('gif-popup').classList.remove('active');
+
+  const popup = document.getElementById('ep-popup');
+  _epTargetInput = targetId;
+  _epTargetBtn   = btn;
+  _epMode = (document.getElementById(targetId)?.type === 'hidden') ? 'field' : 'input';
+
+  // Build categories once
+  const catsEl = document.getElementById('ep-cats');
+  if(!catsEl.children.length){
+    catsEl.innerHTML = EMOJI_CATS.map((c,i)=>
+      `<button class="ep-cat ${i===0?'active':''}" title="${c.label}" onclick="mudarCatEmoji(${i},this)">${c.icon}</button>`
+    ).join('');
+    renderEmojiCat(0);
+  }
+  document.getElementById('ep-search').value = '';
+
+  _popupPos(popup, btn, 320, 290);
+  popup.classList.add('active');
+
+  // Close on outside click (next tick so this click doesn't close it)
+  setTimeout(()=>{
+    document.addEventListener('mousedown', _epOutsideClick, {once:true});
+  }, 10);
+  document.getElementById('ep-search').focus();
+}
+
+function _epOutsideClick(e){
+  const popup = document.getElementById('ep-popup');
+  if(!popup.contains(e.target)) fecharEmojiPicker();
+  else document.addEventListener('mousedown', _epOutsideClick, {once:true});
+}
+
+function mudarCatEmoji(idx, btn){
+  document.querySelectorAll('.ep-cat').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('ep-search').value='';
+  renderEmojiCat(idx);
+}
+
+function renderEmojiCat(idx){
+  document.getElementById('ep-grid').innerHTML = EMOJI_CATS[idx].emojis
+    .map(e=>`<button class="emoji-btn" onclick="selecionarEmoji('${e}')">${e}</button>`)
+    .join('');
+}
+
+function filtrarEmojis(q){
+  if(!q.trim()){
+    const act = document.querySelector('.ep-cat.active');
+    const idx = act ? [...document.querySelectorAll('.ep-cat')].indexOf(act) : 0;
+    renderEmojiCat(idx); return;
+  }
+  const todos = EMOJI_CATS.flatMap(c=>c.emojis);
+  document.getElementById('ep-grid').innerHTML = todos
+    .map(e=>`<button class="emoji-btn" onclick="selecionarEmoji('${e}')">${e}</button>`).join('');
+}
+
+function selecionarEmoji(e){
+  if(_epMode === 'field'){
+    const hi = document.getElementById(_epTargetInput);
+    if(hi) hi.value = e;
+    if(_epTargetBtn) _epTargetBtn.textContent = e;
+  } else {
+    const inp = document.getElementById(_epTargetInput);
+    if(!inp) return;
+    const pos = (inp.selectionStart != null) ? inp.selectionStart : inp.value.length;
+    inp.value = inp.value.slice(0,pos) + e + inp.value.slice(pos);
+    inp.focus();
+    try{ inp.setSelectionRange(pos+2, pos+2); }catch(_){}
+  }
+  fecharEmojiPicker();
+}
+
+function fecharEmojiPicker(){
+  const p = document.getElementById('ep-popup');
+  if(p) p.classList.remove('active');
+}
+
+// ══════════════════════════════════════
+//  GIF PICKER GLOBAL
+// ══════════════════════════════════════
+function abrirGifPicker(btn){
+  // Fecha emoji se aberto
+  fecharEmojiPicker();
+
+  const popup = document.getElementById('gif-popup');
+  _popupPos(popup, btn, 300, 310);
+  popup.classList.add('active');
+
+  const searchEl = document.getElementById('gif-search');
+  searchEl.value = '';
+  buscarGifs('programacao');
+  searchEl.focus();
+
+  setTimeout(()=>{
+    document.addEventListener('mousedown', _gifOutsideClick, {once:true});
+  }, 10);
+}
+
+function _gifOutsideClick(e){
+  const popup = document.getElementById('gif-popup');
+  if(!popup.contains(e.target)) fecharGifPicker();
+  else document.addEventListener('mousedown', _gifOutsideClick, {once:true});
+}
+
+function fecharGifPicker(){
+  const p = document.getElementById('gif-popup');
+  if(p) p.classList.remove('active');
+}
+
+let gifDebounce=null;
+function buscarGifs(query){
+  clearTimeout(gifDebounce);
+  gifDebounce = setTimeout(async()=>{
+    const el = document.getElementById('gif-results');
+    if(!el||!query.trim()){if(el)el.innerHTML='';return;}
+    el.innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:.75rem;text-align:center;padding:14px;">🔍 Buscando...</div>';
+    try {
+      // Tenor v1 — sem chave obrigatória (anonkey funciona para dev/demo)
+      const url = `https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=AIzaSyAyimkuYQYF_FXVALexPzfiyvL7X-doABc&limit=12&media_filter=tinygif,gif`;
+      const r = await fetch(url);
+      const data = await r.json();
+      const results = data.results || [];
+      if(!results.length){
+        el.innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:.75rem;text-align:center;padding:14px;">Nenhum GIF 😕</div>';
+        return;
+      }
+      el.innerHTML = results.map(g=>{
+        const src = g.media_formats?.tinygif?.url || g.media_formats?.gif?.url || '';
+        if(!src) return '';
+        const safe = src.replace(/'/g,"\'");
+        return `<div class="gif-item" onclick="enviarGif('${safe}')"><img src="${src}" loading="lazy"></div>`;
+      }).filter(Boolean).join('');
+    } catch(err){
+      console.warn('GIF erro:', err);
+      // Fallback: Giphy public beta key
+      try {
+        const r2 = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=10&rating=g&lang=pt`);
+        const d2 = await r2.json();
+        const gifs = d2.data||[];
+        if(!gifs.length) throw new Error('no results');
+        el.innerHTML = gifs.map(g=>{
+          const src = g.images?.fixed_height_small?.url || g.images?.downsized?.url || '';
+          if(!src) return '';
+          const safe = src.replace(/'/g,"\'");
+          return `<div class="gif-item" onclick="enviarGif('${safe}')"><img src="${src}" loading="lazy"></div>`;
+        }).filter(Boolean).join('');
+      } catch(e2){
+        el.innerHTML='<div style="grid-column:1/-1;color:var(--orange);font-size:.75rem;text-align:center;padding:14px;">⚠️ GIFs indisponíveis no momento</div>';
+      }
+    }
+  }, 500);
+}
+
+async function enviarGif(url){
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  if(!a) return;
+  fecharGifPicker();
+  try {
+    await COL.chat().add({
+      autorId:alunoAtual, autorNome:a.nome,
+      avatar:a.avatar||'👾', foto:a.profilePhoto||null,
+      turma:a.turma, tipo:'gif', gifUrl:url, ts:Date.now()
+    });
+  } catch(e){ toast('❌ Erro ao enviar GIF.'); }
+}
+
+// ══════════════════════════════════════
+//  CHAT EMOJI & GIF (inline panels)
+// ══════════════════════════════════════
+let _chatEmojiBuilt = false;
+
+function chatToggleEmoji(){
+  const ep = document.getElementById('chat-emoji-panel');
+  const gp = document.getElementById('chat-gif-panel');
+  if(!ep) return;
+  const showing = ep.style.display === 'flex';
+  gp.style.display = 'none';
+  ep.style.display = showing ? 'none' : 'flex';
+  if(!showing && !_chatEmojiBuilt){
+    _chatEmojiBuilt = true;
+    // Build category tabs
+    const cats = document.getElementById('chat-ep-cats');
+    cats.innerHTML = EMOJI_CATS.map((c,i)=>
+      `<button class="ep-cat ${i===0?'active':''}" title="${c.label}" onclick="chatMudarCat(${i},this)">${c.icon}</button>`
+    ).join('');
+    chatRenderCat(0);
+  }
+}
+
+function chatMudarCat(idx, btn){
+  document.querySelectorAll('#chat-ep-cats .ep-cat').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  chatRenderCat(idx);
+}
+
+function chatRenderCat(idx){
+  const grid = document.getElementById('chat-ep-grid');
+  if(!grid) return;
+  grid.innerHTML = EMOJI_CATS[idx].emojis
+    .map(e=>`<button class="emoji-btn" onclick="chatInsertEmoji('${e}')">${e}</button>`)
+    .join('');
+}
+
+function chatInsertEmoji(e){
+  const inp = document.getElementById('chat-input');
+  if(!inp) return;
+  const pos = inp.selectionStart != null ? inp.selectionStart : inp.value.length;
+  inp.value = inp.value.slice(0,pos) + e + inp.value.slice(pos);
+  inp.focus();
+  try{ inp.setSelectionRange(pos+2, pos+2); }catch(_){}
+  // Keep panel open so user can add more emojis
+}
+
+function chatToggleGif(){
+  const gp = document.getElementById('chat-gif-panel');
+  const ep = document.getElementById('chat-emoji-panel');
+  if(!gp) return;
+  const showing = gp.style.display === 'flex';
+  ep.style.display = 'none';
+  gp.style.display = showing ? 'none' : 'flex';
+  if(!showing){
+    document.getElementById('chat-gif-search').value = '';
+    chatBuscarGifs('funny');
+  }
+}
+
+let _chatGifDebounce = null;
+function chatBuscarGifs(query){
+  clearTimeout(_chatGifDebounce);
+  _chatGifDebounce = setTimeout(async()=>{
+    const el = document.getElementById('chat-gif-results');
+    if(!el || !query.trim()){ if(el) el.innerHTML=''; return; }
+    el.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);font-size:.75rem;text-align:center;padding:14px;">🔍 Buscando GIFs...</div>';
+    // Try Tenor then Giphy
+    let gifs = [];
+    try {
+      const r = await fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=AIzaSyAyimkuYQYF_FXVALexPzfiyvL7X-doABc&limit=12&media_filter=tinygif`);
+      const d = await r.json();
+      gifs = (d.results||[]).map(g=>g.media_formats?.tinygif?.url||'').filter(Boolean);
+    } catch(e){}
+    if(!gifs.length){
+      try {
+        const r2 = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=12&rating=g`);
+        const d2 = await r2.json();
+        gifs = (d2.data||[]).map(g=>g.images?.fixed_height_small?.url||'').filter(Boolean);
+      } catch(e){}
+    }
+    if(!gifs.length){
+      el.innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:.75rem;text-align:center;padding:14px;">Sem GIFs 😕</div>';
+      return;
+    }
+    el.innerHTML = gifs.map(src=>{
+      const safe = src.replace(/'/g,"\'");
+      return `<img src="${src}" loading="lazy" style="width:100%;border-radius:6px;cursor:pointer;aspect-ratio:1;object-fit:cover;" onclick="chatEnviarGif('${safe}')">`;
+    }).join('');
+  }, 500);
+}
+
+async function chatEnviarGif(url){
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  if(!a) return;
+  // Close panel
+  const gp = document.getElementById('chat-gif-panel');
+  if(gp) gp.style.display='none';
+  try {
+    await COL.chat().add({
+      autorId:alunoAtual, autorNome:a.nome,
+      avatar:a.avatar||'👾', foto:a.profilePhoto||null,
+      turma:a.turma, tipo:'gif', gifUrl:url, ts:Date.now()
+    });
+  } catch(e){ toast('❌ Erro ao enviar GIF.'); }
+}
+
+// ══════════════════════════════════════
+//  CHAT INIT
+// ══════════════════════════════════════
 function initChat(){
   const a = S.alunos.find(x=>x.id===alunoAtual);
   if(!a) return;
-  // Presence — marcar online
+  // Reset panels
+  const ep=document.getElementById('chat-emoji-panel');
+  const gp=document.getElementById('chat-gif-panel');
+  if(ep) ep.style.display='none';
+  if(gp) gp.style.display='none';
+  _chatEmojiBuilt = false;
   updatePresence(a);
   if(presenceInterval) clearInterval(presenceInterval);
   presenceInterval = setInterval(()=>updatePresence(a), 30000);
-  // Listener de mensagens (últimas 60)
   if(chatListener) chatListener();
-  chatListener = COL.chat().limit(80).onSnapshot(snap=>{
-    const msgs = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.ts-b.ts).slice(-60);
+  const cutoff6h = Date.now() - 6*60*60*1000;
+  chatListener = COL.chat().limit(100).onSnapshot(snap=>{
+    const msgs = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(m=>m.ts > cutoff6h)
+      .sort((a,b)=>a.ts-b.ts).slice(-60);
     renderChatMsgs(msgs);
+    snap.docs.forEach(d=>{ if(d.data().ts < cutoff6h) d.ref.delete().catch(()=>{}); });
   });
-  // Listener de presença
   listenPresence();
 }
 
 async function updatePresence(a){
   try {
     await COL.presence().doc(alunoAtual).set({
-      id:alunoAtual, nome:a.nome, avatar:a.avatar||'👾', ts:Date.now(), turma:a.turma
+      id:alunoAtual, nome:a.nome, avatar:a.avatar||'👾',
+      foto:a.profilePhoto||null, ts:Date.now(), turma:a.turma
     });
   } catch(e){}
 }
@@ -3273,12 +3692,17 @@ async function updatePresence(a){
 function listenPresence(){
   const cutoff = Date.now() - 65000;
   COL.presence().onSnapshot(snap=>{
-    const online = snap.docs.map(d=>d.data()).filter(p=>p.ts > cutoff);
+    const online = snap.docs.map(d=>d.data()).filter(p=>p.ts > Date.now()-65000);
     const el = document.getElementById('online-list');
     const cnt = document.getElementById('online-count');
     if(!el) return;
     if(cnt) cnt.textContent = `🟢 ${online.length} online`;
-    el.innerHTML = online.map(p=>`<div class="online-item"><div class="online-dot"></div>${p.avatar} ${p.nome.split(' ')[0]}</div>`).join('');
+    el.innerHTML = online.map(p=>{
+      const av = p.foto
+        ? `<img src="${p.foto}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;">`
+        : `<span>${p.avatar||'👾'}</span>`;
+      return `<div class="online-item"><div class="online-dot"></div>${av} ${(p.nome||'').split(' ')[0]}</div>`;
+    }).join('');
   });
 }
 
@@ -3288,11 +3712,17 @@ function renderChatMsgs(msgs){
   el.innerHTML = msgs.map(m=>{
     const own = m.autorId === alunoAtual;
     const time = new Date(m.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const avatarHtml = m.foto
+      ? `<div class="chat-avatar-sm"><img src="${m.foto}" alt=""></div>`
+      : `<div class="chat-avatar-sm">${m.avatar||'👾'}</div>`;
+    const bubble = m.tipo==='gif'
+      ? `<img src="${m.gifUrl}" class="chat-gif" alt="GIF">`
+      : `<div class="chat-bubble">${escapeHtml(m.texto||'')}</div>`;
     return `<div class="chat-msg ${own?'own':''}">
-      <div class="chat-avatar-sm">${m.avatar||'👾'}</div>
+      ${avatarHtml}
       <div>
         <div class="chat-author">${own?'Você':m.autorNome} · ${time}</div>
-        <div class="chat-bubble">${escapeHtml(m.texto)}</div>
+        ${bubble}
       </div>
     </div>`;
   }).join('');
@@ -3306,11 +3736,54 @@ async function enviarChat(){
   const a = S.alunos.find(x=>x.id===alunoAtual);
   if(!a) return;
   input.value='';
-  setSyncing('syncing');
+  fecharEmojiPicker();
+  fecharGifPicker();
   try {
-    await COL.chat().add({autorId:alunoAtual,autorNome:a.nome,avatar:a.avatar||'👾',turma:a.turma,texto,ts:Date.now()});
-    setSyncing('ok');
-  } catch(e){ toast('❌ Erro ao enviar.'); setSyncing('error'); }
+    await COL.chat().add({
+      autorId:alunoAtual, autorNome:a.nome,
+      avatar:a.avatar||'👾', foto:a.profilePhoto||null,
+      turma:a.turma, tipo:'texto', texto, ts:Date.now()
+    });
+  } catch(e){ toast('❌ Erro ao enviar.'); }
+}
+
+function abrirMissaoGuilda(missaoId, guildaId){
+  const m = S.missoes.find(x=>x.id===missaoId);
+  if(!m) return;
+  // Reutiliza o modal de missão existente
+  document.getElementById('modal-missao-content').innerHTML=`
+    <div class="modal-title">⚔️ ${m.titulo}</div>
+    <div style="background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px;font-size:.78rem;color:var(--muted2);">
+      🛡️ Enviando como <strong style="color:var(--purple)">missão da guilda</strong> — todos os membros receberão XP ao ser aprovado
+    </div>
+    <div style="font-size:.86rem;color:var(--muted2);line-height:1.7;margin-bottom:12px">${m.desc}</div>
+    <div class="mtags" style="margin-bottom:16px;display:flex;gap:6px;flex-wrap:wrap;">
+      <span class="mdiff diff-team">👥 ${m.vagas} pessoas</span>
+      <span class="mxp">+${m.xp} XP/membro</span>
+    </div>
+    <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank">🐱 Abrir no Scratch</a>
+    <label>Link do projeto no Scratch</label>
+    <input type="url" id="missao-link" placeholder="https://scratch.mit.edu/projects/..." style="margin-bottom:14px">
+    <button class="btn btn-primary btn-block" onclick="enviarAprovacaoGuilda('${missaoId}','${guildaId}')">⚔️ Enviar para Aprovação</button>
+    <button class="btn btn-outline btn-block" onclick="closeModal('modal-missao')" style="margin-bottom:0">Cancelar</button>`;
+  document.getElementById('modal-missao').classList.add('active');
+}
+
+async function enviarAprovacaoGuilda(missaoId, guildaId){
+  const a = S.alunos.find(x=>x.id===alunoAtual);
+  if(!a) return;
+  // Checa pendente duplicado
+  if(S.pendentes.find(p=>p.alunoId===a.id&&p.missaoId===missaoId)) return toast('⚠️ Você já enviou esta missão!');
+  const link = document.getElementById('missao-link')?.value.trim()||'';
+  try {
+    await COL.pendentes().add({
+      alunoId:a.id, missaoId, link, ts:Date.now(),
+      aprovado:false, rejeitado:false,
+      isGuilda:true, guildaId
+    });
+    closeModal('modal-missao');
+    toast('⚔️ Missão enviada! Aguarde aprovação do professor.');
+  } catch(e){ toast('❌ Erro ao enviar!'); }
 }
 
 function escapeHtml(t){ const d=document.createElement('div');d.textContent=t;return d.innerHTML; }
@@ -3484,5 +3957,20 @@ async function removerVitrine(id){
 // ── INICIAR ──
 inicializar();
 </script>
+<!-- ══ EMOJI PICKER GLOBAL ══ -->
+<div class="ep-popup" id="ep-popup">
+  <input class="ep-search" id="ep-search" placeholder="🔍 Buscar emoji..." oninput="filtrarEmojis(this.value)">
+  <div class="ep-cats" id="ep-cats"></div>
+  <div class="ep-grid" id="ep-grid"></div>
+</div>
+<!-- ══ GIF PICKER GLOBAL ══ -->
+<div class="gif-popup" id="gif-popup">
+  <div style="padding:8px 10px;border-bottom:1px solid var(--border);display:flex;gap:6px;">
+    <input id="gif-search" placeholder="🔍 Buscar GIF..." style="flex:1;" oninput="buscarGifs(this.value)">
+    <button class="btn btn-outline btn-sm" onclick="fecharGifPicker()">✕</button>
+  </div>
+  <div class="gif-grid" id="gif-results"></div>
+  <div style="font-size:.55rem;color:var(--muted);padding:4px 10px;text-align:right;">via Tenor</div>
+</div>
 </body>
 </html>
