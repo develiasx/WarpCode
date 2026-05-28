@@ -1025,7 +1025,6 @@ select option{background:var(--s1);}
       <nav class="sidebar-nav">
         <button class="snav active" id="asnav-perfil" onclick="alunoTab('perfil','asnav-perfil')"><span class="snav-ic">🏠</span>Meu Perfil</button>
         <button class="snav" id="asnav-missoes" onclick="alunoTab('missoes','asnav-missoes')"><span class="snav-ic">🎯</span>Missões<span id="miss-badge-sb" class="snav-badge" style="display:none;background:var(--accent);color:#000;"></span></button>
-        <button class="snav" id="asnav-loja" onclick="alunoTab('loja','asnav-loja')"><span class="snav-ic">🛒</span>Loja XP</button>
         <button class="snav" id="asnav-wcloja" onclick="alunoTab('wcloja','asnav-wcloja')"><span class="snav-ic">🪙</span>Loja WarpCoins</button>
         <button class="snav" id="asnav-ranking" onclick="alunoTab('ranking','asnav-ranking')"><span class="snav-ic">🏆</span>Ranking</button>
         <button class="snav" id="asnav-guilda" onclick="alunoTab('guilda','asnav-guilda')"><span class="snav-ic">⚔️</span>Guilda<span id="guilda-badge-sb" class="snav-badge" style="display:none;background:var(--purple);"></span></button>
@@ -1076,14 +1075,6 @@ select option{background:var(--s1);}
         <div id="a-equipe-missoes"></div>
       </div>
 
-      <!-- LOJA -->
-      <div id="apage-loja" class="page">
-        <div class="page-hdr">
-          <div><div class="page-title">🛒 Loja de Recompensas</div><div class="page-sub">Troque seu XP por recompensas reais!</div></div>
-          <div class="stat-box" style="padding:10px 16px;"><div class="stat-val" id="a-saldo-loja" style="font-size:1.1rem;">0</div><div class="stat-lbl">XP Disponível</div></div>
-        </div>
-        <div id="a-loja-items"></div>
-      </div>
 
       <!-- RANKING -->
       <div id="apage-ranking" class="page">
@@ -1186,7 +1177,7 @@ select option{background:var(--s1);}
       <div class="mobile-nav-inner">
         <button class="mnav active" id="amnav-perfil" onclick="alunoTab('perfil','asnav-perfil',true,'amnav-perfil')"><span class="mnav-ic">🏠</span>Perfil</button>
         <button class="mnav" id="amnav-missoes" onclick="alunoTab('missoes','asnav-missoes',true,'amnav-missoes')"><span class="mnav-ic">🎯</span>Missões<span id="miss-badge-nav" class="mnav-badge" style="display:none;background:var(--accent);color:#000;"></span></button>
-        <button class="mnav" id="amnav-loja" onclick="alunoTab('loja','asnav-loja',true,'amnav-loja')"><span class="mnav-ic">🛒</span>Loja</button>
+        <button class="mnav" id="amnav-wcloja" onclick="alunoTab('wcloja','asnav-wcloja',true,'amnav-wcloja')"><span class="mnav-ic">🪙</span>WarpCoins</button>
         <button class="mnav" id="amnav-ranking" onclick="alunoTab('ranking','asnav-ranking',true,'amnav-ranking')"><span class="mnav-ic">🏆</span>Ranking</button>
         <button class="mnav" id="amnav-guilda" onclick="alunoTab('guilda','asnav-guilda',true,'amnav-guilda')"><span class="mnav-ic">⚔️</span>Guilda</button>
         <button class="mnav" id="amnav-correios" onclick="alunoTab('correios','asnav-correios',true,'amnav-correios')"><span class="mnav-ic">📬</span>Correios<span id="correios-badge-nav" class="mnav-badge" style="display:none;background:var(--accent);color:#000;"></span></button>
@@ -1818,7 +1809,7 @@ function missTab(tab){
   }
 }
 
-const ALUNO_LABELS={perfil:'Perfil',missoes:'Missões',loja:'Loja XP',wcloja:'WarpCoins',ranking:'Ranking',guilda:'Guilda',correios:'Correios',chat:'Chat',vitrine:'Vitrine'};
+const ALUNO_LABELS={perfil:'Perfil',missoes:'Missões',wcloja:'WarpCoins',ranking:'Ranking',guilda:'Guilda',correios:'Correios',chat:'Chat',vitrine:'Vitrine'};
 function alunoTab(tab,snavId,isMobile=false,mnavId=''){
   document.querySelectorAll('[id^="apage-"]').forEach(p=>p.classList.remove('active'));
   const pg=document.getElementById('apage-'+tab);
@@ -2337,25 +2328,6 @@ function renderAluno(){
       ${action}</div>`;
   }).join('');
 
-  // LOJA
-  document.getElementById('a-saldo-loja').textContent=a.xp||0;
-  const lojaAtiva=S.loja.filter(r=>r.ativo);
-  document.getElementById('a-loja-items').innerHTML=lojaAtiva.length?lojaAtiva.map(r=>{
-    const jaResgatou=S.resgates.find(x=>x.alunoId===a.id&&x.itemId===r.id&&!x.rejeitado);
-    const podeComprar=(a.xp||0)>=r.custo&&!jaResgatou;
-    return `<div class="shop-card ${jaResgatou?'claimed':''}">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-        <div style="font-size:2rem;flex-shrink:0;">${r.emoji}</div>
-        <div><div class="shop-name">${r.nome}</div><div class="shop-desc" style="margin-bottom:0">${r.desc||''}</div></div>
-      </div>
-      <div class="shop-footer">
-        <span class="shop-cost">🏅 ${r.custo} XP</span>
-        ${jaResgatou?`<span class="status-tag tag-pending">${jaResgatou.aprovado?'✅ Entregue':'⏳ Aguardando'}</span>`:
-          podeComprar?`<button class="btn btn-gold btn-sm" onclick="resgatar('${r.id}')">🛒 Resgatar</button>`:
-          `<span style="font-size:.72rem;color:var(--muted);">Faltam ${r.custo-(a.xp||0)} XP</span>`}
-      </div>
-    </div>`;
-  }).join(''):`<div class="empty"><div class="empty-icon">🛒</div><div class="empty-text">Loja vazia por enquanto.</div></div>`;
 
   // RANKING
   const sorted=[...S.alunos].sort((x,y)=>(y.xp||0)-(x.xp||0));
