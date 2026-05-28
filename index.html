@@ -127,8 +127,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .screen.active{display:flex;flex-direction:column;}
 
 /* ── LOGIN ── */
-#screen-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
-.login-wrap{width:100%;max-width:460px;}
+#screen-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;position:relative;overflow:hidden;}
+#login-nebula-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+#login-stars{position:absolute;inset:0;pointer-events:none;z-index:0;}
+#login-shoots{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.login-wrap{width:100%;max-width:460px;position:relative;z-index:1;}
 .logo{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(1.8rem,5vw,3rem);
   background:linear-gradient(135deg,var(--accent),var(--purple));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
@@ -149,13 +152,39 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 @keyframes warpShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .login-sub-text{font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:4px;
   color:#7754b8;text-transform:uppercase;margin-top:10px;}
-.mode-card{width:100%;padding:20px;border:1px solid var(--border);border-radius:var(--radius);
-  background:var(--s1);color:var(--text);font-family:'Nunito',sans-serif;cursor:pointer;
-  margin-bottom:12px;display:flex;align-items:center;gap:16px;transition:all .2s;text-align:left;}
-.mode-card:hover{border-color:var(--accent);box-shadow:0 0 24px rgba(0,212,255,.1);transform:translateY(-2px);}
-.mode-emoji{font-size:2.2rem;flex-shrink:0;}
-.mode-title{font-size:1rem;font-weight:800;margin-bottom:2px;}
-.mode-desc{font-size:.76rem;color:var(--muted2);}
+
+/* ── HUD CARDS ── */
+.mode-card{width:100%;padding:16px 18px;border-radius:8px;background:#060a10;
+  color:var(--text);font-family:'Nunito',sans-serif;cursor:pointer;
+  margin-bottom:10px;display:flex;flex-direction:column;
+  transition:all .22s;text-align:left;position:relative;overflow:hidden;}
+.mode-card.prof{border:1px solid rgba(0,212,255,.3);border-left:3px solid #00d4ff;}
+.mode-card.aluno{border:1px solid rgba(162,89,255,.3);border-left:3px solid #a259ff;}
+.mode-card::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,212,255,.01) 4px);pointer-events:none;}
+.mode-card.aluno::before{background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(162,89,255,.01) 4px);}
+.mode-card:hover{transform:translateY(-2px);}
+.mode-card.prof:hover{box-shadow:0 0 28px rgba(0,212,255,.15);border-color:rgba(0,212,255,.6);}
+.mode-card.aluno:hover{box-shadow:0 0 28px rgba(162,89,255,.15);border-color:rgba(162,89,255,.6);}
+.hud-card-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.hud-card-tag{font-family:'Orbitron',monospace;font-size:.48rem;letter-spacing:2px;padding:2px 7px;border-radius:3px;}
+.mode-card.prof .hud-card-tag{background:rgba(0,212,255,.12);color:#00d4ff;}
+.mode-card.aluno .hud-card-tag{background:rgba(162,89,255,.12);color:#a259ff;}
+.hud-card-tagline{flex:1;height:1px;}
+.mode-card.prof .hud-card-tagline{background:linear-gradient(90deg,rgba(0,212,255,.3),transparent);}
+.mode-card.aluno .hud-card-tagline{background:linear-gradient(90deg,rgba(162,89,255,.3),transparent);}
+.hud-card-body{display:flex;align-items:center;gap:12px;}
+.mode-emoji{font-size:1.9rem;flex-shrink:0;}
+.mode-title{font-family:'Orbitron',monospace;font-size:.78rem;font-weight:700;margin-bottom:3px;}
+.mode-card.prof .mode-title{color:#00d4ff;}
+.mode-card.aluno .mode-title{color:#a259ff;}
+.mode-desc{font-size:.72rem;color:#475569;line-height:1.4;}
+.hud-card-foot{margin-top:9px;font-family:'Orbitron',monospace;font-size:.46rem;letter-spacing:1px;display:flex;align-items:center;gap:5px;}
+.mode-card.prof .hud-card-foot{color:rgba(0,212,255,.45);}
+.mode-card.aluno .hud-card-foot{color:rgba(162,89,255,.45);}
+.hud-cursor{width:6px;height:10px;display:inline-block;animation:hudBlink .8s step-end infinite;}
+.mode-card.prof .hud-cursor{background:#00d4ff;}
+.mode-card.aluno .hud-cursor{background:#a259ff;}
+@keyframes hudBlink{50%{opacity:0}}
 
 /* ── SYNC INDICATOR ── */
 .sync-indicator{position:fixed;top:12px;right:12px;z-index:9999;display:flex;align-items:center;gap:6px;
@@ -670,6 +699,9 @@ select option{background:var(--s1);}
 
 <!-- LOGIN -->
 <div id="screen-login" class="screen">
+  <canvas id="login-nebula-canvas"></canvas>
+  <div id="login-stars"></div>
+  <div id="login-shoots"></div>
   <div class="login-wrap">
     <div class="login-logo-wrap">
       <div style="display:flex;align-items:center;gap:16px;">
@@ -678,17 +710,23 @@ select option{background:var(--s1);}
       </div>
       <div class="login-sub-text">Robótica &nbsp;·&nbsp; Scratch &nbsp;·&nbsp; Aventura</div>
     </div>
-    <button class="mode-card" onclick="goProfLogin()">
-      <div class="mode-emoji" style="width:56px;height:56px;background:rgba(124,58,237,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;">🧑‍🏫</div>
-      <div style="flex:1;"><div class="mode-title">Sou Professor</div><div class="mode-desc">Gerencie turmas, aprove<br>missões e recompensas</div></div>
-      <div style="color:var(--accent);font-size:1rem;flex-shrink:0;">›</div>
+    <button class="mode-card prof" onclick="goProfLogin()">
+      <div class="hud-card-top"><div class="hud-card-tag">SYS.PROF</div><div class="hud-card-tagline"></div></div>
+      <div class="hud-card-body">
+        <span class="mode-emoji">🔬</span>
+        <div><div class="mode-title">PROFESSOR</div><div class="mode-desc">Gerencie turmas, aprove missões e recompensas</div></div>
+      </div>
+      <div class="hud-card-foot">▶ INICIAR SESSÃO <span class="hud-cursor"></span></div>
     </button>
-    <button class="mode-card" onclick="goAlunoLogin()">
-      <div class="mode-emoji" style="width:56px;height:56px;background:rgba(0,212,255,.12);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;">🚀</div>
-      <div style="flex:1;"><div class="mode-title">Sou Aluno</div><div class="mode-desc">Complete missões, ganhe XP<br>e suba de nível!</div></div>
-      <div style="color:var(--accent);font-size:1rem;flex-shrink:0;">›</div>
+    <button class="mode-card aluno" onclick="goAlunoLogin()">
+      <div class="hud-card-top"><div class="hud-card-tag">SYS.ALUNO</div><div class="hud-card-tagline"></div></div>
+      <div class="hud-card-body">
+        <span class="mode-emoji">🛰️</span>
+        <div><div class="mode-title">ALUNO</div><div class="mode-desc">Complete missões, ganhe XP e suba de nível!</div></div>
+      </div>
+      <div class="hud-card-foot">▶ INICIAR SESSÃO <span class="hud-cursor"></span></div>
     </button>
-    <div style="margin-top:24px;font-size:.65rem;color:var(--muted);letter-spacing:1px;display:flex;gap:18px;justify-content:center;">
+    <div style="margin-top:22px;font-size:.58rem;color:#334155;letter-spacing:1px;display:flex;gap:18px;justify-content:center;">
       <span>🔥 Nuvem</span><span>⚡ Firebase</span><span>🚀 Tempo real</span>
     </div>
   </div>
@@ -1531,7 +1569,7 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
   document.getElementById('screen-loading').style.display='none';
 }
-function goLogin(){alunoAtual=null;showScreen('screen-login');}
+function goLogin(){alunoAtual=null;showScreen('screen-login');setTimeout(initLoginGalaxy,60);}
 function goProfLogin(){
   document.getElementById('prof-senha-input').value='';
   document.getElementById('prof-senha-erro').textContent='';
@@ -5028,6 +5066,78 @@ async function removerVitrine(id){
     renderPVitrine();
   } catch(e){ toast('❌ Erro.'); setSyncing('error'); }
 }
+
+
+// ══ LOGIN GALAXY ══
+function initLoginGalaxy(){
+  const screen = document.getElementById('screen-login');
+  if(!screen) return;
+  const cv = document.getElementById('login-nebula-canvas');
+  const W = screen.offsetWidth || window.innerWidth;
+  const H = screen.offsetHeight || window.innerHeight;
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  // nebula blobs
+  const blobs = [
+    {x:W*.08, y:H*.18, r:W*.38, c:'rgba(124,58,237,'},
+    {x:W*.9,  y:H*.72, r:W*.32, c:'rgba(0,212,255,'},
+    {x:W*.5,  y:H*.95, r:W*.25, c:'rgba(162,89,255,'},
+    {x:W*.75, y:H*.12, r:W*.2,  c:'rgba(0,180,220,'},
+    {x:W*.2,  y:H*.7,  r:W*.18, c:'rgba(80,20,180,'}
+  ];
+  blobs.forEach(b=>{
+    const g = ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
+    g.addColorStop(0,  b.c+'0.2)');
+    g.addColorStop(.45,b.c+'0.07)');
+    g.addColorStop(1,  b.c+'0)');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  });
+  // stars
+  const sc = document.getElementById('login-stars');
+  sc.innerHTML='';
+  for(let i=0;i<180;i++){
+    const s=document.createElement('div');
+    const sz=Math.random()<.12?2:Math.random()<.35?1.5:1;
+    const a1=(.12+Math.random()*.3).toFixed(2);
+    const a2=(.55+Math.random()*.45).toFixed(2);
+    const dur=(2+Math.random()*4).toFixed(1);
+    const delay=(Math.random()*5).toFixed(1);
+    s.style.cssText='position:absolute;border-radius:50%;background:#fff;pointer-events:none;'
+      +'width:'+sz+'px;height:'+sz+'px;'
+      +'left:'+(Math.random()*100).toFixed(2)+'%;'
+      +'top:'+(Math.random()*100).toFixed(2)+'%;'
+      +'opacity:'+a1+';'
+      +'animation:loginTwinkle '+dur+'s '+delay+'s ease infinite alternate;'
+      +'--la1:'+a1+';--la2:'+a2+';';
+    sc.appendChild(s);
+  }
+  // shooting stars
+  const mc = document.getElementById('login-shoots');
+  mc.innerHTML='';
+  for(let i=0;i<5;i++){
+    const m=document.createElement('div');
+    const len=50+Math.random()*80;
+    const dur=(5+Math.random()*7).toFixed(1);
+    const delay=(i*2.2+Math.random()*2).toFixed(1);
+    const top=(5+Math.random()*55).toFixed(1);
+    const left=(Math.random()*65).toFixed(1);
+    m.style.cssText='position:absolute;height:1px;border-radius:1px;pointer-events:none;'
+      +'width:'+len+'px;'
+      +'left:'+left+'%;top:'+top+'%;'
+      +'background:linear-gradient(90deg,rgba(0,212,255,0),rgba(0,212,255,.7),rgba(255,255,255,.5),transparent);'
+      +'animation:loginShoot '+dur+'s '+delay+'s linear infinite;';
+    mc.appendChild(m);
+  }
+}
+
+// inject keyframes once
+(function(){
+  const st=document.createElement('style');
+  st.textContent='@keyframes loginTwinkle{from{opacity:var(--la1)}to{opacity:var(--la2)}}'
+    +'@keyframes loginShoot{0%{transform:translateX(-100px) translateY(0) rotate(-28deg);opacity:0}'
+    +'8%{opacity:1}88%{opacity:.9}100%{transform:translateX(110vw) translateY(35vh) rotate(-28deg);opacity:0}}';
+  document.head.appendChild(st);
+})();
 
 // ── INICIAR ──
 inicializar();
