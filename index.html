@@ -49,12 +49,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .guilda-grid-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,212,255,.1);}
 .guilda-grid-card.minha{border-color:rgba(0,212,255,.5);box-shadow:0 0 0 2px rgba(0,212,255,.2),0 0 24px rgba(0,212,255,.18);}
 .guilda-grid-card.minha::after{content:"✦ MINHA";position:absolute;top:7px;right:7px;font-size:.46rem;font-family:"Orbitron",monospace;letter-spacing:1px;background:rgba(0,212,255,.18);color:var(--accent);padding:2px 7px;border-radius:4px;font-weight:900;}
-.ggc-body{padding:18px 16px 16px;}
-.ggc-brasao{font-size:2.8rem;margin-bottom:8px;line-height:1;filter:drop-shadow(0 0 10px rgba(124,58,237,.4));}
-.ggc-nome{font-family:"Orbitron",monospace;font-size:.78rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ggc-xp{font-family:"Orbitron",monospace;font-size:.6rem;color:var(--gold);font-weight:700;margin-bottom:8px;}
-.ggc-membros{display:flex;gap:3px;flex-wrap:wrap;}
-.ggc-membro{font-size:.75rem;width:24px;height:24px;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.ggc-body{padding:18px 16px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.ggc-brasao{font-size:3.2rem;margin-bottom:10px;line-height:1;filter:drop-shadow(0 0 12px rgba(124,58,237,.5));}
+.ggc-nome{font-family:"Orbitron",monospace;font-size:.95rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px;text-align:center;line-height:1.3;word-break:break-word;}
+.ggc-xp{font-family:"Orbitron",monospace;font-size:.62rem;color:var(--gold);font-weight:700;margin-bottom:10px;}
+.ggc-membros{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;}
+.ggc-membro{font-size:.75rem;width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .ggc-membro img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 /* ══ MODAL GUILDA DETALHE ══ */
 .gm-banner{width:100%;height:120px;object-fit:cover;background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(0,212,255,.2));border-radius:var(--radius) var(--radius) 0 0;overflow:hidden;position:relative;margin:-26px -26px 0;display:block;}
@@ -612,6 +612,17 @@ select option{background:var(--s1);}
 .correio-desc{font-size:.73rem;color:var(--muted2);line-height:1.5;}
 .correio-feedback{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.18);border-radius:8px;padding:7px 10px;font-size:.73rem;color:var(--text);margin-top:6px;font-style:italic;}
 .correio-time{font-size:.58rem;color:var(--muted);margin-top:5px;}
+.correio-item.nao-lido.tipo-guilda{border-left-color:var(--purple);}
+.correio-item.nao-lido.tipo-vitrine{border-left-color:#f59e0b;}
+.correio-item.nao-lido.tipo-ranking{border-left-color:var(--gold);}
+.correio-item.nao-lido.tipo-professor{border-left-color:var(--accent);}
+.correio-item.nao-lido.tipo-streak{border-left-color:var(--orange);}
+.correio-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;padding:2px 6px;border-radius:6px;opacity:0;transition:opacity .15s;}
+.correio-item:hover .correio-del{opacity:1;}
+.correio-del:hover{color:var(--red);background:rgba(239,68,68,.1);}
+.correios-filtros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.correio-filtro{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:.65rem;font-family:"Orbitron",monospace;cursor:pointer;transition:all .18s;letter-spacing:.5px;color:var(--muted2);}
+.correio-filtro:hover,.correio-filtro.ativo{background:rgba(0,212,255,.15);border-color:var(--accent);color:var(--accent);}
 .correio-badge{position:absolute;top:10px;right:10px;background:var(--accent);color:#000;font-size:.5rem;font-weight:900;padding:2px 7px;border-radius:10px;font-family:'Orbitron',monospace;letter-spacing:1px;}
 
 </style>
@@ -726,6 +737,16 @@ select option{background:var(--s1);}
             </div>
           </div>
         </div>
+        <div class="card" style="border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.04);">
+          <div class="sec-title">✉️ Mensagem Direta ao Aluno</div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;"><label>Aluno</label><select id="p-msg-aluno"></select></div>
+            <div class="form-group" style="flex:3;"><label>Mensagem personalizada</label><input id="p-msg-texto" placeholder="Ex: Parabéns pelo projeto! Continue assim 🚀" maxlength="200"></div>
+            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
+              <button class="btn btn-primary" onclick="enviarMsgProfessor()" style="background:linear-gradient(135deg,var(--accent),var(--purple));">✉️ Enviar</button>
+            </div>
+          </div>
+        </div>
         <div class="sec-title">Turmas</div>
         <div id="p-turmas-grid" class="grid-4" style="margin-bottom:14px;"></div>
       </div>
@@ -771,6 +792,68 @@ select option{background:var(--s1);}
             </div>
           </div>
         </div>
+
+        <!-- GERADOR DE DESAFIOS ALEATÓRIOS -->
+        <div class="card" style="border-color:rgba(124,58,237,.4);background:rgba(124,58,237,.05);margin-top:8px;">
+          <div class="sec-title" style="color:var(--purple);">🎲 Gerador de Missões</div>
+          <div style="font-size:.75rem;color:var(--muted2);margin-bottom:12px;">Sorteie sugestões de missões Scratch/Robótica e publique direto na lista de missões dos alunos.</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="correio-filtro ativo" id="nivel-btn-iniciante" onclick="selecionarNivelIA('iniciante')" style="font-size:.72rem;padding:6px 14px;">🟢 Fácil</button>
+              <button class="correio-filtro" id="nivel-btn-intermediario" onclick="selecionarNivelIA('intermediario')" style="font-size:.72rem;padding:6px 14px;">🟡 Médio</button>
+              <button class="correio-filtro" id="nivel-btn-avancado" onclick="selecionarNivelIA('avancado')" style="font-size:.72rem;padding:6px 14px;">🔴 Difícil</button>
+            </div>
+            <button class="btn btn-purple" id="ia-gerar-btn" onclick="gerarProjetosIA()" style="background:linear-gradient(135deg,var(--purple),#7c3aed);border:none;margin-left:auto;">🎲 Sortear Missões</button>
+          </div>
+          <div id="ia-projetos-container">
+            <div style="text-align:center;padding:24px;color:var(--muted2);font-size:.8rem;">Escolha uma dificuldade e clique em <strong style="color:var(--purple);">Sortear Missões</strong> ✨</div>
+          </div>
+        </div>
+
+        <!-- MODAL PUBLICAR MISSÃO DO GERADOR -->
+        <div id="modal-pub-missao" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9990;align-items:center;justify-content:center;padding:20px;">
+          <div style="background:var(--s1);border:1px solid var(--border2);border-radius:var(--radius);padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;position:relative;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--accent));border-radius:var(--radius) var(--radius) 0 0;"></div>
+            <div style="font-family:'Orbitron',monospace;font-size:.9rem;color:var(--purple);margin-bottom:4px;" id="modal-pm-emoji-titulo">🎮 Publicar Missão</div>
+            <div style="font-size:.7rem;color:var(--muted2);margin-bottom:16px;">Edite os detalhes antes de publicar</div>
+
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>Título</label>
+              <input id="pm-titulo" maxlength="80">
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>Descrição</label>
+              <textarea id="pm-desc" style="min-height:80px;"></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>🎬 Vídeo de referência (opcional)</label>
+              <input id="pm-video" type="url" placeholder="https://youtube.com/watch?v=...">
+            </div>
+            <div class="form-row" style="gap:10px;margin-bottom:16px;">
+              <div class="form-group" style="flex:1;">
+                <label>⚡ XP</label>
+                <input id="pm-xp" type="number" min="50" max="1000" step="50">
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label>🪙 WarpCoins</label>
+                <input id="pm-wc" type="number" min="5" max="200" step="5">
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label>🎯 Dificuldade</label>
+                <select id="pm-dif">
+                  <option value="easy">Fácil</option>
+                  <option value="medium">Médio</option>
+                  <option value="hard">Difícil</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-outline" style="flex:1;" onclick="fecharModalMissao()">Cancelar</button>
+              <button class="btn btn-purple" style="flex:2;background:linear-gradient(135deg,var(--purple),#7c3aed);border:none;" onclick="confirmarPublicarMissao()">🚀 Publicar Missão</button>
+            </div>
+          </div>
+        </div>
+
         <div class="sec-title">Desafios Ativos</div>
         <div id="p-desafio-atual"></div>
       </div>
@@ -999,6 +1082,10 @@ select option{background:var(--s1);}
       <!-- CORREIOS -->
       <div id="apage-correios" class="page">
         <div class="page-hdr"><div><div class="page-title">📬 Correios</div><div class="page-sub">Suas notificações e mensagens</div></div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <button class="btn btn-outline btn-sm" style="font-size:.68rem;" onclick="marcarTodosLidos()">✓ Marcar lidos</button>
+            <button class="btn btn-outline btn-sm" style="font-size:.68rem;color:var(--red);border-color:var(--red);" onclick="limparTodosCorreios()">🗑️ Limpar tudo</button>
+          </div>
           <button class="btn btn-outline btn-sm" onclick="marcarTodosLidos()" style="font-size:.68rem;">✓ Marcar tudo como lido</button>
         </div>
         <div id="correios-lista"></div>
@@ -1648,6 +1735,9 @@ async function finalizarEntrada(){
   document.getElementById('a-topbar-title').textContent = a.nome.split(' ')[0].toUpperCase();
   showScreen('screen-aluno');
   renderAluno();
+  atualizarBadgeCorreios();
+  verificarStreakRisco(alunoAtual);
+  setTimeout(()=>mostrarPopupCorreios(), 800);
 
   const aAtual = S.alunos.find(x=>x.id===alunoAtual);
   if(aAtual){
@@ -1988,6 +2078,9 @@ function renderSelects(){
   const sel=document.getElementById('p-xp-aluno');if(!sel)return;
   const cur=sel.value;
   sel.innerHTML=S.alunos.length?S.alunos.map(a=>`<option value="${a.id}" ${a.id==cur?'selected':''}>${a.avatar||'👾'} ${a.nome}</option>`).join(''):'<option>— Nenhum —</option>';
+  const sel2=document.getElementById('p-msg-aluno');if(!sel2)return;
+  const cur2=sel2.value;
+  sel2.innerHTML=S.alunos.length?S.alunos.map(a=>`<option value="${a.id}" ${a.id==cur2?'selected':''}>${a.avatar||'👾'} ${a.nome}</option>`).join(''):'<option>— Nenhum —</option>';
 }
 
 // ══════════════════════════════════════
@@ -2265,6 +2358,23 @@ async function removerAluno(id){
   } catch(e){ toast('❌ Erro ao remover!'); setSyncing('error'); }
 }
 
+async function enviarMsgProfessor(){
+  const id=document.getElementById('p-msg-aluno')?.value;
+  const texto=document.getElementById('p-msg-texto')?.value.trim();
+  if(!id) return toast('⚠️ Selecione um aluno!');
+  if(!texto) return toast('⚠️ Digite uma mensagem!');
+  const a=S.alunos.find(x=>x.id===id); if(!a) return;
+  setSyncing('syncing');
+  try {
+    const notifMsg={id:'n'+Date.now(),tipo:'professor',titulo:`✉️ Mensagem do Professor`,desc:texto,ts:Date.now(),lido:false};
+    const correiosMsg=[notifMsg,...(a.correios||[])].slice(0,50);
+    await COL.alunos().doc(id).update({correios:correiosMsg});
+    document.getElementById('p-msg-texto').value='';
+    toast(`✉️ Mensagem enviada para ${a.nome}!`);
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro ao enviar.'); setSyncing('error'); }
+}
+
 async function darXP(){
   const id=document.getElementById('p-xp-aluno').value;
   const xp=parseInt(document.getElementById('p-xp-motivo').value);
@@ -2294,14 +2404,16 @@ async function aprovar(pid){
   try {
     const novoXP=(aluno.xp||0)+missao.xp;
     const wcPorDif2={easy:15,medium:25,hard:40};
-    const wcGanho=(S.desafio&&pend.isDesafio)?30:wcPorDif2[missao.dif]||20;
+    const wcGanho=(S.desafio&&pend.isDesafio)?30:(missao.wc||wcPorDif2[missao.dif]||20);
     const novoWCBonus=(aluno.wc_bonus||0)+wcGanho;
     const hist=[{desc:`✅ Missão aprovada: ${missao.titulo}${fb?` · "${fb}"`:''} +${wcGanho}🪙`,xp:missao.xp,ts:Date.now()},...(aluno.historico||[])].slice(0,30);
     // Notificação Correios
     const notifAprovado={id:'n'+Date.now(),tipo:'aprovado',titulo:`✅ Missão aprovada!`,desc:`Sua missão "${missao.titulo}" foi aprovada!`,feedback:fb||null,xp:missao.xp,ts:Date.now(),lido:false};
     const correiosUpd=[notifAprovado,...(aluno.correios||[])].slice(0,50);
     // Atualiza aluno
+    const xpAntes = aluno.xp||0;
     await COL.alunos().doc(aluno.id).update({xp:novoXP,wc_bonus:novoWCBonus,historico:hist,correios:correiosUpd});
+    setTimeout(()=>verificarNotifRanking(aluno.id, xpAntes), 1500);
     // Marca missão como done (se não for desafio)
     if(!pend.isDesafio){
       await COL.missoes().doc(pend.missaoId).update({done:firebase.firestore.FieldValue.arrayUnion(aluno.id)});
@@ -2315,7 +2427,9 @@ async function aprovar(pid){
             if(!m2) continue;
             const novoXP2 = (m2.xp||0)+missao.xp;
             const hist2 = [{desc:`⚔️ Missão de guilda aprovada: ${missao.titulo} (via ${aluno.nome}) +${wcGanho}🪙`,xp:missao.xp,ts:Date.now()},...(m2.historico||[])].slice(0,30);
-            await COL.alunos().doc(mid).update({xp:novoXP2,historico:hist2});
+            const notifGuilda={id:'n'+Date.now()+'_'+mid,tipo:'guilda',titulo:`⚔️ Missão de guilda concluída!`,desc:`Sua guilda completou "${missao.titulo}" e você ganhou +${missao.xp} XP!`,xp:missao.xp,ts:Date.now(),lido:false};
+            const correiosGuilda=[notifGuilda,...(m2.correios||[])].slice(0,50);
+            await COL.alunos().doc(mid).update({xp:novoXP2,historico:hist2,correios:correiosGuilda});
             await COL.missoes().doc(pend.missaoId).update({done:firebase.firestore.FieldValue.arrayUnion(mid)});
           }
           if(membros.length) toast(`⚔️ XP distribuído para ${membros.length+1} membros da guilda!`);
@@ -2493,6 +2607,255 @@ async function salvarDesafio(){
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
 }
 
+let iaProjetos = [];
+let nivelIAAtivo = 'iniciante';
+
+function selecionarNivelIA(n){
+  nivelIAAtivo = n;
+  ['iniciante','intermediario','avancado'].forEach(id=>{
+    const b = document.getElementById('nivel-btn-'+id);
+    if(b) b.classList.toggle('ativo', id===n);
+  });
+}
+
+const NIVEL_DIF = {iniciante:'easy', intermediario:'medium', avancado:'hard'};
+const NIVEL_WC  = {iniciante:15,    intermediario:25,        avancado:40};
+const NIVEL_XP  = {iniciante:[100,200], intermediario:[250,400], avancado:[450,700]};
+
+const BANCO_DESAFIOS = {
+iniciante:[
+  {emoji:'🐱',titulo:'Gato Perseguidor',descricao:'Programe o gato do Scratch para seguir o ponteiro do mouse. Adicione um som quando ele tocar no cursor.',habilidades:['Movimento','Eventos','Sons'],xpSugerido:120},
+  {emoji:'🎨',titulo:'Pincel Mágico',descricao:'Crie um pincel que desenha na tela conforme o mouse se move. Use teclas para mudar as cores.',habilidades:['Caneta','Mouse','Cores'],xpSugerido:130},
+  {emoji:'🌟',titulo:'Coletor de Estrelas',descricao:'Faça um personagem coletar estrelas em posições aleatórias. Mostre a pontuação na tela.',habilidades:['Variáveis','Aleatoriedade','Pontuação'],xpSugerido:150},
+  {emoji:'🚗',titulo:'Carro que Desvia',descricao:'Controle um carro com as setas do teclado desviando de obstáculos fixos no cenário.',habilidades:['Teclado','Colisão','Movimentos'],xpSugerido:140},
+  {emoji:'🐠',titulo:'Aquário Animado',descricao:'Monte uma cena de fundo do mar com peixes se movendo de lado a lado usando loops infinitos.',habilidades:['Loops','Animação','Cenários'],xpSugerido:120},
+  {emoji:'🎵',titulo:'Piano Virtual',descricao:'Cada tecla do teclado toca uma nota musical diferente. Adicione efeitos de cor ao pressionar.',habilidades:['Sons','Eventos','Efeitos'],xpSugerido:130},
+  {emoji:'🌈',titulo:'Rastro Colorido',descricao:'Personagem deixa rastro colorido ao se mover pelo palco. As cores mudam sozinhas enquanto anda.',habilidades:['Caneta','Animação','Cores'],xpSugerido:120},
+  {emoji:'🎃',titulo:'Clica no Fantasma',descricao:'Fantasmas aparecem e somem em lugares aleatórios. Clique antes que desapareçam para marcar pontos.',habilidades:['Aleatoriedade','Clique','Pontuação'],xpSugerido:150},
+  {emoji:'🌺',titulo:'Jardim de Flores',descricao:'Clique no solo para plantar flores de tipos diferentes em posições aleatórias.',habilidades:['Clones','Clique','Posição'],xpSugerido:140},
+  {emoji:'🐸',titulo:'Sapo Saltador',descricao:'Faça um sapo pular de pedra em pedra com a barra de espaço. Conta os pulos consecutivos.',habilidades:['Espaço','Variáveis','Animação'],xpSugerido:150},
+  {emoji:'🎯',titulo:'Alvo Giratório',descricao:'Um alvo se move da esquerda para a direita. Pressione espaço no momento certo para acertar.',habilidades:['Timing','Variáveis','Condições'],xpSugerido:140},
+  {emoji:'⭐',titulo:'Chuva de Estrelas',descricao:'Estrelas caem do topo da tela. Mova um cesto para pegá-las antes que toquem o chão.',habilidades:['Movimento','Colisão','Loops'],xpSugerido:160},
+  {emoji:'🐶',titulo:'Cachorro Faminto',descricao:'O cachorro anda pela tela e come ossos que aparecem aleatoriamente. Cada osso vale pontos.',habilidades:['Movimento','Colisão','Variáveis'],xpSugerido:150},
+  {emoji:'🌙',titulo:'Noite Estrelada',descricao:'Crie uma animação de céu noturno onde estrelas piscam e uma lua se move devagar pelo fundo.',habilidades:['Animação','Loops','Efeitos'],xpSugerido:110},
+  {emoji:'🎈',titulo:'Balões Coloridos',descricao:'Balões sobem pela tela. Estoure-os clicando antes que saiam pela parte de cima.',habilidades:['Clones','Clique','Velocidade'],xpSugerido:150},
+  {emoji:'🦋',titulo:'Borboleta no Jardim',descricao:'Uma borboleta segue o mouse e muda de cor ao passar por flores no cenário.',habilidades:['Mouse','Cores','Sensor de cor'],xpSugerido:130},
+  {emoji:'🏀',titulo:'Arremesso Livre',descricao:'Clique para arremessar uma bola em direção à cesta. A força muda dependendo de onde clicar.',habilidades:['Posição do mouse','Física simples','Pontuação'],xpSugerido:160},
+  {emoji:'🔢',titulo:'Calculadora Falante',descricao:'Crie uma calculadora que fala o resultado em voz alta usando o bloco de texto para fala.',habilidades:['Operadores','Variáveis','Texto para fala'],xpSugerido:140},
+  {emoji:'🌊',titulo:'Surfista Iniciante',descricao:'Personagem surfa em ondas que se movem. Pressione setas para não cair da prancha.',habilidades:['Teclado','Animação','Condições'],xpSugerido:150},
+  {emoji:'🎠',titulo:'Carrossel de Personagens',descricao:'Vários sprites giram em círculo no palco. Clique em um para ele pular e fazer um som especial.',habilidades:['Movimento circular','Eventos','Sons'],xpSugerido:130},
+  {emoji:'🍎',titulo:'Árvore de Frutas',descricao:'Frutas caem de uma árvore e você precisa pegar com um cesto se movendo na base.',habilidades:['Clones','Teclado','Colisão'],xpSugerido:150},
+  {emoji:'🐢',titulo:'Corrida das Tartarugas',descricao:'Duas tartarugas correm com velocidades aleatórias. Tente prever qual vai ganhar.',habilidades:['Aleatoriedade','Loops','Condições'],xpSugerido:130},
+  {emoji:'🕹️',titulo:'Meu Primeiro Menu',descricao:'Crie uma tela de menu com título animado e botões de iniciar, instruções e sair usando transmissões.',habilidades:['Transmissões','Fantasias','Interface'],xpSugerido:140},
+  {emoji:'🌍',titulo:'Globo Girando',descricao:'Anime um globo terrestre girando usando troca de fantasias em loop com fundo de estrelas.',habilidades:['Fantasias','Loops','Animação'],xpSugerido:110},
+  {emoji:'🐝',titulo:'Abelha Coletora',descricao:'Abelha voa pelo jardim coletando mel de flores. Cada flor visitada aumenta o contador de mel.',habilidades:['Movimento','Colisão','Variáveis'],xpSugerido:150},
+  {emoji:'🎪',titulo:'Mágico de Truques',descricao:'Clique no chapéu do mágico e um objeto diferente aparece a cada clique: coelho, pomba, flor.',habilidades:['Fantasias','Aleatoriedade','Eventos'],xpSugerido:120},
+  {emoji:'🌵',titulo:'Desafio do Cacto',descricao:'Personagem corre automaticamente e você pula sobre cactos com espaço. Conta quantos pulou.',habilidades:['Gravidade simples','Timing','Pontuação'],xpSugerido:160},
+  {emoji:'🎡',titulo:'Roda Gigante',descricao:'Crie uma roda gigante animada com cadeirinhas que giram. Clique para aumentar a velocidade.',habilidades:['Movimento circular','Clones','Velocidade'],xpSugerido:140},
+  {emoji:'🐧',titulo:'Pinguim Escorregador',descricao:'Pinguim escorrega pelo gelo e você controla a direção. Colete peixes pelo caminho.',habilidades:['Teclado','Colisão','Variáveis'],xpSugerido:150},
+  {emoji:'🌤',titulo:'Previsão do Tempo',descricao:'Crie animações para sol, chuva, neve e nublado. Botões trocam o clima com efeitos visuais.',habilidades:['Transmissões','Efeitos','Interface'],xpSugerido:130},
+  {emoji:'🎲',titulo:'Dado Digital',descricao:'Clique para rolar um dado que mostra faces de 1 a 6 com animação de giro.',habilidades:['Aleatoriedade','Fantasias','Animação'],xpSugerido:120},
+  {emoji:'🐻',titulo:'Urso e Potes de Mel',descricao:'Urso anda pela tela coletando potes de mel. Abelhas aparecem para atrapalhar.',habilidades:['Colisão','Variáveis','Clones'],xpSugerido:160},
+  {emoji:'📚',titulo:'Quiz de Perguntas',descricao:'Crie um quiz de 5 perguntas com resposta digitada. Mostra acertos ao final.',habilidades:['Perguntas e respostas','Variáveis','Condições'],xpSugerido:150},
+  {emoji:'🎸',titulo:'Banda Virtual',descricao:'Cada sprite é um instrumento. Clique em cada um para criar sua própria música.',habilidades:['Sons','Eventos','Criatividade'],xpSugerido:130},
+  {emoji:'🚂',titulo:'Trem nas Trilhas',descricao:'Trem percorre um trajeto em loop pelo cenário. Adicione passageiros que acenam das janelas.',habilidades:['Movimento','Loops','Animação'],xpSugerido:130},
+  {emoji:'🌻',titulo:'Girassol Seguidor',descricao:'Girassol sempre vira em direção ao cursor do mouse, como se seguisse o sol.',habilidades:['Apontar para','Mouse','Movimento'],xpSugerido:120},
+  {emoji:'🎰',titulo:'Caça-Níquel Simples',descricao:'Três símbolos aleatórios aparecem ao clicar. Ganhe pontos quando dois ou três combinam.',habilidades:['Aleatoriedade','Condições','Variáveis'],xpSugerido:160},
+  {emoji:'🦊',titulo:'Raposa Exploradora',descricao:'Raposa explora o mapa coletando itens escondidos atrás de arbustos clicáveis.',habilidades:['Fantasias','Clique','Variáveis'],xpSugerido:150},
+  {emoji:'🎆',titulo:'Fogos de Artifício',descricao:'Clique na tela para lançar fogos que explodem em cores aleatórias com sons.',habilidades:['Clones','Aleatoriedade','Posição do mouse'],xpSugerido:140},
+  {emoji:'🏠',titulo:'Casa Interativa',descricao:'Crie uma casa onde clicar em janelas, porta e jardim dispara animações diferentes.',habilidades:['Clique em sprite','Eventos','Animação'],xpSugerido:140},
+  {emoji:'🦅',titulo:'Águia em Voo',descricao:'Águia voa pelo céu em trajetória ondulada usando funções matemáticas simples.',habilidades:['Movimento senoidal','Animação','Loops'],xpSugerido:140},
+  {emoji:'🍕',titulo:'Pizzaria Maluca',descricao:'Ingredientes caem do topo. Arraste para a pizza certa antes que caiam fora.',habilidades:['Arrastar','Colisão','Condições'],xpSugerido:160},
+  {emoji:'🎭',titulo:'Teatro de Fantoches',descricao:'Crie uma pequena peça com 3 personagens que falam em sequência usando transmissões.',habilidades:['Transmissões','Diálogo','Sequência'],xpSugerido:140},
+  {emoji:'🌋',titulo:'Vulcão em Erupção',descricao:'Anime um vulcão com lava saindo do topo e pedras espalhando pelo cenário.',habilidades:['Clones','Animação','Efeitos'],xpSugerido:140},
+  {emoji:'🐙',titulo:'Polvo Colorido',descricao:'Polvo muda de cor quando tocado e os tentáculos animam. Crie padrões de cores diferentes.',habilidades:['Fantasias','Eventos','Animação'],xpSugerido:130},
+  {emoji:'🎡',titulo:'Parque de Diversões',descricao:'Crie uma cena animada de parque com carrossel, montanha russa e balões voando.',habilidades:['Múltiplos sprites','Animação','Cenário'],xpSugerido:160},
+  {emoji:'🐍',titulo:'Minhoca Crescente',descricao:'Personagem come pontos e fica maior a cada ponto coletado. Para ao sair da tela.',habilidades:['Variáveis','Tamanho','Condições'],xpSugerido:160},
+  {emoji:'🎐',titulo:'Bandeirolas ao Vento',descricao:'Crie bandeirolas coloridas balançando com animação suave. Clique para mudar as cores.',habilidades:['Animação','Efeitos','Clique'],xpSugerido:110},
+  {emoji:'🏄',titulo:'Prancha na Onda',descricao:'Surfista sobe e desce seguindo a onda com movimento senoidal simples.',habilidades:['Movimento','Sincronização','Animação'],xpSugerido:140},
+  {emoji:'🎪',titulo:'Ilusionista Digital',descricao:'Truques de mágica interativos: carta que some, moeda que atravessa e dado que obedece.',habilidades:['Ilusão visual','Efeitos','Interação'],xpSugerido:130},
+],
+intermediario:[
+  {emoji:'⚔️',titulo:'Batalha de Heróis',descricao:'Jogo de batalha com dois personagens, sistema de vida, ataques e efeitos especiais.',habilidades:['Variáveis de vida','Transmissões','Lógica de jogo'],xpSugerido:300},
+  {emoji:'🏰',titulo:'Labirinto Perigoso',descricao:'Labirinto com múltiplas fases onde inimigos patrulham e o jogador deve achar a saída.',habilidades:['Detecção de cor','Patrulha de IA','Múltiplas fases'],xpSugerido:350},
+  {emoji:'🚀',titulo:'Nave Espacial',descricao:'Nave atira lasers em asteroides que explodem ao ser atingidos. Score e vidas na HUD.',habilidades:['Clones','Colisão complexa','HUD'],xpSugerido:320},
+  {emoji:'🎯',titulo:'Tiro ao Alvo Dinâmico',descricao:'Alvos em velocidades diferentes valem pontos distintos. Tempo limite e recorde salvo.',habilidades:['Clones','Timer','Recorde'],xpSugerido:280},
+  {emoji:'🐍',titulo:'Snake Moderno',descricao:'Snake clássico com power-ups, obstáculos dinâmicos e dificuldade crescente.',habilidades:['Listas','Algoritmo de cobra','Dificuldade'],xpSugerido:380},
+  {emoji:'🏓',titulo:'Pong para Dois',descricao:'Pong multiplayer com placar, sons e bola acelerando a cada ponto marcado.',habilidades:['Física de bola','Dois jogadores','Progressão'],xpSugerido:300},
+  {emoji:'🧩',titulo:'Quebra-Cabeça Deslizante',descricao:'Peças embaralhadas que deslizam. Detecta quando o puzzle está na ordem correta.',habilidades:['Listas','Posicionamento','Condição de vitória'],xpSugerido:350},
+  {emoji:'🌊',titulo:'Surf com Física',descricao:'Surfista em ondas geradas com função senoidal. Desvia de tubarões e coleta troféus.',habilidades:['Matemática','Geração procedural','Física'],xpSugerido:350},
+  {emoji:'🎭',titulo:'Quiz com Ranking',descricao:'Quiz de 10 perguntas com timer, feedback visual, estrelas e top 3 de pontuação.',habilidades:['Listas','Timer','Interface'],xpSugerido:280},
+  {emoji:'🏗️',titulo:'Torre de Blocos',descricao:'Blocos caem e devem ser empilhados com precisão. A torre cresce e a câmera sobe.',habilidades:['Física','Câmera','Precisão'],xpSugerido:340},
+  {emoji:'🎪',titulo:'Jogo de Plataforma',descricao:'Plataformer com gravidade, pulo, inimigos patrulhando e moedas para coletar.',habilidades:['Gravidade','Pulo','Inimigos'],xpSugerido:380},
+  {emoji:'🦁',titulo:'Safari Fotográfico',descricao:'Fotografe animais antes que fujam. Cada espécie tem velocidade e valor de pontos únicos.',habilidades:['Clones','Padrões de movimento','Pontuação'],xpSugerido:320},
+  {emoji:'🎮',titulo:'Beat Scrolling',descricao:'Notas musicais caem e você pressiona as teclas no momento certo. Porcentagem de acerto.',habilidades:['Timing','Clones','Precisão'],xpSugerido:360},
+  {emoji:'🌿',titulo:'Fazenda Simulada',descricao:'Plante, regue e colha culturas. Cada planta tem tempo de crescimento e valor de venda.',habilidades:['Timers','Estados','Economia'],xpSugerido:340},
+  {emoji:'🔮',titulo:'Batalha de Magias',descricao:'Mago lança feitiços em monstros. Feitiços diferentes causam danos e custam mana diferente.',habilidades:['Tipos de projétil','Mana','Inimigos variados'],xpSugerido:360},
+  {emoji:'🚂',titulo:'Gerente de Trens',descricao:'Troque trilhos para guiar trens até suas estações sem colisões. Velocidade aumenta.',habilidades:['Lógica','Estados','Timing'],xpSugerido:320},
+  {emoji:'🌌',titulo:'Caçador de Planetas',descricao:'Nave coleta recursos de planetas em órbitas. Gestão de combustível e tempo.',habilidades:['Órbitas','Gestão de recursos','Matemática'],xpSugerido:350},
+  {emoji:'🎲',titulo:'RPG Simples',descricao:'Personagem com HP, ataque e defesa enfrenta monstros aleatórios em batalha por turnos.',habilidades:['Dados','Turnos','Status'],xpSugerido:400},
+  {emoji:'🏊',titulo:'Mergulhador',descricao:'Mergulhador coleta tesouros no fundo do mar com barra de oxigênio que diminui.',habilidades:['Timer de oxigênio','Profundidade','Coleta'],xpSugerido:300},
+  {emoji:'🎸',titulo:'Guitar Hero Simples',descricao:'Notas coloridas descem por pistas. Pressione a tecla certa quando chegarem na zona de acerto.',habilidades:['Sincronização','Clones','Pistas múltiplas'],xpSugerido:360},
+  {emoji:'🏆',titulo:'Torneio de Minijogos',descricao:'Sequência de 3 minijogos diferentes. Pontuação acumulada decide o campeão.',habilidades:['Múltiplos jogos','Transmissões','Pontuação global'],xpSugerido:420},
+  {emoji:'🌋',titulo:'Fuga do Vulcão',descricao:'Personagem foge de lava que sobe. Plataformas sobem e inimigos bloqueiam o caminho.',habilidades:['Plataformas dinâmicas','Urgência','Obstáculos'],xpSugerido:340},
+  {emoji:'🤖',titulo:'Robô Construtor',descricao:'Monte robôs combinando peças com propriedades diferentes. Robô mais forte vence batalha.',habilidades:['Combinações','Atributos','Estratégia'],xpSugerido:350},
+  {emoji:'🦈',titulo:'Simulador de Tubarão',descricao:'Controle um tubarão caçando peixes com IA de fuga. Barra de fome que depleta com o tempo.',habilidades:['IA de presa','Barra de status','Predador'],xpSugerido:320},
+  {emoji:'🧪',titulo:'Laboratório Químico',descricao:'Combine elementos para criar reações. Certas combinações criam explosões ou curas.',habilidades:['Combinações','Listas','Resultados variados'],xpSugerido:340},
+  {emoji:'🎳',titulo:'Boliche com Física',descricao:'Mire e arremesse a bola com potência variável. Pinos derrubam outros com física real.',habilidades:['Vetores','Colisão em cadeia','Pontuação'],xpSugerido:340},
+  {emoji:'🐉',titulo:'Criador de Dragões',descricao:'Combine ovos de cores diferentes para criar dragões com habilidades únicas.',habilidades:['Combinações','Atributos','Coleção'],xpSugerido:320},
+  {emoji:'📡',titulo:'Defesa da Torre',descricao:'Torre atira automaticamente em inimigos que avançam em ondas. Upgrade entre ondas.',habilidades:['Ondas','Auto-ataque','Upgrades'],xpSugerido:400},
+  {emoji:'🌐',titulo:'Navegador de Mapas',descricao:'Explorador percorre mapa gerado aleatoriamente coletando tesouros e evitando armadilhas.',habilidades:['Geração aleatória','Exploração','Mapa'],xpSugerido:380},
+  {emoji:'🚁',titulo:'Piloto de Helicóptero',descricao:'Helicóptero com física de voo real (gravidade e impulso). Pousa em plataformas sem colidir.',habilidades:['Física de voo','Impulso','Pouso'],xpSugerido:360},
+  {emoji:'🎠',titulo:'Construtor de Pistas',descricao:'Coloque peças de pista para guiar uma bola de início ao fim. Física real de rolagem.',habilidades:['Construção','Física','Puzzle'],xpSugerido:360},
+  {emoji:'🃏',titulo:'Jogo de Memória',descricao:'Cartas embaralhadas com temas. Aumenta de nível ao completar, reduzindo o tempo.',habilidades:['Listas','Embaralhamento','Progressão de dificuldade'],xpSugerido:300},
+  {emoji:'🏇',titulo:'Corrida de Cavalos',descricao:'Corrida com cavalos de velocidades aleatórias e eventos surpresa que mudam posições.',habilidades:['Aleatoriedade ponderada','Eventos','Animação'],xpSugerido:300},
+  {emoji:'💣',titulo:'Campo Minado',descricao:'Descubra células sem acertar minas. Números indicam quantas minas estão ao redor.',habilidades:['Grade','Algoritmo de flood','Lógica'],xpSugerido:400},
+  {emoji:'🎯',titulo:'Arqueiro Medieval',descricao:'Ajuste ângulo e força para acertar alvos em distâncias variadas com vento.',habilidades:['Trajetória parabólica','Vento','Ajuste de parâmetros'],xpSugerido:360},
+  {emoji:'🤸',titulo:'Academia de Ginástica',descricao:'Pressione sequências de teclas no tempo certo para executar movimentos de ginástica.',habilidades:['Sequências','Timing','Animação'],xpSugerido:320},
+  {emoji:'🧊',titulo:'Quebra-Gelo',descricao:'Blocos de gelo flutuam e você pula entre eles. Gelo derrete com o tempo.',habilidades:['Timers','Plataformas dinâmicas','Urgência'],xpSugerido:360},
+  {emoji:'🌮',titulo:'Food Truck Frenético',descricao:'Prepare pedidos de comida na ordem certa contra o tempo. Clientes impacientes vão embora.',habilidades:['Filas','Gestão de tempo','Receitas'],xpSugerido:320},
+  {emoji:'🎮',titulo:'Level Editor',descricao:'Crie suas próprias fases para um jogo de plataforma simples e teste em tempo real.',habilidades:['Editor de nível','Gravação de dados','Teste'],xpSugerido:420},
+  {emoji:'🧲',titulo:'Física de Ímãs',descricao:'Use ímãs para atrair ou repelir bolas metálicas e guiá-las até receptores coloridos.',habilidades:['Forças','Física','Puzzle'],xpSugerido:340},
+  {emoji:'🔬',titulo:'Microscópio Virtual',descricao:'Identifique microorganismos que aparecem na lâmina antes que se reproduzam demais.',habilidades:['Clones em cascata','Identificação','Timer'],xpSugerido:340},
+  {emoji:'🏰',titulo:'Defesa do Castelo',descricao:'Posicione arqueiros no muro para defender de ondas de invasores com rotas variadas.',habilidades:['Posicionamento','Ondas','Alcance'],xpSugerido:380},
+  {emoji:'🎭',titulo:'Diretor de Cinema',descricao:'Grave cenas posicionando atores e câmera. Reproduza o filme e ganhe nota por qualidade.',habilidades:['Posicionamento','Reprodução','Avaliação'],xpSugerido:340},
+  {emoji:'🌿',titulo:'Ecossistema Balanceado',descricao:'Adicione presas e predadores ao habitat. Veja a população oscilar em tempo real.',habilidades:['Simulação','Clones','Gráfico vivo'],xpSugerido:380},
+  {emoji:'🦾',titulo:'Braço Robótico',descricao:'Controle um braço com juntas independentes para pegar e mover objetos até alvos.',habilidades:['Cinemática','Controle fino','Física'],xpSugerido:380},
+  {emoji:'🎪',titulo:'Máquina do Tempo',descricao:'Viaje para eras diferentes resolvendo um puzzle temático em cada época histórica.',habilidades:['Múltiplas fases','Puzzles','Narrativa'],xpSugerido:360},
+  {emoji:'🐜',titulo:'Colônia de Formigas',descricao:'Formigas exploram ambiente usando feromônios para achar o caminho mais curto ao alimento.',habilidades:['Inteligência de enxame','Feromônios','Emergência'],xpSugerido:380},
+  {emoji:'🎡',titulo:'Parque de Atrações VIP',descricao:'Gerencie fila de visitantes em brinquedos com capacidade e tempo de espera limitados.',habilidades:['Filas','Capacidade','Gestão'],xpSugerido:360},
+  {emoji:'🌐',titulo:'Mapa Interativo',descricao:'Explorador percorre continentes clicando em países e vendo curiosidades animadas.',habilidades:['Clique em região','Dados geográficos','Interface'],xpSugerido:300},
+  {emoji:'🐠',titulo:'Simulador de Aquário',descricao:'Gerencie temperatura, comida e limpeza do aquário. Peixes morrem se negligenciados.',habilidades:['Timers','Múltiplos estados','Consequências'],xpSugerido:320},
+],
+avancado:[
+  {emoji:'🌍',titulo:'Simulador de Ecossistema',descricao:'Presas e predadores com populações que oscilam por regras matemáticas de Lotka-Volterra.',habilidades:['Equações diferenciais','Simulação','Gráficos'],xpSugerido:580},
+  {emoji:'🤖',titulo:'IA no Labirinto',descricao:'Robô aprende o caminho por tentativa e erro, mapeando rotas exploradas com memória.',habilidades:['Pathfinding','Memória','IA básica'],xpSugerido:620},
+  {emoji:'🎮',titulo:'Plataformer Completo',descricao:'Física real com gravidade variável, inimigos com IA de patrulha, checkpoints e progressão.',habilidades:['Física avançada','IA de inimigos','Persistência'],xpSugerido:600},
+  {emoji:'🧬',titulo:'Simulador de Genética',descricao:'Personagens herdam características visuais dos pais usando probabilidades Mendelianas.',habilidades:['Probabilidade','Hereditariedade','Visualização'],xpSugerido:540},
+  {emoji:'🌌',titulo:'Sistema Solar Dinâmico',descricao:'Planetas em órbitas com velocidades proporcionais às reais. Clique para ver dados e luas.',habilidades:['Trigonometria','Escala','Interface informativa'],xpSugerido:520},
+  {emoji:'🏙️',titulo:'Construtor de Cidades',descricao:'Gerenciamento de recursos para expandir cidade. Economia simulada com oferta e demanda.',habilidades:['Simulação econômica','Estado do jogo','UI complexa'],xpSugerido:620},
+  {emoji:'🔐',titulo:'Jogo de Criptografia',descricao:'Quebra-cabeças com cifras clássicas. O jogador decifra mensagens e cria seus próprios códigos.',habilidades:['Manipulação de strings','Algoritmos de cifra','Design de puzzles'],xpSugerido:500},
+  {emoji:'🎵',titulo:'DAW Simplificada',descricao:'Compositor com sequenciador de bateria, melodia e harmonia em camadas simultâneas.',habilidades:['Concorrência','Timing musical','Interface criativa'],xpSugerido:540},
+  {emoji:'📊',titulo:'Dashboard de Dados',descricao:'Coleta dados da turma e gera gráficos de barras, pizza e linha desenhados com caneta.',habilidades:['Visualização de dados','Estatística','Desenho algorítmico'],xpSugerido:520},
+  {emoji:'🕹️',titulo:'Engine de Jogo',descricao:'Crie um motor com editor de fases para que outros alunos façam seus próprios jogos.',habilidades:['Abstração','Arquitetura','Documentação'],xpSugerido:620},
+  {emoji:'🧠',titulo:'Rede Neural Visual',descricao:'Simule uma rede neural simples que aprende a classificar formas. Mostre os pesos mudando.',habilidades:['Machine learning básico','Visualização','Matemática'],xpSugerido:620},
+  {emoji:'⚛️',titulo:'Simulador de Partículas',descricao:'Partículas com forças de atração, repulsão e colisão realistas. Controle temperatura e densidade.',habilidades:['Física de N-corpos','Vetores','Performance'],xpSugerido:580},
+  {emoji:'🗺️',titulo:'Gerador de Dungeons',descricao:'Crie masmorras aleatórias com salas conectadas, inimigos gerados proceduralmente e tesouros.',habilidades:['Geração procedural','Grafos','Aleatoriedade controlada'],xpSugerido:580},
+  {emoji:'🎯',titulo:'Motor de Física 2D',descricao:'Implemente gravidade, impulso, rotação e colisão elástica. Demonstre com simulações.',habilidades:['Vetores','Impulso','Colisão elástica'],xpSugerido:600},
+  {emoji:'🌐',titulo:'Autômatos Celulares',descricao:'Implemente o Jogo da Vida de Conway com controles de velocidade, zoom e edição ao vivo.',habilidades:['Grade','Algoritmos','Padrões emergentes'],xpSugerido:520},
+  {emoji:'🎲',titulo:'Motor de RPG',descricao:'Sistema completo com inventário, magias, batalhas por turno, NPCs com diálogo e mapa.',habilidades:['Arquitetura complexa','Listas aninhadas','Narrativa'],xpSugerido:640},
+  {emoji:'🧩',titulo:'Solucionador de Sudoku',descricao:'Gerador e solucionador de Sudoku. Mostre visualmente o backtracking resolvendo o puzzle.',habilidades:['Backtracking','Visualização de algoritmo','Lógica'],xpSugerido:560},
+  {emoji:'🌊',titulo:'Simulador de Fluidos',descricao:'Grade de células com pressão e fluxo. Fluido flui por obstáculos de forma realista.',habilidades:['Dinâmica de fluidos','Grade','Iteração'],xpSugerido:600},
+  {emoji:'🎪',titulo:'Compilador Simples',descricao:'Interprete uma linguagem com variáveis, loops e condições. Mostre a execução passo a passo.',habilidades:['Parsing','Árvore sintática','Interpretação'],xpSugerido:640},
+  {emoji:'🌿',titulo:'Evolução por Seleção',descricao:'Agentes com genes que determinam velocidade e visão. Os mais aptos sobrevivem e reproduzem.',habilidades:['Algoritmos genéticos','Seleção natural','Emergência'],xpSugerido:600},
+  {emoji:'🏗️',titulo:'Simulador de Estruturas',descricao:'Construa pontes com vigas e observe sob qual carga colapsam usando física de tensão.',habilidades:['Física estrutural','Tensão','Engenharia'],xpSugerido:560},
+  {emoji:'🧭',titulo:'Pathfinding com A*',descricao:'Implemente o algoritmo A* visualmente. Mostre a fila de nós explorados em tempo real.',habilidades:['A* algoritmo','Heurística','Visualização'],xpSugerido:600},
+  {emoji:'🌍',titulo:'Simulador Climático',descricao:'Grade de células com temperatura, pressão e umidade. Simule frentes frias e chuvas.',habilidades:['Autômatos celulares','Meteorologia','Grade'],xpSugerido:580},
+  {emoji:'🎭',titulo:'Motor de Narrativa',descricao:'Sistema de aventura textual com grafo de escolhas, estados de personagem e múltiplos finais.',habilidades:['Grafos de decisão','Estado','Narrativa ramificada'],xpSugerido:540},
+  {emoji:'🦾',titulo:'Braço Robótico com IK',descricao:'Cinemática inversa: defina o destino da garra e o braço calcula os ângulos das juntas.',habilidades:['Cinemática inversa','Trigonometria','Controle'],xpSugerido:600},
+  {emoji:'📡',titulo:'Simulador de Satélites',descricao:'Lance satélites em órbitas com velocidade inicial calculada. Simule manobras de Hohmann.',habilidades:['Mecânica orbital','Física','Engenharia espacial'],xpSugerido:580},
+  {emoji:'🧪',titulo:'Laboratório de Química',descricao:'Simule reações com moléculas animadas. Equilíbrio de equações e visualização de ligações.',habilidades:['Química','Visualização molecular','Balanceamento'],xpSugerido:560},
+  {emoji:'🎓',titulo:'Tutor Adaptativo',descricao:'Sistema que detecta dificuldades do aluno e ajusta a dificuldade das perguntas automaticamente.',habilidades:['Adaptação','Histórico de respostas','Algoritmo'],xpSugerido:580},
+  {emoji:'🌐',titulo:'Linguagem de Programação',descricao:'Crie uma linguagem visual de blocos própria com interpretador. Outros alunos usam para programar.',habilidades:['Design de linguagem','Parsing','Abstração'],xpSugerido:640},
+  {emoji:'🏎️',titulo:'Físicas de Corrida',descricao:'Motor com tração, derrapagem, curvas com força centrífuga e dano por colisão realistas.',habilidades:['Física veicular','Forças','Simulação'],xpSugerido:580},
+  {emoji:'🎨',titulo:'Raytracer Simples',descricao:'Renderize esferas 3D projetadas em 2D com sombras, reflexos e iluminação difusa.',habilidades:['Álgebra linear','Raycasting','3D em 2D'],xpSugerido:620},
+  {emoji:'🧲',titulo:'Simulador Eletromagnético',descricao:'Visualize campos elétricos e magnéticos com linhas de força dinâmicas e cargas móveis.',habilidades:['Eletromagnetismo','Vetores','Visualização de campos'],xpSugerido:580},
+  {emoji:'🐜',titulo:'Colônia de Formigas (ACO)',descricao:'Formigas exploram ambiente usando feromônios para achar o caminho mais curto ao alimento.',habilidades:['Inteligência de enxame','Feromônios','Emergência'],xpSugerido:580},
+  {emoji:'🌱',titulo:'Jardim Procedural (L-Systems)',descricao:'Gere plantas fractais com L-systems. Cada parâmetro altera forma, folhas e ramificações.',habilidades:['L-systems','Fractais','Recursão'],xpSugerido:560},
+  {emoji:'🔊',titulo:'Sintetizador de Som',descricao:'Gere ondas senoidais, quadradas e triangulares. Combine-as para criar timbres personalizados.',habilidades:['Síntese sonora','Fourier','Instrumentos virtuais'],xpSugerido:560},
+  {emoji:'🌍',titulo:'Simulador de Tráfego',descricao:'Carros com IA de condução autônoma em cruzamentos com semáforos adaptativos.',habilidades:['IA de agentes','Otimização','Simulação'],xpSugerido:600},
+  {emoji:'🤖',titulo:'Aprendizado por Reforço',descricao:'Agente aprende a jogar um jogo simples por recompensas. Mostre a evolução da política.',habilidades:['RL básico','Política','Recompensas'],xpSugerido:640},
+  {emoji:'🎵',titulo:'Gerador Musical Evolutivo',descricao:'Algoritmo genético cria melodias que evoluem com base em regras de harmonia.',habilidades:['Algoritmos genéticos','Teoria musical','Avaliação de fitness'],xpSugerido:600},
+  {emoji:'🔭',titulo:'N-body Gravitacional',descricao:'Simule N corpos com gravidade mútua. Observe órbitas caóticas e sistemas estáveis.',habilidades:['Simulação N-corpos','Integradores numéricos','Caos'],xpSugerido:600},
+  {emoji:'🧠',titulo:'Perceptron Visual',descricao:'Implemente um perceptron que aprende a separar pontos em duas classes. Mostre o hiperplano.',habilidades:['Perceptron','Gradiente descendente','Visualização'],xpSugerido:600},
+  {emoji:'🎭',titulo:'Motor de Física Verlet',descricao:'Integração de Verlet para simular tecidos, correntes e corpos moles com restrições.',habilidades:['Integração numérica','Restrições','Simulação de tecido'],xpSugerido:600},
+  {emoji:'🏗️',titulo:'Compilador Visual',descricao:'Linguagem de fluxograma onde usuário conecta blocos e o sistema executa o algoritmo.',habilidades:['Grafos de fluxo','Execução visual','Design de interface'],xpSugerido:620},
+  {emoji:'🌊',titulo:'Autômato de Ondas',descricao:'Simule propagação de ondas em 2D com reflexão, difração e interferência visualizadas.',habilidades:['Física ondulatória','Grade','Superposição'],xpSugerido:580},
+  {emoji:'🎪',titulo:'Framework de Testes',descricao:'Sistema de testes automatizados para projetos Scratch. Escreva casos e rode a suite.',habilidades:['Testes','Automação','Qualidade de software'],xpSugerido:580},
+  {emoji:'🌐',titulo:'Simulador de Internet',descricao:'Pacotes viajam por roteadores com tabelas de roteamento. Simule latência e congestionamento.',habilidades:['Redes','Protocolos','Simulação distribuída'],xpSugerido:580},
+  {emoji:'🤝',titulo:'Protocolo de Redes',descricao:'Simule handshakes TCP/IP com pacotes visuais. Mostre retransmissão em caso de perda.',habilidades:['TCP/IP','Retransmissão','Protocolo'],xpSugerido:560},
+  {emoji:'🔮',titulo:'Simulador Quântico',descricao:'Represente qubits, superposição e entrelaçamento com visualização de esfera de Bloch.',habilidades:['Computação quântica','Visualização','Matemática complexa'],xpSugerido:640},
+  {emoji:'🌺',titulo:'Arte Generativa Evolutiva',descricao:'Imagens geradas por parâmetros que evoluem por seleção estética. O usuário seleciona favoritos.',habilidades:['Algoritmos genéticos','Arte generativa','Estética computacional'],xpSugerido:560},
+  {emoji:'📐',titulo:'Geometria Computacional',descricao:'Implemente convex hull, triangulação de Delaunay e voronoi interativos com pontos arrastáveis.',habilidades:['Geometria computacional','Algoritmos','Visualização'],xpSugerido:600},
+  {emoji:'🧮',titulo:'Calculadora Simbólica',descricao:'Parse e simplifique expressões algébricas. Mostre passo a passo de simplificação.',habilidades:['Parsing simbólico','Álgebra','Árvores de expressão'],xpSugerido:580},
+  {emoji:'🐠',titulo:'Vida Artificial',descricao:'Criaturas com redes neurais evoluem para nadar, caçar e fugir. Observe especiação.',habilidades:['Vida artificial','Neuroevolução','Seleção natural'],xpSugerido:640},
+]
+};
+
+function gerarProjetosIA(){
+  const btn = document.getElementById('ia-gerar-btn');
+  const container = document.getElementById('ia-projetos-container');
+  if(!container||!btn) return;
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Sorteando...';
+  const banco = BANCO_DESAFIOS[nivelIAAtivo] || BANCO_DESAFIOS.iniciante;
+  const shuffled = [...banco].sort(()=>Math.random()-.5);
+  iaProjetos = shuffled.slice(0,2);
+  setTimeout(()=>{
+    renderProjetosIA(iaProjetos);
+    btn.disabled = false;
+    btn.innerHTML = '🎲 Sortear Novos';
+  }, 350);
+}
+
+function abrirModalMissao(idx){
+  const p = iaProjetos[idx]; if(!p) return;
+  const dif = NIVEL_DIF[nivelIAAtivo]||'easy';
+  const wc  = NIVEL_WC[nivelIAAtivo]||15;
+  const xp  = p.xpSugerido||150;
+  document.getElementById('modal-pm-emoji-titulo').textContent = p.emoji+' Publicar Missão';
+  document.getElementById('pm-titulo').value  = p.titulo||'';
+  document.getElementById('pm-desc').value    = p.descricao + (p.habilidades?.length ? '\n\nHabilidades: '+p.habilidades.join(', ') : '');
+  document.getElementById('pm-video').value   = '';
+  document.getElementById('pm-xp').value      = xp;
+  document.getElementById('pm-wc').value      = wc;
+  document.getElementById('pm-dif').value     = dif;
+  // guarda idx para confirmar
+  document.getElementById('modal-pub-missao').dataset.idx = idx;
+  document.getElementById('modal-pub-missao').style.display = 'flex';
+}
+
+function fecharModalMissao(){
+  document.getElementById('modal-pub-missao').style.display = 'none';
+}
+
+async function confirmarPublicarMissao(){
+  const titulo = document.getElementById('pm-titulo').value.trim();
+  const desc   = document.getElementById('pm-desc').value.trim();
+  const video  = document.getElementById('pm-video').value.trim();
+  const xp     = parseInt(document.getElementById('pm-xp').value)||150;
+  const wc     = parseInt(document.getElementById('pm-wc').value)||15;
+  const dif    = document.getElementById('pm-dif').value||'easy';
+  if(!titulo) return toast('⚠️ Digite um título!');
+  setSyncing('syncing');
+  try {
+    await COL.missoes().add({titulo, desc, video, xp, wc, dif, done:[], tipo:'individual', ts:Date.now()});
+    fecharModalMissao();
+    toast('✅ Missão publicada na lista!');
+    setSyncing('ok');
+  } catch(e){ toast('❌ Erro ao publicar!'); setSyncing('error'); }
+}
+
+
+function renderProjetosIA(projetos){
+  const container = document.getElementById('ia-projetos-container');
+  if(!container||!projetos||!projetos.length) return;
+  const difLabel = {iniciante:'🟢 Fácil', intermediario:'🟡 Médio', avancado:'🔴 Difícil'}[nivelIAAtivo]||'';
+  container.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:4px;">${projetos.map((p,i)=>`
+    <div style="background:var(--s1);border:1px solid rgba(124,58,237,.35);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--accent));"></div>
+      <div style="font-size:2.2rem;margin-bottom:8px;">${p.emoji||'🎮'}</div>
+      <div style="font-family:'Orbitron',monospace;font-size:.82rem;font-weight:700;color:var(--accent);margin-bottom:8px;line-height:1.3;">${p.titulo}</div>
+      <div style="font-size:.73rem;color:var(--muted2);line-height:1.6;margin-bottom:10px;">${p.descricao}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">${(p.habilidades||[]).map(h=>`<span style="background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:10px;padding:2px 8px;font-size:.6rem;color:var(--purple);">${h}</span>`).join('')}</div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+        <span style="font-family:'Orbitron',monospace;font-size:.63rem;color:var(--gold);">⚡ ${p.xpSugerido||150} XP</span>
+        <span style="font-size:.63rem;color:var(--muted2);">${difLabel}</span>
+        <button class="btn btn-sm" style="font-size:.65rem;padding:5px 12px;margin-left:auto;background:linear-gradient(135deg,var(--purple),#7c3aed);border:none;color:#fff;" onclick="abrirModalMissao(${i})">🚀 Publicar Missão</button>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
 async function removerDesafio(id){
   if(!confirm('Encerrar este desafio?'))return;
   try {
@@ -2514,6 +2877,7 @@ function abrirMissao(mid){
   const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[m.dif];
   const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[m.dif];
   const isEquipe=m.tipo==='equipe';
+  const videoHtml=m.video?`<div style='margin:8px 0;'><a href='${m.video}' target='_blank' style='font-size:.75rem;color:var(--accent);'>🎬 Ver vídeo de referência</a></div>`:'';
   document.getElementById('modal-missao-content').innerHTML=`
     <div class="modal-title">🎯 ${m.titulo}</div>
     <div style="font-size:.86rem;color:var(--muted2);line-height:1.7;margin-bottom:12px">${m.desc}</div>
@@ -3232,6 +3596,7 @@ let presenceInterval = null;
 // ══════════════════════════════════════
 //  CORREIOS
 // ══════════════════════════════════════
+let correioFiltroAtivo = 'todos';
 function renderCorreios(){
   const a = S.alunos.find(x=>x.id===alunoAtual); if(!a) return;
   const el = document.getElementById('correios-lista'); if(!el) return;
@@ -3248,9 +3613,26 @@ function renderCorreios(){
     el.innerHTML=`<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Sua caixa de entrada está vazia.<br>Quando o professor aprovar missões ou alguém reagir ao seu perfil, as notificações aparecem aqui!</div></div>`;
     return;
   }
-  const icones={aprovado:'✅',rejeitado:'❌',reacao:'😊'};
-  const cores={aprovado:'var(--green)',rejeitado:'var(--red)',reacao:'var(--purple)'};
-  el.innerHTML = notifs.map(n=>{
+  const icones={aprovado:'✅',rejeitado:'❌',reacao:'😊',guilda:'⚔️',vitrine:'🌟',ranking:'🏆',professor:'✉️',streak:'🔥'};
+  const cores={aprovado:'var(--green)',rejeitado:'var(--red)',reacao:'var(--purple)',guilda:'var(--purple)',vitrine:'#f59e0b',ranking:'var(--gold)',professor:'var(--accent)',streak:'var(--orange)'};
+  const filtros = [
+    {id:'todos',label:'📬 Todos'},
+    {id:'aprovado',label:'✅ Aprovações'},
+    {id:'rejeitado',label:'❌ Rejeições'},
+    {id:'professor',label:'✉️ Professor'},
+    {id:'guilda',label:'⚔️ Guilda'},
+    {id:'vitrine',label:'🌟 Vitrine'},
+    {id:'ranking',label:'🏆 Ranking'},
+    {id:'reacao',label:'😊 Reações'},
+    {id:'streak',label:'🔥 Streak'},
+  ];
+  const filtrados = correioFiltroAtivo==='todos' ? notifs : notifs.filter(n=>n.tipo===correioFiltroAtivo);
+  let html = `<div class="correios-filtros">${filtros.map(f=>`<button class="correio-filtro ${correioFiltroAtivo===f.id?'ativo':''}" onclick="setCorreioFiltro('${f.id}')">${f.label}</button>`).join('')}</div>`;
+  if(!filtrados.length){
+    html += `<div class="empty" style="padding:30px 0;"><div class="empty-icon">📭</div><div class="empty-text">Nenhuma notificação deste tipo.</div></div>`;
+    el.innerHTML=html; return;
+  }
+  html += filtrados.map(n=>{
     const dt=new Date(n.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
     return `<div class="correio-item ${!n.lido?'nao-lido':''} tipo-${n.tipo}" onclick="marcarLido('${n.id}')">
       <div class="correio-icon" style="background:rgba(0,0,0,.2);">${icones[n.tipo]||'📬'}</div>
@@ -3262,8 +3644,45 @@ function renderCorreios(){
         <div class="correio-time">${dt}</div>
       </div>
       ${!n.lido?`<div class="correio-badge">NOVO</div>`:''}
+      <button class="correio-del" onclick="event.stopPropagation();apagarCorreio('${n.id}')" title="Apagar">✕</button>
     </div>`;
   }).join('');
+  el.innerHTML=html;
+}
+function setCorreioFiltro(f){ correioFiltroAtivo=f; renderCorreios(); }
+
+// Helper: verifica posição no ranking e notifica se subiu
+async function verificarNotifRanking(alunoId, xpAntes){
+  try {
+    const a = S.alunos.find(x=>x.id===alunoId); if(!a) return;
+    const sorted = [...S.alunos].sort((x,y)=>(y.xp||0)-(x.xp||0));
+    const posAgora = sorted.findIndex(x=>x.id===alunoId)+1;
+    const sortedAntes = [...S.alunos].map(x=>x.id===alunoId?{...x,xp:xpAntes}:x).sort((x,y)=>(y.xp||0)-(x.xp||0));
+    const posAntes = sortedAntes.findIndex(x=>x.id===alunoId)+1;
+    if(posAgora < posAntes && posAgora > 0){
+      const notifRank={id:'n'+Date.now()+'_rank',tipo:'ranking',titulo:`🏆 Você subiu no ranking!`,desc:`Você está em #${posAgora} no ranking geral! Continue assim!`,ts:Date.now(),lido:false};
+      const correiosRank=[notifRank,...(a.correios||[])].filter((n,i,arr)=>i===0||n.tipo!=='ranking'||arr[i-1].ts-n.ts>3600000).slice(0,50);
+      await COL.alunos().doc(alunoId).update({correios:correiosRank});
+    }
+  } catch(e){}
+}
+
+// Verifica streak em risco (chamado no login)
+async function verificarStreakRisco(alunoId){
+  try {
+    const a = S.alunos.find(x=>x.id===alunoId); if(!a || !a.streak || a.streak < 2) return;
+    if(!a.lastLogin) return;
+    const horasSemAcesso = (Date.now() - new Date(a.lastLogin).getTime())/(1000*60*60);
+    if(horasSemAcesso >= 20 && horasSemAcesso < 24){
+      const jaTemNotif = (a.correios||[]).some(n=>n.tipo==='streak' && Date.now()-n.ts < 3*60*60*1000);
+      if(!jaTemNotif){
+        const hRestantes = Math.floor(24 - horasSemAcesso);
+        const notifStreak={id:'n'+Date.now()+'_sk',tipo:'streak',titulo:`🔥 Seu streak está em risco!`,desc:`Você não acessa há ${Math.floor(horasSemAcesso)}h. Seu streak de ${a.streak} dias acaba em ~${hRestantes}h!`,ts:Date.now(),lido:false};
+        const correiosStreak=[notifStreak,...(a.correios||[])].slice(0,50);
+        await COL.alunos().doc(alunoId).update({correios:correiosStreak});
+      }
+    }
+  } catch(e){}
 }
 async function marcarLido(notifId){
   const a = S.alunos.find(x=>x.id===alunoAtual); if(!a) return;
@@ -3282,6 +3701,48 @@ async function marcarTodosLidos(){
     renderCorreios();
   }catch(e){}
 }
+async function apagarCorreio(notifId){
+  const a = S.alunos.find(x=>x.id===alunoAtual); if(!a) return;
+  const correios = (a.correios||[]).filter(n=>n.id!==notifId);
+  try{ await COL.alunos().doc(alunoAtual).update({correios}); renderCorreios(); }catch(e){}
+}
+async function limparTodosCorreios(){
+  if(!confirm('Apagar todas as mensagens dos Correios?')) return;
+  try{
+    await COL.alunos().doc(alunoAtual).update({correios:[]});
+    toast('🗑️ Correios limpos.');
+    renderCorreios();
+  }catch(e){ toast('❌ Erro ao limpar.'); }
+}
+function mostrarPopupCorreios(){
+  const a = S.alunos.find(x=>x.id===alunoAtual); if(!a) return;
+  const naoLidas = (a.correios||[]).filter(n=>!n.lido);
+  if(!naoLidas.length) return;
+  const icones={aprovado:'✅',rejeitado:'❌',reacao:'😊',guilda:'⚔️',vitrine:'🌟',ranking:'🏆',professor:'✉️',streak:'🔥'};
+  const preview = naoLidas.slice(0,3).map(n=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(0,212,255,.08);">
+    <span style="font-size:1rem;">${icones[n.tipo]||'📬'}</span>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:.72rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.titulo}</div>
+      <div style="font-size:.65rem;color:var(--muted2);line-height:1.4;">${(n.desc||'').slice(0,55)}${(n.desc||'').length>55?'…':''}</div>
+    </div>
+  </div>`).join('');
+  const overlay = document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9998;display:flex;align-items:flex-start;justify-content:center;padding-top:60px;';
+  overlay.innerHTML=`
+    <div style="background:var(--s1);border:1px solid var(--accent);border-radius:var(--radius);padding:20px;max-width:340px;width:92%;box-shadow:0 12px 40px rgba(0,212,255,.2);">
+      <div style="font-family:'Orbitron',monospace;font-size:.82rem;color:var(--accent);margin-bottom:4px;">📬 Correios</div>
+      <div style="font-size:.7rem;color:var(--muted2);margin-bottom:10px;">Você tem <strong style="color:var(--accent);">${naoLidas.length} mensagem${naoLidas.length>1?'ns':''}</strong> não lida${naoLidas.length>1?'s':''}!</div>
+      ${preview}
+      ${naoLidas.length>3?`<div style="font-size:.65rem;color:var(--muted2);margin-top:8px;text-align:center;">+${naoLidas.length-3} mais nos Correios</div>`:''}
+      <div style="display:flex;gap:8px;margin-top:14px;">
+        <button class="btn btn-outline btn-sm" style="flex:1;font-size:.72rem;" onclick="this.closest('div[style*=fixed]').remove()">Depois</button>
+        <button class="btn btn-sm" style="flex:1;font-size:.72rem;background:var(--accent);color:#000;border:none;" onclick="this.closest('div[style*=fixed]').remove();alunoTab('correios','asnav-correios')">Ver Correios</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+}
+
 function atualizarBadgeCorreios(){
   const a = S.alunos.find(x=>x.id===alunoAtual); if(!a) return;
   const naoLidos = (a.correios||[]).filter(n=>!n.lido).length;
@@ -3740,6 +4201,8 @@ async function enviarConvite(guildaId){
 async function responderConvite(conviteId, acao, guildaId){
   setSyncing('syncing');
   try {
+    const conviteSnap = await COL.convites().doc(conviteId).get();
+    const conviteData = conviteSnap.exists ? conviteSnap.data() : {};
     await COL.convites().doc(conviteId).update({status:acao==='aceitar'?'aceito':'recusado'});
     if(acao==='aceitar' && guildaId){
       // Sai de guilda anterior
@@ -3752,6 +4215,17 @@ async function responderConvite(conviteId, acao, guildaId){
         membros: firebase.firestore.FieldValue.arrayUnion(alunoAtual),
         xpTotal: firebase.firestore.FieldValue.increment(a?.xp||0)
       });
+      // Notificar quem enviou o convite
+      if(conviteData.deId && conviteData.deId !== alunoAtual){
+        const quemConvidou = S.alunos.find(x=>x.id===conviteData.deId);
+        if(quemConvidou){
+          const guildaSnap = await COL.guildas().doc(guildaId).get();
+          const gNome = guildaSnap.exists ? (guildaSnap.data().nome||'sua guilda') : 'sua guilda';
+          const notifConv={id:'n'+Date.now(),tipo:'guilda',titulo:`⚔️ Convite aceito!`,desc:`${a?.avatar||'👾'} ${a?.nome||'Aluno'} aceitou seu convite e entrou em ${gNome}!`,ts:Date.now(),lido:false};
+          const correiosConv=[notifConv,...(quemConvidou.correios||[])].slice(0,50);
+          await COL.alunos().doc(conviteData.deId).update({correios:correiosConv});
+        }
+      }
       toast('⚔️ Você entrou na guilda!');
     } else { toast('Convite recusado.'); }
     setSyncing('ok');
@@ -4322,6 +4796,17 @@ async function reagir(vitrineId, emoji){
         [`reactions.${emoji}`]: firebase.firestore.FieldValue.increment(1),
         [`reactors.${emoji}`]: firebase.firestore.FieldValue.arrayUnion(alunoAtual)
       });
+      // Notificar dono do projeto
+      if(v.alunoId && v.alunoId !== alunoAtual){
+        const donoVitrine = S.alunos.find(x=>x.id===v.alunoId);
+        if(donoVitrine){
+          const meuAvatar2 = (S.alunos.find(x=>x.id===alunoAtual)||{}).avatar||'👾';
+          const meuNome2 = (S.alunos.find(x=>x.id===alunoAtual)||{}).nome||'Alguém';
+          const notifVitrine={id:'n'+Date.now(),tipo:'vitrine',titulo:`${emoji} Reação na sua vitrine!`,desc:`${meuAvatar2} ${meuNome2} reagiu com ${emoji} no seu projeto "${v.titulo||'seu projeto'}"!`,ts:Date.now(),lido:false};
+          const correiosVitrine=[notifVitrine,...(donoVitrine.correios||[])].slice(0,50);
+          await COL.alunos().doc(v.alunoId).update({correios:correiosVitrine});
+        }
+      }
     }
     await batch.commit();
     renderVitrine();
@@ -4337,9 +4822,22 @@ async function comentarVitrine(vitrineId){
   input.value='';
   try {
     const comentario = {nome:a.nome,avatar:a.avatar||'👾',texto,ts:Date.now()};
+    const vitrineSnap = await COL.vitrine().doc(vitrineId).get();
     await COL.vitrine().doc(vitrineId).update({
       comentarios: firebase.firestore.FieldValue.arrayUnion(comentario)
     });
+    // Notificar dono do projeto
+    if(vitrineSnap.exists){
+      const vData = vitrineSnap.data();
+      if(vData.alunoId && vData.alunoId !== alunoAtual){
+        const donoVitrine = S.alunos.find(x=>x.id===vData.alunoId);
+        if(donoVitrine){
+          const notifCmt={id:'n'+Date.now(),tipo:'vitrine',titulo:`💬 Comentário no seu projeto!`,desc:`${a.avatar||'👾'} ${a.nome} comentou: "${texto.slice(0,60)}${texto.length>60?'...':''}"`,ts:Date.now(),lido:false};
+          const correiosCmt=[notifCmt,...(donoVitrine.correios||[])].slice(0,50);
+          await COL.alunos().doc(vData.alunoId).update({correios:correiosCmt});
+        }
+      }
+    }
     toast('💬 Comentário enviado!');
     renderVitrine();
   } catch(e){ toast('❌ Erro ao comentar.'); }
