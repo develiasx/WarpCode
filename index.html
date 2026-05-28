@@ -1459,7 +1459,7 @@ async function inicializar(){
 
     setSyncing('ok');
     ligarListeners();
-    showScreen('screen-login');
+    showScreen('screen-login');setTimeout(initLoginGalaxy,60);
 
   } catch(err) {
     console.error('[WC] Erro:', err);
