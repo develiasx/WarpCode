@@ -1353,6 +1353,76 @@ const COL = {
   presence:  () => db.collection('presence'),
 };
 
+// ══════════════════════════════════════════════
+//  🚀 WARPCODE UTILS — Helpers centralizados
+//  Adicionados na refatoração v2.0
+// ══════════════════════════════════════════════
+const U = {
+  // Busca em array por id (substitui .find(x=>x.id===id) espalhado)
+  byId: (arr, id) => arr.find(x => x.id === id),
+
+  // Cria entrada de histórico padronizada
+  histEntry: (desc, xp = 0) => ({ desc, xp, ts: Date.now() }),
+
+  // Cria notificação padronizada
+  notif: (tipo, titulo, desc, extra = {}) => ({
+    id: 'n' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+    tipo, titulo, desc, ts: Date.now(), lido: false, ...extra
+  }),
+
+  // Atualiza historico com slice (padrão repetido 30+ vezes)
+  pushHistorico: (aluno, entry, max = 30) =>
+    [entry, ...(aluno.historico || [])].slice(0, max),
+
+  // Atualiza correios com slice (padrão repetido 20+ vezes)
+  pushCorreio: (aluno, notifEntry, max = 50) =>
+    [notifEntry, ...(aluno.correios || [])].slice(0, max),
+
+  // Wrapper seguro para ops Firebase com sync indicator
+  async fireOp(fn, { ok = '✅ Salvo!', err = '❌ Erro!', silent = false } = {}) {
+    setSyncing('syncing');
+    try {
+      const result = await fn();
+      setSyncing('ok');
+      if (!silent && ok) toast(ok);
+      return result;
+    } catch (e) {
+      console.error('[WC] fireOp error:', e);
+      setSyncing('error');
+      toast(err);
+      return null;
+    }
+  },
+
+  // Formata data/hora
+  tsHora: (ts) => new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+  tsData: (ts) => new Date(ts).toLocaleDateString('pt-BR'),
+
+  // Limpa campos de formulário por IDs
+  limparCampos: (...ids) => ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  }),
+
+  // Garante que aluno existe no state
+  getAluno: (id) => S.alunos.find(x => x.id === id),
+  getPendente: (id) => S.pendentes.find(x => x.id === id),
+  getMissao: (id) => S.missoes.find(x => x.id === id),
+  getLoja: (id) => S.loja.find(x => x.id === id),
+  getGuilda: (id) => S.guildas.find(x => x.id === id),
+  getDesafio: (id) => S.desafios.find(x => x.id === id),
+};
+
+// Cache de elementos DOM mais usados (evita querySelector repetitivo)
+const EL = new Proxy({}, {
+  get(cache, id) {
+    if (!cache[id]) cache[id] = document.getElementById(id);
+    return cache[id];
+  }
+});
+
+
+
 // ══════════════════════════════════════
 //  STATE LOCAL (cache em memória)
 // ══════════════════════════════════════
@@ -1392,11 +1462,14 @@ let alunoAtual=null, avatarSelecionado=null;
 // ══════════════════════════════════════
 //  SYNC INDICATOR
 // ══════════════════════════════════════
-function setSyncing(s){ // 'ok' | 'syncing' | 'error'
-  const dot=document.getElementById('sync-dot');
-  const txt=document.getElementById('sync-text');
-  dot.className='sync-dot'+(s==='syncing'?' syncing':s==='error'?' error':'');
-  txt.textContent=s==='syncing'?'Salvando...':s==='error'?'Sem conexão':'Conectado';
+function setSyncing(s) { // 'ok' | 'syncing' | 'error'
+  const dot = document.getElementById('sync-dot');
+  const txt = document.getElementById('sync-text');
+  if (!dot || !txt) return;
+  const map = { syncing: ['syncing', 'Salvando...'], error: ['error', 'Sem conexão'], ok: ['', 'Conectado'] };
+  const [cls, label] = map[s] || map.ok;
+  dot.className = 'sync-dot' + (cls ? ' ' + cls : '');
+  txt.textContent = label;
 }
 
 // ══════════════════════════════════════
@@ -2622,9 +2695,7 @@ async function addRecompensa(){
   setSyncing('syncing');
   try {
     await COL.loja().add({emoji,nome,desc:'Recompensa especial da turma.',custo,ativo:true});
-    document.getElementById('r-emoji').value='';
-    document.getElementById('r-nome').value='';
-    document.getElementById('r-custo').value='';
+    U.limparCampos('r-emoji', 'r-nome', 'r-custo');
     toast('✅ Recompensa adicionada!');
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
@@ -2684,11 +2755,7 @@ async function salvarDesafio(){
   setSyncing('syncing');
   try {
     await COL.desafios().add({titulo,desc,video,xp,expira:expira.toISOString(),ts:Date.now(),done:[]});
-    document.getElementById('d-titulo').value='';
-    document.getElementById('d-desc').value='';
-    if(document.getElementById('d-video')) document.getElementById('d-video').value='';
-    document.getElementById('d-xp').value='';
-    document.getElementById('d-dias').value='';
+    U.limparCampos('d-titulo', 'd-desc', 'd-video', 'd-xp', 'd-dias');
     toast('🔥 Desafio publicado!');
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
@@ -3662,13 +3729,22 @@ function closeLevelUp(){document.getElementById('levelup-overlay').classList.rem
 // ══════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════
-function closeModal(id){document.getElementById(id).classList.remove('active');}
+function closeModal(id) { const el = document.getElementById(id); if (el) el.classList.remove('active'); }
 async function gerarPin(){
   const novo=String(Math.floor(1000+Math.random()*9000));
   try { await COL.config().update({pin:novo}); toast(`🔑 Novo PIN: ${novo}`); } catch(e){ toast('❌ Erro!'); }
 }
 function copiarLink(){navigator.clipboard?.writeText(window.location.href).then(()=>toast('📋 Link copiado!')).catch(()=>toast('📋 Copie o link da barra do navegador!'));}
-function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);}
+function toast(msg, duration = 3200) {
+  // Evita toasts duplicados
+  const existing = document.querySelector('.toast');
+  if (existing && existing.textContent === msg) return;
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), duration);
+}
 
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('active');}));
 
@@ -4875,7 +4951,9 @@ async function enviarAprovacaoGuilda(missaoId, guildaId){
   } catch(e){ toast('❌ Erro ao enviar!'); }
 }
 
-function escapeHtml(t){ const d=document.createElement('div');d.textContent=t;return d.innerHTML; }
+function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+// Alias na U para uso consistente
+U.esc = escapeHtml;
 
 // ══════════════════════════════════════
 //  VITRINE — ALUNO
