@@ -671,9 +671,161 @@ select option{background:var(--s1);}
 .correio-filtro:hover,.correio-filtro.ativo{background:rgba(0,212,255,.15);border-color:var(--accent);color:var(--accent);}
 .correio-badge{position:absolute;top:10px;right:10px;background:var(--accent);color:#000;font-size:.5rem;font-weight:900;padding:2px 7px;border-radius:10px;font-family:'Orbitron',monospace;letter-spacing:1px;}
 
+
+
+/* ══ APP SCREENS — layout desktop row, mobile column ══ */
+#screen-prof.active, #screen-aluno.active {
+  flex-direction: column;
+}
+#screen-prof .app-shell,
+#screen-aluno .app-shell {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+}
+@media(max-width:768px){
+  #screen-prof .app-shell,
+  #screen-aluno .app-shell {
+    flex-direction: column;
+  }
+}
+/* ══ MOBILE PROFESSOR FIXES ══ */
+@media(max-width:768px){
+  /* Screen structure: remover flex-direction:row inline dos screens */
+  #screen-prof, #screen-aluno {
+    flex-direction: column !important;
+  }
+
+  /* App shell ocupa toda a altura */
+  #screen-prof .app-shell,
+  #screen-aluno .app-shell {
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+  }
+
+  /* Botões de ação em form-row não ficam mais espremidos */
+  .form-row > div:not(.form-group) {
+    width: 100%;
+    flex-shrink: unset;
+  }
+  .form-row > div:not(.form-group) .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Cards de aprovação: ações em coluna */
+  .approval-actions {
+    flex-direction: column;
+  }
+  .approval-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Analytics grid em 2 colunas no mobile */
+  #ppage-pin .grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Page header em coluna */
+  .page-hdr {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .page-hdr > div:last-child {
+    width: 100%;
+  }
+
+  /* Senhas por turma: 1 coluna */
+  #p-senhas-turmas {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Formulário novo aluno: campo de turma e nome ocupam 100% */
+  #p-nome, #p-turma { width: 100%; }
+
+  /* Desafio form-row */
+  #ppage-desafio .form-row {
+    flex-direction: column;
+  }
+  #ppage-desafio .form-row .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Vitrine prof */
+  .approval-link { word-break: break-all; }
+
+  /* Gerador de missões */
+  #ppage-desafio .card .form-row > div { flex: unset; width: 100%; }
+  #ia-gerar-btn { margin-left: 0 !important; width: 100%; justify-content: center; }
+
+  /* Mensagem direta ao aluno */
+  #p-msg-aluno, #p-msg-texto { width: 100%; }
+}
+
+/* ══ PRÉ-LOGIN SCREENS — TEMA GALAXY COMPARTILHADO ══ */
+#galaxy-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+#galaxy-bg.active { display: block; }
+#galaxy-bg canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+#galaxy-stars-global { position: absolute; inset: 0; }
+#galaxy-shoots-global { position: absolute; inset: 0; overflow: hidden; }
+
+/* Telas pré-login: centralizar conteúdo sobre o bg */
+#screen-prof-login,
+#screen-aluno-login,
+#screen-aluno-lista,
+#screen-senha {
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* Wraps de pré-login: z-index acima do bg */
+.prof-login-wrap,
+.aluno-login-wrap,
+.aluno-lista-wrap,
+.senha-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+/* Screen loading também usa o bg */
+#screen-loading {
+  background: transparent;
+  z-index: 1;
+}
+#screen-loading .loading-logo,
+#screen-loading .loading-spin,
+#screen-loading .loading-msg {
+  position: relative;
+  z-index: 1;
+}
 </style>
 </head>
 <body>
+
+<!-- ══ GALAXY BACKGROUND GLOBAL (pré-login) ══ -->
+<div id="galaxy-bg">
+  <canvas id="galaxy-canvas-global"></canvas>
+  <div id="galaxy-stars-global"></div>
+  <div id="galaxy-shoots-global"></div>
+</div>
 
 <!-- SYNC INDICATOR -->
 <div class="sync-indicator" id="sync-indicator">
@@ -699,9 +851,7 @@ select option{background:var(--s1);}
 
 <!-- LOGIN -->
 <div id="screen-login" class="screen">
-  <canvas id="login-nebula-canvas"></canvas>
-  <div id="login-stars"></div>
-  <div id="login-shoots"></div>
+  <!-- canvas e estrelas agora vêm do #galaxy-bg global -->
   <div class="login-wrap">
     <div class="login-logo-wrap">
       <div style="display:flex;align-items:center;gap:16px;">
@@ -751,7 +901,7 @@ select option{background:var(--s1);}
 </div>
 
 <!-- PROFESSOR -->
-<div id="screen-prof" class="screen" style="flex-direction:row;">
+<div id="screen-prof" class="screen">
   <div class="app-shell" style="flex:1;min-height:100vh;">
     <aside class="sidebar">
       <div class="sidebar-logo"><div class="logo">⚡ WC</div><div class="logo-sub" style="margin-top:2px;">Professor</div></div>
@@ -1052,7 +1202,7 @@ select option{background:var(--s1);}
 </div>
 
 <!-- ALUNO DASHBOARD -->
-<div id="screen-aluno" class="screen" style="flex-direction:row;">
+<div id="screen-aluno" class="screen">
   <div class="app-shell" style="flex:1;min-height:100vh;">
     <aside class="sidebar">
       <div class="sidebar-logo"><div class="logo">⚡ WC</div><div class="logo-sub" style="margin-top:2px;">Aluno</div></div>
@@ -1353,76 +1503,6 @@ const COL = {
   presence:  () => db.collection('presence'),
 };
 
-// ══════════════════════════════════════════════
-//  🚀 WARPCODE UTILS — Helpers centralizados
-//  Adicionados na refatoração v2.0
-// ══════════════════════════════════════════════
-const U = {
-  // Busca em array por id (substitui .find(x=>x.id===id) espalhado)
-  byId: (arr, id) => arr.find(x => x.id === id),
-
-  // Cria entrada de histórico padronizada
-  histEntry: (desc, xp = 0) => ({ desc, xp, ts: Date.now() }),
-
-  // Cria notificação padronizada
-  notif: (tipo, titulo, desc, extra = {}) => ({
-    id: 'n' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
-    tipo, titulo, desc, ts: Date.now(), lido: false, ...extra
-  }),
-
-  // Atualiza historico com slice (padrão repetido 30+ vezes)
-  pushHistorico: (aluno, entry, max = 30) =>
-    [entry, ...(aluno.historico || [])].slice(0, max),
-
-  // Atualiza correios com slice (padrão repetido 20+ vezes)
-  pushCorreio: (aluno, notifEntry, max = 50) =>
-    [notifEntry, ...(aluno.correios || [])].slice(0, max),
-
-  // Wrapper seguro para ops Firebase com sync indicator
-  async fireOp(fn, { ok = '✅ Salvo!', err = '❌ Erro!', silent = false } = {}) {
-    setSyncing('syncing');
-    try {
-      const result = await fn();
-      setSyncing('ok');
-      if (!silent && ok) toast(ok);
-      return result;
-    } catch (e) {
-      console.error('[WC] fireOp error:', e);
-      setSyncing('error');
-      toast(err);
-      return null;
-    }
-  },
-
-  // Formata data/hora
-  tsHora: (ts) => new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-  tsData: (ts) => new Date(ts).toLocaleDateString('pt-BR'),
-
-  // Limpa campos de formulário por IDs
-  limparCampos: (...ids) => ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  }),
-
-  // Garante que aluno existe no state
-  getAluno: (id) => S.alunos.find(x => x.id === id),
-  getPendente: (id) => S.pendentes.find(x => x.id === id),
-  getMissao: (id) => S.missoes.find(x => x.id === id),
-  getLoja: (id) => S.loja.find(x => x.id === id),
-  getGuilda: (id) => S.guildas.find(x => x.id === id),
-  getDesafio: (id) => S.desafios.find(x => x.id === id),
-};
-
-// Cache de elementos DOM mais usados (evita querySelector repetitivo)
-const EL = new Proxy({}, {
-  get(cache, id) {
-    if (!cache[id]) cache[id] = document.getElementById(id);
-    return cache[id];
-  }
-});
-
-
-
 // ══════════════════════════════════════
 //  STATE LOCAL (cache em memória)
 // ══════════════════════════════════════
@@ -1462,14 +1542,11 @@ let alunoAtual=null, avatarSelecionado=null;
 // ══════════════════════════════════════
 //  SYNC INDICATOR
 // ══════════════════════════════════════
-function setSyncing(s) { // 'ok' | 'syncing' | 'error'
-  const dot = document.getElementById('sync-dot');
-  const txt = document.getElementById('sync-text');
-  if (!dot || !txt) return;
-  const map = { syncing: ['syncing', 'Salvando...'], error: ['error', 'Sem conexão'], ok: ['', 'Conectado'] };
-  const [cls, label] = map[s] || map.ok;
-  dot.className = 'sync-dot' + (cls ? ' ' + cls : '');
-  txt.textContent = label;
+function setSyncing(s){ // 'ok' | 'syncing' | 'error'
+  const dot=document.getElementById('sync-dot');
+  const txt=document.getElementById('sync-text');
+  dot.className='sync-dot'+(s==='syncing'?' syncing':s==='error'?' error':'');
+  txt.textContent=s==='syncing'?'Salvando...':s==='error'?'Sem conexão':'Conectado';
 }
 
 // ══════════════════════════════════════
@@ -1477,6 +1554,9 @@ function setSyncing(s) { // 'ok' | 'syncing' | 'error'
 // ══════════════════════════════════════
 async function inicializar(){
   document.getElementById('screen-loading').classList.add('active');
+  // Iniciar galaxy bg no loading
+  const _gbInit = document.getElementById('galaxy-bg');
+  if(_gbInit){ _gbInit.classList.add('active'); initGalaxyBg(); }
   const setMsg = t => { const el=document.querySelector('.loading-msg'); if(el) el.textContent=t; console.log('[WC]',t); };
 
   const withTimeout = (p, label, ms=10000) => Promise.race([p,
@@ -1641,6 +1721,19 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.getElementById('screen-loading').style.display='none';
+
+  // Controla o bg galaxy nas telas pré-login
+  const preLogin = ['screen-loading','screen-login','screen-prof-login','screen-aluno-login','screen-aluno-lista','screen-senha'];
+  const galaxyBg = document.getElementById('galaxy-bg');
+  if(galaxyBg) {
+    if(preLogin.includes(id)) {
+      galaxyBg.classList.add('active');
+      // Reinicia animação do galaxy se necessário
+      if(!galaxyBg.dataset.init) initGalaxyBg();
+    } else {
+      galaxyBg.classList.remove('active');
+    }
+  }
 }
 function goLogin(){alunoAtual=null;showScreen('screen-login');setTimeout(initLoginGalaxy,60);}
 function goProfLogin(){
@@ -2695,7 +2788,9 @@ async function addRecompensa(){
   setSyncing('syncing');
   try {
     await COL.loja().add({emoji,nome,desc:'Recompensa especial da turma.',custo,ativo:true});
-    U.limparCampos('r-emoji', 'r-nome', 'r-custo');
+    document.getElementById('r-emoji').value='';
+    document.getElementById('r-nome').value='';
+    document.getElementById('r-custo').value='';
     toast('✅ Recompensa adicionada!');
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
@@ -2755,7 +2850,11 @@ async function salvarDesafio(){
   setSyncing('syncing');
   try {
     await COL.desafios().add({titulo,desc,video,xp,expira:expira.toISOString(),ts:Date.now(),done:[]});
-    U.limparCampos('d-titulo', 'd-desc', 'd-video', 'd-xp', 'd-dias');
+    document.getElementById('d-titulo').value='';
+    document.getElementById('d-desc').value='';
+    if(document.getElementById('d-video')) document.getElementById('d-video').value='';
+    document.getElementById('d-xp').value='';
+    document.getElementById('d-dias').value='';
     toast('🔥 Desafio publicado!');
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
@@ -3729,22 +3828,13 @@ function closeLevelUp(){document.getElementById('levelup-overlay').classList.rem
 // ══════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════
-function closeModal(id) { const el = document.getElementById(id); if (el) el.classList.remove('active'); }
+function closeModal(id){document.getElementById(id).classList.remove('active');}
 async function gerarPin(){
   const novo=String(Math.floor(1000+Math.random()*9000));
   try { await COL.config().update({pin:novo}); toast(`🔑 Novo PIN: ${novo}`); } catch(e){ toast('❌ Erro!'); }
 }
 function copiarLink(){navigator.clipboard?.writeText(window.location.href).then(()=>toast('📋 Link copiado!')).catch(()=>toast('📋 Copie o link da barra do navegador!'));}
-function toast(msg, duration = 3200) {
-  // Evita toasts duplicados
-  const existing = document.querySelector('.toast');
-  if (existing && existing.textContent === msg) return;
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), duration);
-}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);}
 
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('active');}));
 
@@ -4951,9 +5041,7 @@ async function enviarAprovacaoGuilda(missaoId, guildaId){
   } catch(e){ toast('❌ Erro ao enviar!'); }
 }
 
-function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-// Alias na U para uso consistente
-U.esc = escapeHtml;
+function escapeHtml(t){ const d=document.createElement('div');d.textContent=t;return d.innerHTML; }
 
 // ══════════════════════════════════════
 //  VITRINE — ALUNO
@@ -5148,14 +5236,34 @@ async function removerVitrine(id){
 
 // ══ LOGIN GALAXY ══
 function initLoginGalaxy(){
-  const screen = document.getElementById('screen-login');
-  if(!screen) return;
-  const cv = document.getElementById('login-nebula-canvas');
-  const W = screen.offsetWidth || window.innerWidth;
-  const H = screen.offsetHeight || window.innerHeight;
+  // Background galaxy agora é global — compartilhado com todas as telas pré-login
+  // O galaxy-bg já é ativado pelo showScreen()
+}
+
+// inject keyframes once
+(function(){
+  const st=document.createElement('style');
+  st.textContent='@keyframes loginTwinkle{from{opacity:var(--la1)}to{opacity:var(--la2)}}'
+    +'@keyframes loginShoot{0%{transform:translateX(-100px) translateY(0) rotate(-28deg);opacity:0}'
+    +'8%{opacity:1}88%{opacity:.9}100%{transform:translateX(110vw) translateY(35vh) rotate(-28deg);opacity:0}}';
+  document.head.appendChild(st);
+})();
+
+
+// ══════════════════════════════════════════════════════════
+//  GALAXY BACKGROUND — compartilhado em todas as telas pré-login
+// ══════════════════════════════════════════════════════════
+function initGalaxyBg() {
+  const bg = document.getElementById('galaxy-bg');
+  if (!bg || bg.dataset.init) return;
+  bg.dataset.init = '1';
+
+  const cv = document.getElementById('galaxy-canvas-global');
+  const W = window.innerWidth;
+  const H = window.innerHeight;
   cv.width = W; cv.height = H;
   const ctx = cv.getContext('2d');
-  // nebula blobs
+
   const blobs = [
     {x:W*.08, y:H*.18, r:W*.38, c:'rgba(124,58,237,'},
     {x:W*.9,  y:H*.72, r:W*.32, c:'rgba(0,212,255,'},
@@ -5170,52 +5278,29 @@ function initLoginGalaxy(){
     g.addColorStop(1,  b.c+'0)');
     ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
   });
-  // stars
-  const sc = document.getElementById('login-stars');
-  sc.innerHTML='';
-  for(let i=0;i<180;i++){
-    const s=document.createElement('div');
-    const sz=Math.random()<.12?2:Math.random()<.35?1.5:1;
-    const a1=(.12+Math.random()*.3).toFixed(2);
-    const a2=(.55+Math.random()*.45).toFixed(2);
-    const dur=(2+Math.random()*4).toFixed(1);
-    const delay=(Math.random()*5).toFixed(1);
-    s.style.cssText='position:absolute;border-radius:50%;background:#fff;pointer-events:none;'
-      +'width:'+sz+'px;height:'+sz+'px;'
-      +'left:'+(Math.random()*100).toFixed(2)+'%;'
-      +'top:'+(Math.random()*100).toFixed(2)+'%;'
-      +'opacity:'+a1+';'
-      +'animation:loginTwinkle '+dur+'s '+delay+'s ease infinite alternate;'
-      +'--la1:'+a1+';--la2:'+a2+';';
-    sc.appendChild(s);
-  }
-  // shooting stars
-  const mc = document.getElementById('login-shoots');
-  mc.innerHTML='';
-  for(let i=0;i<5;i++){
-    const m=document.createElement('div');
-    const len=50+Math.random()*80;
-    const dur=(5+Math.random()*7).toFixed(1);
-    const delay=(i*2.2+Math.random()*2).toFixed(1);
-    const top=(5+Math.random()*55).toFixed(1);
-    const left=(Math.random()*65).toFixed(1);
-    m.style.cssText='position:absolute;height:1px;border-radius:1px;pointer-events:none;'
-      +'width:'+len+'px;'
-      +'left:'+left+'%;top:'+top+'%;'
-      +'background:linear-gradient(90deg,rgba(0,212,255,0),rgba(0,212,255,.7),rgba(255,255,255,.5),transparent);'
-      +'animation:loginShoot '+dur+'s '+delay+'s linear infinite;';
-    mc.appendChild(m);
-  }
-}
 
-// inject keyframes once
-(function(){
-  const st=document.createElement('style');
-  st.textContent='@keyframes loginTwinkle{from{opacity:var(--la1)}to{opacity:var(--la2)}}'
-    +'@keyframes loginShoot{0%{transform:translateX(-100px) translateY(0) rotate(-28deg);opacity:0}'
-    +'8%{opacity:1}88%{opacity:.9}100%{transform:translateX(110vw) translateY(35vh) rotate(-28deg);opacity:0}}';
-  document.head.appendChild(st);
-})();
+  // Stars
+  const sc = document.getElementById('galaxy-stars-global');
+  sc.innerHTML = Array.from({length:180}, ()=>{
+    const sz = Math.random()<.12?2:Math.random()<.35?1.5:1;
+    const a1 = (.12+Math.random()*.3).toFixed(2);
+    const a2 = (.55+Math.random()*.45).toFixed(2);
+    const dur = (2+Math.random()*4).toFixed(1);
+    const delay = (Math.random()*5).toFixed(1);
+    return `<div style="position:absolute;border-radius:50%;background:#fff;pointer-events:none;width:${sz}px;height:${sz}px;left:${(Math.random()*100).toFixed(2)}%;top:${(Math.random()*100).toFixed(2)}%;opacity:${a1};animation:loginTwinkle ${dur}s ${delay}s ease infinite alternate;--la1:${a1};--la2:${a2};"></div>`;
+  }).join('');
+
+  // Shooting stars
+  const mc = document.getElementById('galaxy-shoots-global');
+  mc.innerHTML = Array.from({length:5}, (_,i)=>{
+    const len = 50+Math.random()*80;
+    const dur = (5+Math.random()*7).toFixed(1);
+    const delay = (i*2.2+Math.random()*2).toFixed(1);
+    const top = (5+Math.random()*55).toFixed(1);
+    const left = (Math.random()*65).toFixed(1);
+    return `<div style="position:absolute;height:1px;border-radius:1px;pointer-events:none;width:${len}px;left:${left}%;top:${top}%;background:linear-gradient(90deg,rgba(0,212,255,0),rgba(0,212,255,.7),rgba(255,255,255,.5),transparent);animation:loginShoot ${dur}s ${delay}s linear infinite;"></div>`;
+  }).join('');
+}
 
 // ── INICIAR ──
 inicializar();
