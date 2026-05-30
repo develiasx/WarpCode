@@ -1492,6 +1492,7 @@ const db = firebase.firestore();
 const COL = {
   config:    () => db.collection('config').doc('global'),
   alunos:    () => db.collection('alunos'),
+  perfis:    () => db.collection('alunos_perfil'),
   missoes:   () => db.collection('missoes'),
   pendentes: () => db.collection('pendentes'),
   resgates:  () => db.collection('resgates'),
@@ -1511,7 +1512,7 @@ const AVATARS=['🤖','🦾','👾','🐱','🦊','🐉','⚡','🚀','🦁','�
 
 let S = {
   guildas: [],
-  alunos:[], pin:'----',
+  alunos:[], perfis:[], pin:'----',
   pendentes:[], resgates:[],
   loja:[], desafio:null,
   missoes:[], desafios:[]
@@ -1596,9 +1597,9 @@ async function inicializar(){
       S.loja = lojaSnap.docs.map(d => ({id:d.id,...d.data()}));
     }
 
-    setMsg('Carregando alunos...');
-    const alunosSnap = await withTimeout(COL.alunos().get(), 'alunos');
-    S.alunos = alunosSnap.docs.map(d => ({id:d.id,...d.data()}))
+    setMsg('Carregando perfis...');
+    const perfisSnap = await withTimeout(COL.perfis().get(), 'perfis');
+    S.perfis = perfisSnap.docs.map(d => ({id:d.id,...d.data()}))
       .sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR'));
 
     setMsg('Carregando atividades...');
@@ -1638,9 +1639,9 @@ async function inicializar(){
 //  LISTENERS EM TEMPO REAL
 // ══════════════════════════════════════
 function ligarListeners(){
-  // Alunos em tempo real
-  COL.alunos().onSnapshot(snap => {
-    S.alunos = snap.docs.map(d => ({id:d.id,...d.data()}));
+  // Perfis públicos — disponíveis antes do login (tela de seleção)
+  COL.perfis().onSnapshot(snap => {
+    S.perfis = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderSafe();
   });
   // Pendentes
@@ -1671,6 +1672,16 @@ function ligarListeners(){
   // Missões
   COL.missoes().onSnapshot(snap => {
     S.missoes = snap.docs.map(d => ({id:d.id,...d.data()}));
+    renderSafe();
+  });
+}
+
+// Liga listener de alunos completos — chamado SÓ após login real
+let _unsubAlunos = null;
+function ligarListenerAlunos(){
+  if(_unsubAlunos) return; // já ligado
+  _unsubAlunos = COL.alunos().onSnapshot(snap => {
+    S.alunos = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderSafe();
   });
 }
@@ -1757,6 +1768,11 @@ async function confirmarSenhaProf(){
     await firebase.auth().signInWithEmailAndPassword(PROF_EMAIL, v);
     if(btnEl){ btnEl.disabled = false; btnEl.textContent = '🔓 ENTRAR'; }
     document.getElementById('prof-senha-input').value = '';
+    // Carregar dados completos de alunos após login do professor
+    const alunosSnap = await COL.alunos().get();
+    S.alunos = alunosSnap.docs.map(d=>({id:d.id,...d.data()}))
+      .sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR'));
+    ligarListenerAlunos();
     goProf();
   } catch(e) {
     if(btnEl){ btnEl.disabled = false; btnEl.textContent = '🔓 ENTRAR'; }
@@ -1840,7 +1856,7 @@ let senhaCriada = '';
 // ── ETAPA 1: Listar turmas disponíveis ──
 function renderTurmasSel(){
   const turmasMap = {};
-  S.alunos.forEach(a => {
+  S.perfis.forEach(a => {
     if(!turmasMap[a.turma]) turmasMap[a.turma] = [];
     turmasMap[a.turma].push(a);
   });
@@ -1868,7 +1884,7 @@ function renderTurmasSel(){
 
 // ── ETAPA 2: Listar alunos da turma ──
 function selecionarTurma(turma){
-  const alunosTurma = S.alunos.filter(a => a.turma === turma).sort((a,b)=>a.nome.localeCompare(b.nome));
+  const alunosTurma = S.perfis.filter(a => a.turma === turma).sort((a,b)=>a.nome.localeCompare(b.nome));
   document.getElementById('aluno-lista-subtitulo').textContent = turma;
   const el = document.getElementById('aluno-lista-nomes');
   el.innerHTML = alunosTurma.map(a => {
@@ -1889,7 +1905,7 @@ function selecionarTurma(turma){
 
 // ── ETAPA 3: Tela de senha ──
 function selecionarAluno(id){
-  const a = S.alunos.find(x=>x.id===id);
+  const a = S.perfis.find(x=>x.id===id);
   if(!a) return;
   alunoAtual = id;
   alunoSenhaBuffer = '';
@@ -1960,6 +1976,14 @@ async function processarSenha(){
         emailDoAluno(alunoAtual),
         senhaFirebase(alunoSenhaBuffer)
       );
+      // Carregar dados completos do aluno após autenticação
+      const docSnap = await COL.alunos().doc(alunoAtual).get();
+      if(docSnap.exists){
+        const idx = S.alunos.findIndex(x=>x.id===alunoAtual);
+        const dado = {id:alunoAtual,...docSnap.data()};
+        if(idx>=0) S.alunos[idx]=dado; else S.alunos.push(dado);
+      }
+      ligarListenerAlunos();
       setSyncing('ok');
       await finalizarEntrada();
     } catch(e){
@@ -1988,8 +2012,19 @@ async function processarSenha(){
           emailDoAluno(alunoAtual),
           senhaFirebase(senhaCriada)
         );
-        // Marca no Firestore que já tem senha (sem guardar o valor!)
-        await COL.alunos().doc(alunoAtual).update({ temSenha: true });
+        // Marca nas duas coleções que já tem senha
+        await Promise.all([
+          COL.alunos().doc(alunoAtual).update({ temSenha: true }),
+          COL.perfis().doc(alunoAtual).update({ temSenha: true })
+        ]);
+        // Carregar dados completos após criação
+        const docSnap = await COL.alunos().doc(alunoAtual).get();
+        if(docSnap.exists){
+          const idx = S.alunos.findIndex(x=>x.id===alunoAtual);
+          const dado = {id:alunoAtual,...docSnap.data()};
+          if(idx>=0) S.alunos[idx]=dado; else S.alunos.push(dado);
+        }
+        ligarListenerAlunos();
         toast('🔒 Senha criada com sucesso!');
         setSyncing('ok');
         await finalizarEntrada();
@@ -2036,6 +2071,30 @@ async function migrarSenhasExistentes(){
   console.log(`\nPronto! ✅ ${ok} migrados  ❌ ${erros} erros`);
 }
 
+// ── MIGRAÇÃO DA COLEÇÃO alunos_perfil ──
+// RODE UMA VEZ no console (logado como professor) para popular a nova coleção:
+//   migrarParaPerfis()
+async function migrarParaPerfis(){
+  console.log('🔄 Iniciando migração para alunos_perfil...');
+  const snap = await COL.alunos().get();
+  if(snap.empty){ console.log('Nenhum aluno encontrado.'); return; }
+  const batch = db.batch();
+  snap.docs.forEach(doc => {
+    const d = doc.data();
+    batch.set(COL.perfis().doc(doc.id), {
+      nome:     d.nome     || '',
+      turma:    d.turma    || '',
+      avatar:   d.avatar   || '👾',
+      temSenha: !!d.temSenha,
+      xp:       d.xp       || 0
+    });
+  });
+  await batch.commit();
+  console.log(`✅ ${snap.docs.length} perfis criados em alunos_perfil!`);
+  console.log('Agora atualize as Security Rules do Firestore.');
+}
+
+
 // ── ENTRADA FINAL (streak, level up, etc.) ──
 async function finalizarEntrada(){
   const a = S.alunos.find(x=>x.id===alunoAtual);
@@ -2068,6 +2127,7 @@ async function finalizarEntrada(){
     if(bonusXP>0) update.xp = (a.xp||0)+bonusXP;
     if(hist.length !== a.historico?.length) update.historico = hist.slice(0,30);
     await COL.alunos().doc(alunoAtual).update(update);
+    if(bonusXP>0) await COL.perfis().doc(alunoAtual).update({xp:(a.xp||0)+bonusXP}).catch(()=>{});
   } catch(e){ console.warn('Erro ao atualizar streak',e); }
 
   document.getElementById('a-topbar-title').textContent = a.nome.split(' ')[0].toUpperCase();
@@ -2282,6 +2342,10 @@ async function salvarEdicaoAluno(id){
       update.temSenha = true;
     }
     await COL.alunos().doc(id).update(update);
+    // Sincronizar campos de perfil público
+    const perfilUpdate={nome,turma};
+    if(update.temSenha!==undefined) perfilUpdate.temSenha=update.temSenha;
+    await COL.perfis().doc(id).update(perfilUpdate);
     closeModal('modal-editar-aluno');
     renderModalTurmaLista(document.getElementById('turma-search')?.value||'');
     toast('✅ Aluno atualizado!');setSyncing('ok');
@@ -2767,8 +2831,12 @@ async function cadastrarAluno(){
   if(!nome) return toast('⚠️ Digite o nome!');
   setSyncing('syncing');
   try {
-    const novoAluno={nome,turma:document.getElementById('p-turma').value,avatar:'👾',xp:0,streak:0,historico:[],desafiosConcluidos:0,lastLogin:null,criadoEm:Date.now()};
-    await COL.alunos().add(novoAluno);
+    const turma=document.getElementById('p-turma').value;
+    const novoAluno={nome,turma,avatar:'👾',xp:0,streak:0,historico:[],desafiosConcluidos:0,lastLogin:null,criadoEm:Date.now()};
+    const perfil={nome,turma,avatar:'👾',xp:0,temSenha:false};
+    // Escreve nas duas coleções com o mesmo ID gerado automaticamente
+    const ref = await COL.alunos().add(novoAluno);
+    await COL.perfis().doc(ref.id).set(perfil);
     document.getElementById('p-nome').value='';
     toast(`✅ ${nome} entrou no WarpCode!`);
     setSyncing('ok');
@@ -2779,7 +2847,10 @@ async function removerAluno(id){
   if(!confirm('Remover este aluno? Isso apagará todos os dados dele.')) return;
   setSyncing('syncing');
   try {
-    await COL.alunos().doc(id).delete();
+    await Promise.all([
+      COL.alunos().doc(id).delete(),
+      COL.perfis().doc(id).delete()
+    ]);
     // Remove pendentes do aluno
     const pBatch=db.batch();
     S.pendentes.filter(p=>p.alunoId===id).forEach(p=>pBatch.delete(COL.pendentes().doc(p.id)));
@@ -2827,6 +2898,7 @@ async function darXP(){
     const novoXP=(a.xp||0)+xp;
     const hist=[{desc:`⚡ XP manual do professor`,xp,ts:Date.now()},...(a.historico||[])].slice(0,30);
     await COL.alunos().doc(id).update({xp:novoXP,historico:hist});
+    await COL.perfis().doc(id).update({xp:novoXP});
     const depois=nivel(novoXP);
     if(depois.idx>antes) toast(`🎉 ${a.nome} subiu para ${depois.e} ${depois.n}!`);
     else toast(`⚡ +${xp} XP para ${a.nome}!`);
@@ -2855,6 +2927,7 @@ async function aprovar(pid){
     // Atualiza aluno
     const xpAntes = aluno.xp||0;
     await COL.alunos().doc(aluno.id).update({xp:novoXP,wc_bonus:novoWCBonus,historico:hist,correios:correiosUpd});
+    await COL.perfis().doc(aluno.id).update({xp:novoXP});
     setTimeout(()=>verificarNotifRanking(aluno.id, xpAntes), 1500);
     // Marca missão como done (se não for desafio)
     if(!pend.isDesafio){
@@ -2872,6 +2945,7 @@ async function aprovar(pid){
             const notifGuilda={id:'n'+Date.now()+'_'+mid,tipo:'guilda',titulo:`⚔️ Missão de guilda concluída!`,desc:`Sua guilda completou "${missao.titulo}" e você ganhou +${missao.xp} XP!`,xp:missao.xp,ts:Date.now(),lido:false};
             const correiosGuilda=[notifGuilda,...(m2.correios||[])].slice(0,50);
             await COL.alunos().doc(mid).update({xp:novoXP2,historico:hist2,correios:correiosGuilda});
+            await COL.perfis().doc(mid).update({xp:novoXP2});
             await COL.missoes().doc(pend.missaoId).update({done:firebase.firestore.FieldValue.arrayUnion(mid)});
           }
           if(membros.length) toast(`⚔️ XP distribuído para ${membros.length+1} membros da guilda!`);
