@@ -1976,7 +1976,8 @@ function emailDoAluno(id){ return `${id}@warpcode.app`; }
 function senhaFirebase(pin){ return pin + 'wc'; }
 
 async function processarSenha(){
-  const a = S.alunos.find(x=>x.id===alunoAtual);
+  // Antes do login, dados estão em S.perfis; após login, em S.alunos
+  const a = S.perfis.find(x=>x.id===alunoAtual) || S.alunos.find(x=>x.id===alunoAtual);
   if(!a) return;
 
   if(senhaEtapa === 'login'){
