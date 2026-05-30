@@ -1743,16 +1743,75 @@ function goProfLogin(){
   showScreen('screen-prof-login');
   setTimeout(()=>document.getElementById('prof-senha-input').focus(),200);
 }
-const PROF_SENHA = 'prof00';
-function confirmarSenhaProf(){
-  const v = document.getElementById('prof-senha-input').value;
-  if(v !== PROF_SENHA){
-    document.getElementById('prof-senha-erro').textContent='❌ Senha incorreta.';
-    document.getElementById('prof-senha-input').value='';
+// Email fixo do professor — nunca aparece na tela
+const PROF_EMAIL = 'professor@warpcode.app';
+
+async function confirmarSenhaProf(){
+  const v = document.getElementById('prof-senha-input').value.trim();
+  if(!v){ document.getElementById('prof-senha-erro').textContent='❌ Digite a senha.'; return; }
+  const erroEl = document.getElementById('prof-senha-erro');
+  const btnEl  = document.querySelector('#screen-prof-login .btn-primary');
+  erroEl.textContent = '';
+  if(btnEl){ btnEl.disabled = true; btnEl.textContent = '⏳ Entrando...'; }
+  try {
+    await firebase.auth().signInWithEmailAndPassword(PROF_EMAIL, v);
+    if(btnEl){ btnEl.disabled = false; btnEl.textContent = '🔓 ENTRAR'; }
+    document.getElementById('prof-senha-input').value = '';
+    goProf();
+  } catch(e) {
+    if(btnEl){ btnEl.disabled = false; btnEl.textContent = '🔓 ENTRAR'; }
+    document.getElementById('prof-senha-input').value = '';
+    if(e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential'){
+      erroEl.textContent = '❌ Conta não encontrada. Rode configurarProfessor("sua_senha") no console.';
+    } else if(e.code === 'auth/wrong-password'){
+      erroEl.textContent = '❌ Senha incorreta.';
+    } else if(e.code === 'auth/too-many-requests'){
+      erroEl.textContent = '❌ Muitas tentativas. Aguarde alguns minutos.';
+    } else {
+      erroEl.textContent = '❌ Erro: ' + e.message;
+    }
+  }
+}
+
+// ── CONFIGURAÇÃO INICIAL DO PROFESSOR ──
+// Rode UMA VEZ no console para criar a conta:
+//   configurarProfessor('sua_senha_aqui')
+async function configurarProfessor(novaSenha){
+  if(!novaSenha || novaSenha.length < 6){
+    console.error('❌ A senha deve ter pelo menos 6 caracteres');
     return;
   }
-  document.getElementById('prof-senha-erro').textContent='';
-  goProf();
+  try {
+    await firebase.auth().createUserWithEmailAndPassword(PROF_EMAIL, novaSenha);
+    console.log('✅ Conta do professor criada com sucesso!');
+    console.log('   Email:', PROF_EMAIL);
+    console.log('   Senha:', novaSenha);
+    console.log('   Guarde essa senha — ela não fica salva no código.');
+  } catch(e) {
+    if(e.code === 'auth/email-already-in-use'){
+      console.log('⚠️ Conta já existe. Para trocar a senha, use:');
+      console.log('   trocarSenhaProf("senha_atual", "nova_senha")');
+    } else {
+      console.error('❌ Erro:', e.message);
+    }
+  }
+}
+
+// ── TROCAR SENHA DO PROFESSOR ──
+// Use quando quiser mudar a senha:
+//   trocarSenhaProf('senha_atual', 'nova_senha')
+async function trocarSenhaProf(senhaAtual, novaSenha){
+  if(!novaSenha || novaSenha.length < 6){
+    console.error('❌ A nova senha deve ter pelo menos 6 caracteres');
+    return;
+  }
+  try {
+    const cred = await firebase.auth().signInWithEmailAndPassword(PROF_EMAIL, senhaAtual);
+    await cred.user.updatePassword(novaSenha);
+    console.log('✅ Senha do professor atualizada com sucesso!');
+  } catch(e){
+    console.error('❌ Erro:', e.message);
+  }
 }
 function goProf(){
   showScreen('screen-prof');
