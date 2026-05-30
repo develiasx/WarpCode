@@ -1730,7 +1730,7 @@ const CONQ=[
   {icon:"🎮",nome:"Game Dev",req:"Complete um jogo",check:a=>S.missoes.filter(m=>m.dif==='hard'&&(m.done||[]).includes(a.id)).length>0},
   {icon:"🧠",nome:"Lógico",req:"3 missões",check:a=>S.missoes.filter(m=>(m.done||[]).includes(a.id)).length>=3},
   {icon:"💡",nome:"Inovador",req:"1 missão difícil",check:a=>S.missoes.filter(m=>m.dif==='hard'&&(m.done||[]).includes(a.id)).length>0},
-  {icon:"🌟",nome:"Top 3",req:"Top 3 do ranking",check:a=>[...S.alunos].sort((x,y)=>y.xp-x.xp).slice(0,3).some(x=>x.id===a.id)},
+  {icon:"🌟",nome:"Top 3",req:"Top 3 do ranking",check:a=>[...S.perfis].sort((x,y)=>y.xp-x.xp).slice(0,3).some(x=>x.id===a.id)},
   {icon:"🤝",nome:"Trabalho em Equipe",req:"Missão de equipe",check:a=>S.missoes.filter(m=>m.tipo==='equipe'&&(m.done||[]).includes(a.id)).length>0},
   {icon:"🛒",nome:"Primeiro Resgate",req:"Resgate da loja",check:a=>S.resgates.some(r=>r.alunoId===a.id&&r.aprovado)},
   {icon:"🎯",nome:"Dedicado",req:"5 missões",check:a=>S.missoes.filter(m=>(m.done||[]).includes(a.id)).length>=5},
@@ -2120,6 +2120,38 @@ async function migrarParaPerfis(){
 }
 
 
+// ── MIGRAÇÃO: Sincronizar fotos/bordas para alunos_perfil ──
+// Cole no DevTools → Console (logado como professor): sincronizarPerfisVisuais()
+async function sincronizarPerfisVisuais(){
+  console.log('🔄 Sincronizando fotos e bordas para alunos_perfil...');
+  const snap = await COL.alunos().get();
+  if(snap.empty){ console.log('Nenhum aluno.'); return; }
+  let ok=0, erros=0;
+  const BATCH_SIZE=400;
+  const docs=snap.docs;
+  for(let i=0;i<docs.length;i+=BATCH_SIZE){
+    const batch=db.batch();
+    docs.slice(i,i+BATCH_SIZE).forEach(doc=>{
+      const d=doc.data();
+      const upd={};
+      if(d.profilePhoto!==undefined) upd.profilePhoto=d.profilePhoto||null;
+      if(d.profileBanner!==undefined) upd.profileBanner=d.profileBanner||null;
+      if(d.wc_eq_border!==undefined) upd.wc_eq_border=d.wc_eq_border||null;
+      if(d.wc_eq_avatar!==undefined) upd.wc_eq_avatar=d.wc_eq_avatar||null;
+      if(d.wc_eq_banner!==undefined) upd.wc_eq_banner=d.wc_eq_banner||null;
+      if(d.wc_eq_title!==undefined) upd.wc_eq_title=d.wc_eq_title||null;
+      if(d.streak!==undefined) upd.streak=d.streak||0;
+      if(d.desafiosConcluidos!==undefined) upd.desafiosConcluidos=d.desafiosConcluidos||0;
+      if(Object.keys(upd).length>0){
+        batch.update(COL.perfis().doc(doc.id),upd);
+        ok++;
+      }
+    });
+    await batch.commit();
+  }
+  console.log(`✅ ${ok} perfis sincronizados com fotos e bordas!`);
+}
+
 // ── ENTRADA FINAL (streak, level up, etc.) ──
 async function finalizarEntrada(){
   const a = S.alunos.find(x=>x.id===alunoAtual);
@@ -2152,7 +2184,9 @@ async function finalizarEntrada(){
     if(bonusXP>0) update.xp = (a.xp||0)+bonusXP;
     if(hist.length !== a.historico?.length) update.historico = hist.slice(0,30);
     await COL.alunos().doc(alunoAtual).update(update);
-    if(bonusXP>0) await COL.perfis().doc(alunoAtual).update({xp:(a.xp||0)+bonusXP}).catch(()=>{});
+    const perfilSync={streak:novoStreak};
+    if(bonusXP>0) perfilSync.xp=(a.xp||0)+bonusXP;
+    await COL.perfis().doc(alunoAtual).update(perfilSync).catch(()=>{});
   } catch(e){ console.warn('Erro ao atualizar streak',e); }
 
   document.getElementById('a-topbar-title').textContent = a.nome.split(' ')[0].toUpperCase();
@@ -2620,7 +2654,7 @@ function renderAluno(){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
   const n=nivel(a.xp||0);const p=pct(a.xp||0);
   const missFeitas=S.missoes.filter(m=>(m.done||[]).includes(a.id)).length;
-  const pos=[...S.alunos].sort((x,y)=>(y.xp||0)-(x.xp||0)).findIndex(x=>x.id===a.id)+1;
+  const pos=[...S.perfis].sort((x,y)=>(y.xp||0)-(x.xp||0)).findIndex(x=>x.id===a.id)+1;
   const streak=a.streak||0;
 
   document.getElementById('aluno-sb-av').textContent=a.avatar||'👾';
@@ -2635,7 +2669,7 @@ function renderAluno(){
   const banItem=WC_ITEMS.find(i=>i.id===eqBanner)||WC_ITEMS.find(i=>i.id==='banner_default');
   const petItem=eqPet?WC_ITEMS.find(i=>i.id===eqPet):null;
   const titleItem=eqTitle?WC_ITEMS.find(i=>i.id===eqTitle):null;
-  const displayTitle=titleItem?`<span class="${titleItem.titleCls} patente">${titleItem.titleTxt}</span>`:`<span class="${pat.cls} patente">${pat.e} ${pat.n}</span>`;
+  const displayTitle=titleItem?`<span class="${titleItem.titleCls} patente">${titleItem.titleTxt}</span>`:`<span class="${pat.cls} patente">${pat.nome}</span>`;
   loadSavedTheme(a);
   const bannerBg=a.profileBanner&&a.profileBanner.trim().length>0
     ?`url('${a.profileBanner}') center/cover no-repeat`
@@ -2702,7 +2736,7 @@ function renderAluno(){
 
   // Welcome card
   const welcomeEl=document.getElementById('a-welcome');
-  if(welcomeEl){const hora=new Date().getHours();const saudacao=hora<12?'Bom dia':hora<18?'Boa tarde':'Boa noite';welcomeEl.innerHTML=`<div class="welcome-back"><div class="welcome-icon">${a.avatar||'👾'}</div><div style="flex:1;"><div class="welcome-text">${saudacao}, ${a.nome.split(' ')[0]}! 👋</div><div class="welcome-sub">${n.e} ${n.n} · ${a.xp||0} XP · #${pos} · <span class="${pat.cls} patente">${pat.e} ${pat.n}</span></div></div><div class="wc-badge">🪙 ${saldo}</div></div>`;}
+  if(welcomeEl){const hora=new Date().getHours();const saudacao=hora<12?'Bom dia':hora<18?'Boa tarde':'Boa noite';welcomeEl.innerHTML=`<div class="welcome-back"><div class="welcome-icon">${a.avatar||'👾'}</div><div style="flex:1;"><div class="welcome-text">${saudacao}, ${a.nome.split(' ')[0]}! 👋</div><div class="welcome-sub">${n.e} ${n.n} · ${a.xp||0} XP · #${pos} · <span class="${pat.cls} patente">${pat.nome}</span></div></div><div class="wc-badge">🪙 ${saldo}</div></div>`;}
 
   document.getElementById('a-stats').innerHTML=`
     <div class="steam-stat"><div class="steam-stat-val">${a.xp||0}</div><div class="steam-stat-lbl">XP Total</div></div>
@@ -2809,7 +2843,13 @@ function renderAluno(){
 
 
   // RANKING
-  const sorted=[...S.alunos].sort((x,y)=>(y.xp||0)-(x.xp||0));
+  // Ranking usa S.perfis (coleção pública, todos visíveis) mesclando
+  // dados completos do aluno logado vindos de S.alunos
+  const rankingBase = S.perfis.map(p => {
+    const full = S.alunos.find(x => x.id === p.id);
+    return full || p;
+  });
+  const sorted=[...rankingBase].sort((x,y)=>(y.xp||0)-(x.xp||0));
   document.getElementById('a-ranking').innerHTML=sorted.map((al,i)=>{
     const nv=nivel(al.xp||0);const isMe=al.id===a.id;
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rx';
@@ -2980,7 +3020,7 @@ async function aprovar(pid){
         }
       }
     } else {
-      await COL.alunos().doc(aluno.id).update({desafiosConcluidos:firebase.firestore.FieldValue.increment(1)});
+      await COL.alunos().doc(aluno.id).update({desafiosConcluidos:firebase.firestore.FieldValue.increment(1)});await COL.perfis().doc(aluno.id).update({desafiosConcluidos:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
     }
     // Remove pendente
     await COL.pendentes().doc(pid).delete();
@@ -3796,12 +3836,12 @@ async function wcComprar(itemId){
 }
 async function wcEquipar(itemId,cat){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
-  try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});if(cat==='theme')applyTheme(itemId);toast('✅ Equipado!');}catch(e){toast('❌ Erro!');}
+  try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});if(cat==='theme')applyTheme(itemId);if(['border','avatar','banner','title'].includes(cat))await COL.perfis().doc(a.id).update({['wc_eq_'+cat]:itemId}).catch(()=>{});toast('✅ Equipado!');}catch(e){toast('❌ Erro!');}
 }
 async function wcDesequipar(cat){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
   try{
-    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:null});
+    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:null});if(['border','avatar','banner','title'].includes(cat))await COL.perfis().doc(a.id).update({['wc_eq_'+cat]:null}).catch(()=>{});
     if(cat==='theme'){const def=WC_ITEMS.find(i=>i.id==='theme_default');if(def&&def.vars)Object.entries(def.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}
     toast('Removido.');
   }catch(e){toast('❌ Erro!');}
@@ -3897,14 +3937,14 @@ async function uploadFotoPerfil(input){
     const preview=document.getElementById('photo-preview');
     if(preview)preview.innerHTML=`<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;">`;
     setSyncing('syncing');
-    try{await COL.alunos().doc(alunoAtual).update({profilePhoto:dataUrl});toast('✅ Foto de perfil atualizada!');setSyncing('ok');}
+    try{await COL.alunos().doc(alunoAtual).update({profilePhoto:dataUrl});await COL.perfis().doc(alunoAtual).update({profilePhoto:dataUrl}).catch(()=>{});toast('✅ Foto de perfil atualizada!');setSyncing('ok');}
     catch(err){console.error(err);toast('❌ Erro ao salvar foto. Tente uma imagem menor.');setSyncing('error');}
   });
 }
 async function removerFotoPerfil(){
   if(!confirm('Remover foto de perfil?'))return;
   setSyncing('syncing');
-  try{await COL.alunos().doc(alunoAtual).update({profilePhoto:null});toast('🗑️ Foto removida.');setSyncing('ok');}
+  try{await COL.alunos().doc(alunoAtual).update({profilePhoto:null});await COL.perfis().doc(alunoAtual).update({profilePhoto:null}).catch(()=>{});toast('🗑️ Foto removida.');setSyncing('ok');}
   catch(err){toast('❌ Erro.');setSyncing('error');}
 }
 async function uploadBannerPerfil(input){
@@ -3917,7 +3957,7 @@ async function uploadBannerPerfil(input){
     const thumb=document.getElementById('banner-preview-thumb');
     if(thumb){thumb.style.background=`url('${dataUrl}') center/cover`;thumb.style.backgroundSize='cover';}
     setSyncing('syncing');
-    try{await COL.alunos().doc(alunoAtual).update({profileBanner:dataUrl,wc_eq_banner:null});toast('✅ Banner atualizado!');setSyncing('ok');}
+    try{await COL.alunos().doc(alunoAtual).update({profileBanner:dataUrl,wc_eq_banner:null});await COL.perfis().doc(alunoAtual).update({profileBanner:dataUrl,wc_eq_banner:null}).catch(()=>{});toast('✅ Banner atualizado!');setSyncing('ok');}
     catch(err){console.error(err);toast('❌ Erro ao salvar banner. Use uma imagem menor (JPG, até 700KB).');setSyncing('error');}
   };
   reader.readAsDataURL(file);
@@ -3925,14 +3965,14 @@ async function uploadBannerPerfil(input){
 async function removerBannerPerfil(){
   if(!confirm('Remover banner personalizado?'))return;
   setSyncing('syncing');
-  try{await COL.alunos().doc(alunoAtual).update({profileBanner:null});toast('🗑️ Banner removido.');setSyncing('ok');}
+  try{await COL.alunos().doc(alunoAtual).update({profileBanner:null});await COL.perfis().doc(alunoAtual).update({profileBanner:null}).catch(()=>{});toast('🗑️ Banner removido.');setSyncing('ok');}
   catch(err){toast('❌ Erro.');setSyncing('error');}
 }
 async function aplicarCustom(itemId,cat,el){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
   el.closest('.custom-section')?.querySelectorAll('.border-opt-prev,.custom-opt,.banner-opt').forEach(e=>e.classList.remove('selected'));
   el.classList.add('selected');
-  try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});toast('✅ Aplicado!');}catch(e){toast('❌ Erro!');}
+  try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});if(['border','avatar','banner','title'].includes(cat))await COL.perfis().doc(a.id).update({['wc_eq_'+cat]:itemId}).catch(()=>{});toast('✅ Aplicado!');}catch(e){toast('❌ Erro!');}
 }
 
 // ── LOOT BOX ──
@@ -4473,7 +4513,7 @@ function renderGuilda(){
 }
 
 function abrirModalGuilda(guildaId){
-  const guildas = _guildaCache || [];
+  const guildas = S.guildas || [];
   // Busca fresca do Firestore
   COL.guildas().doc(guildaId).get().then(doc=>{
     if(!doc.exists) return toast('Guilda não encontrada.');
@@ -4678,7 +4718,7 @@ function comprimirImagemUrl(dataUrl, maxW, maxH, quality, callback){
 const REACOES_PERFIL = ['🔥','👑','💪','⚡','🎮','🧠','🚀','😎','🏆','❤️'];
 async function abrirPerfilAluno(alunoId){
   if(alunoId === alunoAtual){ alunoTab('perfil','asnav-perfil'); return; }
-  const al = S.alunos.find(x=>x.id===alunoId); if(!al) return;
+  const al = S.alunos.find(x=>x.id===alunoId) || S.perfis.find(x=>x.id===alunoId); if(!al) return;
   const overlay = document.getElementById('modal-perfil-aluno');
   const cont = document.getElementById('modal-perfil-aluno-content');
   cont.innerHTML='<div class="loading-spin" style="margin:40px auto;"></div>';
@@ -4709,7 +4749,7 @@ async function abrirPerfilAluno(alunoId){
   const bannerStyle = al.profileBanner
     ? `url('${al.profileBanner}') center/cover`
     : 'linear-gradient(135deg,rgba(124,58,237,.2),rgba(0,212,255,.15))';
-  const pos = [...S.alunos].sort((a,b)=>(b.xp||0)-(a.xp||0)).findIndex(x=>x.id===alunoId)+1;
+  const pos = [...S.perfis].sort((a,b)=>(b.xp||0)-(a.xp||0)).findIndex(x=>x.id===alunoId)+1;
   // Conquistas — corrigido: usar b.nome (não b.name)
   const badges = CONQ.filter(b=>b.check(al));
   const badgesHtml = badges.length
@@ -4730,14 +4770,14 @@ async function abrirPerfilAluno(alunoId){
         <div style="font-size:1.05rem;font-weight:900;line-height:1.2;">${al.nome}</div>
         <div style="font-size:.68rem;color:var(--muted2);margin-top:2px;">${al.turma} · #${pos} no ranking</div>
         <div style="margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <span style="font-size:.7rem;color:var(--muted2);">${pat.e} ${pat.n}</span>
+          <span style="font-size:.7rem;color:var(--muted2);">${pat.nome}</span>
           ${bordaItem?`<span style="font-size:.58rem;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);color:var(--accent);padding:2px 7px;border-radius:4px;">${bordaItem.icon} ${bordaItem.name}</span>`:''}
         </div>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">
       <div class="steam-stat"><div class="steam-stat-val">${al.xp||0}</div><div class="steam-stat-lbl">XP Total</div></div>
-      <div class="steam-stat"><div class="steam-stat-val">${pat.e} Nv.${Math.floor((al.xp||0)/100)+1}</div><div class="steam-stat-lbl">Nível</div></div>
+      <div class="steam-stat"><div class="steam-stat-val">Nv.${Math.floor((al.xp||0)/100)+1}</div><div class="steam-stat-lbl">Nível</div></div>
       <div class="steam-stat"><div class="steam-stat-val">${al.streak||0}🔥</div><div class="steam-stat-lbl">Streak</div></div>
     </div>
     <div style="font-size:.6rem;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;border-bottom:1px solid var(--border);padding-bottom:6px;">🏅 Conquistas</div>
