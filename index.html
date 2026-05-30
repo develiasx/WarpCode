@@ -1678,12 +1678,23 @@ function ligarListeners(){
 
 // Liga listener de alunos completos — chamado SÓ após login real
 let _unsubAlunos = null;
-function ligarListenerAlunos(){
+function ligarListenerAlunos(modo='professor', alunoId=null){
   if(_unsubAlunos) return; // já ligado
-  _unsubAlunos = COL.alunos().onSnapshot(snap => {
-    S.alunos = snap.docs.map(d => ({id:d.id,...d.data()}));
-    renderSafe();
-  });
+  if(modo === 'professor'){
+    _unsubAlunos = COL.alunos().onSnapshot(snap => {
+      S.alunos = snap.docs.map(d => ({id:d.id,...d.data()}));
+      renderSafe();
+    });
+  } else if(modo === 'aluno' && alunoId){
+    _unsubAlunos = COL.alunos().doc(alunoId).onSnapshot(snap => {
+      if(snap.exists){
+        const idx = S.alunos.findIndex(x=>x.id===alunoId);
+        const dado = {id:alunoId,...snap.data()};
+        if(idx>=0) S.alunos[idx]=dado; else S.alunos.push(dado);
+        renderSafe();
+      }
+    });
+  }
 }
 
 function renderSafe(){
@@ -1772,7 +1783,7 @@ async function confirmarSenhaProf(){
     const alunosSnap = await COL.alunos().get();
     S.alunos = alunosSnap.docs.map(d=>({id:d.id,...d.data()}))
       .sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR'));
-    ligarListenerAlunos();
+    ligarListenerAlunos('professor');
     goProf();
   } catch(e) {
     if(btnEl){ btnEl.disabled = false; btnEl.textContent = '🔓 ENTRAR'; }
@@ -1983,7 +1994,7 @@ async function processarSenha(){
         const dado = {id:alunoAtual,...docSnap.data()};
         if(idx>=0) S.alunos[idx]=dado; else S.alunos.push(dado);
       }
-      ligarListenerAlunos();
+      ligarListenerAlunos('aluno', alunoAtual);
       setSyncing('ok');
       await finalizarEntrada();
     } catch(e){
@@ -2024,7 +2035,7 @@ async function processarSenha(){
           const dado = {id:alunoAtual,...docSnap.data()};
           if(idx>=0) S.alunos[idx]=dado; else S.alunos.push(dado);
         }
-        ligarListenerAlunos();
+        ligarListenerAlunos('aluno', alunoAtual);
         toast('🔒 Senha criada com sucesso!');
         setSyncing('ok');
         await finalizarEntrada();
