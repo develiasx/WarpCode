@@ -2079,49 +2079,68 @@ function renderModalTurmaLista(query){
   el.innerHTML=alunos.map((a,i)=>{
     const n=nivel(a.xp||0);
     const temSenha=a.senha?'✅':'❌';
+    const safeId=escapeHtml(a.id);
+    const safeNome=escapeHtml(a.nome);
+    const safeTurma=escapeHtml(a.turma||'');
+    const safeAvatar=escapeHtml(a.avatar||'👾');
     return`<div class="student-card" style="margin-bottom:8px;">
       <div style="font-family:'Orbitron',monospace;font-size:.8rem;color:${i===0?'var(--gold)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--muted)'};width:24px;text-align:center;flex-shrink:0;">${i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`}</div>
-      <div class="avatar">${a.avatar||'👾'}</div>
+      <div class="avatar">${safeAvatar}</div>
       <div class="sinfo">
-        <div class="sname">${a.nome}</div>
+        <div class="sname">${safeNome}</div>
         <div class="smeta">${n.e} ${n.n} · 🔥${a.streak||0} dias · Senha: ${temSenha}</div>
         <div class="xp-bar"><div class="xp-fill" style="width:${pct(a.xp||0)}%"></div></div>
       </div>
       <div style="text-align:right;flex-shrink:0;"><div class="xp-val">${a.xp||0} XP</div></div>
       <div style="display:flex;gap:5px;flex-shrink:0;flex-direction:column;">
-        <button class="btn btn-primary btn-sm" onclick="abrirEditarAluno('${a.id}')">✏️ Editar</button>
-        <button class="btn btn-success btn-sm" onclick="abrirModalAluno('${a.id}')">+XP</button>
-        <button class="btn btn-danger btn-sm" onclick="removerAluno('${a.id}')">✕</button>
+        <button class="btn btn-primary btn-sm" data-action="editar-aluno" data-id="${safeId}">✏️ Editar</button>
+        <button class="btn btn-success btn-sm" data-action="modal-aluno" data-id="${safeId}">+XP</button>
+        <button class="btn btn-danger btn-sm" data-action="remover-aluno" data-id="${safeId}">✕</button>
       </div>
     </div>`;
   }).join('');
+  // Event delegation seguro
+  el.querySelectorAll('[data-action]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id=btn.dataset.id;
+      if(btn.dataset.action==='editar-aluno') abrirEditarAluno(id);
+      else if(btn.dataset.action==='modal-aluno') abrirModalAluno(id);
+      else if(btn.dataset.action==='remover-aluno') removerAluno(id);
+    });
+  });
 }
 
 function abrirEditarAluno(id){
   const a=S.alunos.find(x=>x.id===id);if(!a)return;
+  const safeId=escapeHtml(id);
+  const temSenha=!!a.senha;
   document.getElementById('modal-editar-aluno-content').innerHTML=`
     <div style="text-align:center;margin-bottom:16px;">
-      <div style="font-size:2.8rem;">${a.avatar||'👾'}</div>
-      <div style="font-weight:900;font-size:1.1rem;margin-top:6px;">${a.nome}</div>
-      <div style="font-size:.75rem;color:var(--muted2);">${a.turma}</div>
+      <div style="font-size:2.8rem;">${escapeHtml(a.avatar||'👾')}</div>
+      <div style="font-weight:900;font-size:1.1rem;margin-top:6px;">${escapeHtml(a.nome)}</div>
+      <div style="font-size:.75rem;color:var(--muted2);">${escapeHtml(a.turma)}</div>
     </div>
     <div class="form-group" style="margin-bottom:12px;">
       <label>Nome do Aluno</label>
-      <input id="edit-nome" type="text" value="${a.nome}" placeholder="Nome completo">
+      <input id="edit-nome" type="text" placeholder="Nome completo">
     </div>
     <div class="form-group" style="margin-bottom:12px;">
       <label>Turma</label>
       <select id="edit-turma">
-        ${TURMAS_ORDER.map(t=>`<option value="${t}" ${a.turma===t?'selected':''}>${t}</option>`).join('')}
+        ${TURMAS_ORDER.map(t=>`<option value="${escapeHtml(t)}" ${a.turma===t?'selected':''}>${escapeHtml(t)}</option>`).join('')}
       </select>
     </div>
     <div class="form-group" style="margin-bottom:16px;">
-      <label>🔑 Nova Senha (4 dígitos) ${a.senha?'— senha atual: <strong style="color:var(--accent);letter-spacing:2px;">'+a.senha+'</strong>':'— aluno ainda não criou senha'}</label>
-      <input id="edit-senha" type="text" maxlength="4" pattern="[0-9]{4}" placeholder="Digite 4 números para redefinir" style="letter-spacing:4px;font-family:'Orbitron',monospace;">
+      <label>🔑 Nova Senha (4 dígitos) — ${temSenha?'aluno já possui senha':'aluno ainda não criou senha'}</label>
+      <input id="edit-senha" type="password" maxlength="4" pattern="[0-9]{4}" placeholder="Digite 4 números para redefinir" style="letter-spacing:4px;font-family:'Orbitron',monospace;">
       <div style="font-size:.65rem;color:var(--muted);margin-top:4px;">Deixe em branco para não alterar a senha</div>
     </div>
-    <button class="btn btn-primary btn-block" onclick="salvarEdicaoAluno('${id}')">💾 Salvar Alterações</button>
+    <button class="btn btn-primary btn-block" id="btn-salvar-edicao-aluno">💾 Salvar Alterações</button>
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-editar-aluno')" style="margin-bottom:0;">Cancelar</button>`;
+  // Preencher o valor do nome de forma segura (sem innerHTML)
+  document.getElementById('edit-nome').value = a.nome||'';
+  // Event listener seguro
+  document.getElementById('btn-salvar-edicao-aluno').addEventListener('click', ()=>salvarEdicaoAluno(id));
   document.getElementById('modal-editar-aluno').classList.add('active');
 }
 
@@ -2154,22 +2173,34 @@ function renderPAprovacoes(){
     const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[missao.dif]||'diff-hard';
     const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[missao.dif]||'Difícil';
     const dt=new Date(p.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    const safeId=escapeHtml(p.id);
+    const safeLink=sanitizeUrl(p.link||'');
+    const linkHtml=safeLink?`<a class="approval-link" href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer">🔗 ${escapeHtml(safeLink)}</a>`:'';
     return `<div class="approval-card">
       <div class="approval-meta">
-        <div><div style="font-weight:800;font-size:.92rem;">${aluno.avatar||'👾'} ${aluno.nome} <span style="color:var(--muted2);font-weight:400;font-size:.8rem">${aluno.turma}</span></div><div style="font-size:.65rem;color:var(--muted)">${dt}</div></div>
+        <div><div style="font-weight:800;font-size:.92rem;">${escapeHtml(aluno.avatar||'👾')} ${escapeHtml(aluno.nome)} <span style="color:var(--muted2);font-weight:400;font-size:.8rem">${escapeHtml(aluno.turma)}</span></div><div style="font-size:.65rem;color:var(--muted)">${dt}</div></div>
         <span class="mdiff ${dc}">${dl}</span>
       </div>
-      <div style="font-size:.82rem;color:var(--muted2);margin-bottom:8px;">📋 ${missao.titulo} <span style="color:var(--gold);font-family:'Orbitron',monospace;font-size:.7rem">+${missao.xp} XP</span></div>
+      <div style="font-size:.82rem;color:var(--muted2);margin-bottom:8px;">📋 ${escapeHtml(missao.titulo)} <span style="color:var(--gold);font-family:'Orbitron',monospace;font-size:.7rem">+${Number(missao.xp)||0} XP</span></div>
       ${p.isGuilda?`<div style="background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);border-radius:6px;padding:6px 10px;font-size:.72rem;margin-bottom:8px;">⚔️ Missão de Guilda — aprovação dará XP a todos os membros</div>`:''}
-      ${p.link?`<a class="approval-link" href="${p.link}" target="_blank">🔗 ${p.link}</a>`:''}
-      <div class="form-group" style="margin-bottom:10px;"><label>Feedback para o aluno (opcional)</label><input type="text" id="fb-${p.id}" placeholder="Ex: Ótimo uso dos loops!"></div>
+      ${linkHtml}
+      <div class="form-group" style="margin-bottom:10px;"><label>Feedback para o aluno (opcional)</label><input type="text" id="fb-${safeId}" placeholder="Ex: Ótimo uso dos loops!"></div>
       <div class="approval-actions">
-        <button class="btn btn-success btn-sm" onclick="aprovar('${p.id}')">✓ Aprovar +${missao.xp} XP</button>
-        <button class="btn btn-primary btn-sm" onclick="aprovarEDestacar('${p.id}')">⭐ Aprovar e Destacar</button>
-        <button class="btn btn-danger btn-sm" onclick="rejeitar('${p.id}')">✕ Rejeitar</button>
+        <button class="btn btn-success btn-sm" data-action="aprovar" data-id="${safeId}">✓ Aprovar +${Number(missao.xp)||0} XP</button>
+        <button class="btn btn-primary btn-sm" data-action="aprovar-destacar" data-id="${safeId}">⭐ Aprovar e Destacar</button>
+        <button class="btn btn-danger btn-sm" data-action="rejeitar" data-id="${safeId}">✕ Rejeitar</button>
       </div>
     </div>`;
   }).join('');
+  // Event delegation seguro para aprovações
+  el.querySelectorAll('[data-action]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id=btn.dataset.id;
+      if(btn.dataset.action==='aprovar') aprovar(id);
+      else if(btn.dataset.action==='aprovar-destacar') aprovarEDestacar(id);
+      else if(btn.dataset.action==='rejeitar') rejeitar(id);
+    });
+  });
 }
 
 function renderPRanking(){
@@ -2182,9 +2213,9 @@ function renderPRanking(){
     const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
     return `<div class="rank-item">
       <div class="rnum ${rc}">${ri}</div>
-      <div class="avatar" style="width:38px;height:38px;font-size:1.3rem">${a.avatar||'👾'}</div>
-      <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.9rem;">${a.nome}</div><div style="font-size:.68rem;color:var(--muted2)">${a.turma} · ${n.e} ${n.n}</div></div>
-      <div style="font-family:'Orbitron',monospace;font-size:.88rem;color:var(--gold);font-weight:700;flex-shrink:0">${a.xp||0} XP</div>
+      <div class="avatar" style="width:38px;height:38px;font-size:1.3rem">${escapeHtml(a.avatar||'👾')}</div>
+      <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.9rem;">${escapeHtml(a.nome)}</div><div style="font-size:.68rem;color:var(--muted2)">${escapeHtml(a.turma)} · ${n.e} ${n.n}</div></div>
+      <div style="font-family:'Orbitron',monospace;font-size:.88rem;color:var(--gold);font-weight:700;flex-shrink:0">${Number(a.xp)||0} XP</div>
     </div>`;
   }).join('');
 }
@@ -2195,17 +2226,25 @@ function renderPLoja(){
   el.innerHTML=S.loja.map(r=>`
     <div class="shop-card ${r.ativo?'':'claimed'}">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-        <div style="font-size:1.8rem">${r.emoji}</div>
-        <div><div class="shop-name">${r.nome}</div><div style="font-size:.72rem;color:var(--muted2)">${r.desc||''}</div></div>
+        <div style="font-size:1.8rem">${escapeHtml(r.emoji)}</div>
+        <div><div class="shop-name">${escapeHtml(r.nome)}</div><div style="font-size:.72rem;color:var(--muted2)">${escapeHtml(r.desc||'')}</div></div>
       </div>
       <div class="shop-footer">
-        <span class="shop-cost">🏅 ${r.custo} XP</span>
+        <span class="shop-cost">🏅 ${Number(r.custo)||0} XP</span>
         <div style="display:flex;gap:6px;">
-          <button class="btn btn-sm ${r.ativo?'btn-danger':'btn-success'}" onclick="toggleLoja('${r.id}')">${r.ativo?'Desativar':'Ativar'}</button>
-          <button class="btn btn-sm btn-outline" onclick="removerLoja('${r.id}')">✕</button>
+          <button class="btn btn-sm ${r.ativo?'btn-danger':'btn-success'}" data-action="toggle-loja" data-id="${escapeHtml(r.id)}">${r.ativo?'Desativar':'Ativar'}</button>
+          <button class="btn btn-sm btn-outline" data-action="remover-loja" data-id="${escapeHtml(r.id)}">✕</button>
         </div>
       </div>
     </div>`).join('');
+  // Event delegation seguro
+  el.querySelectorAll('[data-action]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.id;
+      if(btn.dataset.action==='toggle-loja') toggleLoja(id);
+      else if(btn.dataset.action==='remover-loja') removerLoja(id);
+    });
+  });
 }
 
 function renderPResgates(){
@@ -2216,15 +2255,24 @@ function renderPResgates(){
     const aluno=S.alunos.find(a=>a.id===r.alunoId);
     const item=S.loja.find(i=>i.id===r.itemId);
     if(!aluno||!item) return '';
+    const safeId=escapeHtml(r.id);
     return `<div class="approval-card">
-      <div style="font-weight:800;font-size:.92rem;margin-bottom:4px;">${aluno.avatar||'👾'} ${aluno.nome} quer resgatar:</div>
-      <div style="font-size:.82rem;color:var(--muted2);margin-bottom:10px;">${item.emoji} ${item.nome} — <span style="color:var(--gold);font-family:'Orbitron',monospace;">${item.custo} XP</span></div>
+      <div style="font-weight:800;font-size:.92rem;margin-bottom:4px;">${escapeHtml(aluno.avatar||'👾')} ${escapeHtml(aluno.nome)} quer resgatar:</div>
+      <div style="font-size:.82rem;color:var(--muted2);margin-bottom:10px;">${escapeHtml(item.emoji)} ${escapeHtml(item.nome)} — <span style="color:var(--gold);font-family:'Orbitron',monospace;">${Number(item.custo)||0} XP</span></div>
       <div class="approval-actions">
-        <button class="btn btn-success btn-sm" onclick="aprovarResgate('${r.id}')">✓ Confirmar Entrega</button>
-        <button class="btn btn-danger btn-sm" onclick="rejeitarResgate('${r.id}')">✕ Cancelar</button>
+        <button class="btn btn-success btn-sm" data-action="aprovar-resgate" data-id="${safeId}">✓ Confirmar Entrega</button>
+        <button class="btn btn-danger btn-sm" data-action="rejeitar-resgate" data-id="${safeId}">✕ Cancelar</button>
       </div>
     </div>`;
   }).join('');
+  // Event delegation seguro
+  el.querySelectorAll('[data-action]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.id;
+      if(btn.dataset.action==='aprovar-resgate') aprovarResgate(id);
+      else if(btn.dataset.action==='rejeitar-resgate') rejeitarResgate(id);
+    });
+  });
 }
 
 function renderPDesafio(){
@@ -2234,18 +2282,24 @@ function renderPDesafio(){
   el.innerHTML=ativos.map(d=>{
     const expira=new Date(d.expira);
     const dias=Math.max(0,Math.ceil((expira-new Date())/(1000*60*60*24)));
+    const safeVideo=sanitizeUrl(d.video||'');
+    const safeId=escapeHtml(d.id);
     return `<div class="weekly-card" style="margin-bottom:12px;">
-      <div class="mtitle">${d.titulo}</div>
-      <div class="mdesc">${d.desc}</div>
-      ${d.video?`<div style="margin-top:8px;font-size:.75rem;color:var(--accent);">🎬 <a href="${d.video}" target="_blank" style="color:var(--accent);">${d.video}</a></div>`:''}
+      <div class="mtitle">${escapeHtml(d.titulo)}</div>
+      <div class="mdesc">${escapeHtml(d.desc)}</div>
+      ${safeVideo?`<div style="margin-top:8px;font-size:.75rem;color:var(--accent);">🎬 <a href="${escapeHtml(safeVideo)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(safeVideo)}</a></div>`:''}
       <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
         <span class="mdiff diff-weekly">Semanal</span>
-        <span class="mxp">+${d.xp} XP</span>
+        <span class="mxp">+${Number(d.xp)||0} XP</span>
         <span class="weekly-timer">⏱ ${dias} dia(s) restante(s)</span>
       </div>
-      <button class="btn btn-danger btn-sm" style="margin-top:12px;" onclick="removerDesafio('${d.id}')">Encerrar</button>
+      <button class="btn btn-danger btn-sm" style="margin-top:12px;" data-action="remover-desafio" data-id="${safeId}">Encerrar</button>
     </div>`;
   }).join('');
+  // Event delegation seguro
+  el.querySelectorAll('[data-action="remover-desafio"]').forEach(btn=>{
+    btn.addEventListener('click',()=>removerDesafio(btn.dataset.id));
+  });
 }
 
 function renderPStats(){
@@ -2282,14 +2336,16 @@ function renderPSenhasTurmas(){
     const medals=['🥇','🥈','🥉'];
     top3el.innerHTML=`<div style="display:flex;gap:10px;flex-wrap:wrap;">`+sorted.map((a,i)=>{
       const nv=nivel(a.xp||0);
-      const fotoHtml=a.profilePhoto?`<img src="${a.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(a.avatar||'👾');
+      // profilePhoto é base64 ou URL — validar para evitar XSS via javascript:
+      const safePhoto = a.profilePhoto && (a.profilePhoto.startsWith('data:image/') || sanitizeUrl(a.profilePhoto)) ? a.profilePhoto : '';
+      const fotoHtml=safePhoto?`<img src="${escapeHtml(safePhoto)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(escapeHtml(a.avatar||'👾'));
       return`<div style="flex:1;min-width:160px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;">
         <div style="position:absolute;top:0;left:0;right:0;height:2px;background:${i===0?'linear-gradient(90deg,var(--gold),#ff8c00)':i===1?'linear-gradient(90deg,#c0c0c0,#999)':'linear-gradient(90deg,#cd7f32,#a0522d)'};"></div>
         <div style="width:42px;height:42px;border-radius:50%;background:var(--s1);border:2px solid ${i===0?'var(--gold)':i===1?'#c0c0c0':'#cd7f32'};display:flex;align-items:center;justify-content:center;font-size:1.4rem;overflow:hidden;flex-shrink:0;">${fotoHtml}</div>
         <div style="flex:1;min-width:0;">
           <div style="font-size:.7rem;color:var(--muted);">${medals[i]} ${i+1}º lugar</div>
-          <div style="font-weight:800;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.nome}</div>
-          <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--gold);">${a.xp||0} XP</div>
+          <div style="font-weight:800;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(a.nome)}</div>
+          <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--gold);">${Number(a.xp)||0} XP</div>
         </div>
       </div>`;
     }).join('')+'</div>';
@@ -2484,7 +2540,7 @@ function renderAluno(){
     const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[m.dif];
     const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[m.dif];
     const wcLabel=m.wc?`<span style="font-family:'Orbitron',monospace;font-size:.62rem;color:var(--wc);">🪙${m.wc}</span>`:'';
-    const videoLink=m.video?`<div style="margin-top:6px;"><a href="${m.video}" target="_blank" style="font-size:.72rem;color:var(--accent);">🎬 Vídeo de referência</a></div>`:'';
+    const videoLink=(()=>{ const sv=sanitizeUrl(m.video||''); return sv?`<div style="margin-top:6px;"><a href="${escapeHtml(sv)}" target="_blank" rel="noopener noreferrer" style="font-size:.72rem;color:var(--accent);">🎬 Vídeo de referência</a></div>`:''; })();
     let statusTag='',action='';
     if(feita){
       statusTag=`<span class="status-tag tag-done">✓ Aprovada</span>`;
@@ -2541,26 +2597,32 @@ function renderAluno(){
     const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
     const eqAv=al['wc_eq_avatar']?WC_ITEMS.find(i=>i.id===al['wc_eq_avatar']):null;
     const aiUrl=eqAv?.imgUrl&&eqAv.imgUrl.trim().length>0?eqAv.imgUrl:null;
-    const rankAvatarHtml=al.profilePhoto
-      ?`<div style="width:38px;height:38px;border-radius:50%;border:2px solid var(--border);overflow:hidden;flex-shrink:0;"><img src="${al.profilePhoto}" style="width:100%;height:100%;object-fit:cover;"></div>`
-      :aiUrl
-      ?`<div style="width:38px;height:38px;border-radius:50%;border:2px solid var(--border);overflow:hidden;flex-shrink:0;"><img src="${aiUrl}" style="width:100%;height:100%;object-fit:cover;"></div>`
-      :`<div class="avatar" style="width:38px;height:38px;font-size:1.3rem">${al.avatar||'👾'}</div>`;
-    return `<div class="rank-item ${isMe?'me':''}" onclick="abrirPerfilAluno('${al.id}')" style="cursor:pointer;">
+    const safePhoto = al.profilePhoto && (al.profilePhoto.startsWith('data:image/') || sanitizeUrl(al.profilePhoto)) ? al.profilePhoto : '';
+    const safeAiUrl = aiUrl && sanitizeUrl(aiUrl) ? aiUrl : '';
+    const rankAvatarHtml=safePhoto
+      ?`<div style="width:38px;height:38px;border-radius:50%;border:2px solid var(--border);overflow:hidden;flex-shrink:0;"><img src="${escapeHtml(safePhoto)}" style="width:100%;height:100%;object-fit:cover;"></div>`
+      :safeAiUrl
+      ?`<div style="width:38px;height:38px;border-radius:50%;border:2px solid var(--border);overflow:hidden;flex-shrink:0;"><img src="${escapeHtml(safeAiUrl)}" style="width:100%;height:100%;object-fit:cover;"></div>`
+      :`<div class="avatar" style="width:38px;height:38px;font-size:1.3rem">${escapeHtml(al.avatar||'👾')}</div>`;
+    return `<div class="rank-item ${isMe?'me':''}" data-aluno-id="${escapeHtml(al.id)}" style="cursor:pointer;">
       <div class="rnum ${rc}">${ri}</div>
       ${rankAvatarHtml}
-      <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.9rem;">${al.nome}${isMe?' 👈':''}</div><div style="font-size:.68rem;color:var(--muted2)">${nv.e} ${nv.n}${(al.streak||0)>=3?` · 🔥${al.streak}`:''}</div></div>
-      <div style="font-family:'Orbitron',monospace;font-size:.88rem;color:var(--gold);font-weight:700;flex-shrink:0">${al.xp||0} XP</div>
+      <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.9rem;">${escapeHtml(al.nome)}${isMe?' 👈':''}</div><div style="font-size:.68rem;color:var(--muted2)">${nv.e} ${nv.n}${(al.streak||0)>=3?` · 🔥${al.streak}`:''}</div></div>
+      <div style="font-family:'Orbitron',monospace;font-size:.88rem;color:var(--gold);font-weight:700;flex-shrink:0">${Number(al.xp)||0} XP</div>
     </div>`;
   }).join('');
+  // Event delegation seguro para ranking
+  document.getElementById('a-ranking').querySelectorAll('[data-aluno-id]').forEach(div=>{
+    div.addEventListener('click',()=>abrirPerfilAluno(div.dataset.alunoId));
+  });
 
   // HISTÓRICO
   const hist=a.historico||[];
   document.getElementById('a-historico').innerHTML=hist.length?hist.map(h=>`
     <div class="history-item">
       <div class="history-icon">${h.xp>0?'⬆️':'⬇️'}</div>
-      <div style="flex:1;"><div class="history-desc">${h.desc}</div><div class="history-date">${new Date(h.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div></div>
-      <div class="history-xp" style="color:${h.xp>0?'var(--gold)':'var(--red)'};">${h.xp>0?'+':''}${h.xp} XP</div>
+      <div style="flex:1;"><div class="history-desc">${escapeHtml(h.desc||'')}</div><div class="history-date">${new Date(h.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div></div>
+      <div class="history-xp" style="color:${h.xp>0?'var(--gold)':'var(--red)'};">${h.xp>0?'+':''}${Number(h.xp)||0} XP</div>
     </div>`).join(''):`<div class="empty" style="padding:20px;"><div class="empty-icon">📜</div><div class="empty-text">Seu histórico aparecerá aqui.</div></div>`;
 
   // BADGES
@@ -3146,7 +3208,7 @@ function abrirMissao(mid){
       3️⃣ Copie o link do projeto<br>
       4️⃣ Cole aqui e envie para aprovação
     </div>
-    <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank">🐱 Abrir no Scratch</a>
+    <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank" rel="noopener noreferrer">🐱 Abrir no Scratch</a>
     <label>Link do projeto (recomendado)</label>
     <input type="url" id="missao-link" placeholder="https://scratch.mit.edu/projects/..." style="margin-bottom:14px">
     <button class="btn btn-primary btn-block" onclick="enviarAprovacao('${m.id}')">📤 Enviar para Aprovação</button>
@@ -3171,25 +3233,28 @@ async function enviarAprovacao(mid){
 function abrirDesafio(desafioId){
   const d=S.desafios.find(x=>x.id===desafioId);
   if(!d)return;
+  const safeDesafioId = escapeHtml(desafioId);
+  const safeVideoD = sanitizeUrl(d.video||'');
   document.getElementById('modal-missao-content').innerHTML=`
-    <div class="modal-title">🔥 ${d.titulo}</div>
-    <div style="font-size:.86rem;color:var(--muted2);line-height:1.7;margin-bottom:12px">${d.desc}</div>
+    <div class="modal-title">🔥 ${escapeHtml(d.titulo)}</div>
+    <div style="font-size:.86rem;color:var(--muted2);line-height:1.7;margin-bottom:12px">${escapeHtml(d.desc)}</div>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
       <span class="mdiff diff-weekly">Desafio Semanal</span>
-      <span class="mxp" style="font-size:.82rem">+${d.xp} XP</span>
+      <span class="mxp" style="font-size:.82rem">+${Number(d.xp)||0} XP</span>
     </div>
-    ${d.video?`<a class="scratch-btn" href="${d.video}" target="_blank" style="background:linear-gradient(135deg,#ef4444,#dc2626);">🎬 Ver Vídeo Exemplo</a>`:''}
+    ${safeVideoD?`<a class="scratch-btn" href="${escapeHtml(safeVideoD)}" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg,#ef4444,#dc2626);">🎬 Ver Vídeo Exemplo</a>`:''}
     <div style="font-size:.8rem;color:var(--muted2);line-height:1.9;margin-bottom:16px;background:var(--s2);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
       1️⃣ Clique em <strong style="color:var(--text)">Abrir no Scratch</strong><br>
       2️⃣ Complete o desafio proposto<br>
       3️⃣ Copie o link do projeto<br>
       4️⃣ Cole aqui e envie para aprovação
     </div>
-    <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank">🐱 Abrir no Scratch</a>
+    <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank" rel="noopener noreferrer">🐱 Abrir no Scratch</a>
     <label>Link do projeto (recomendado)</label>
     <input type="url" id="missao-link" placeholder="https://scratch.mit.edu/projects/..." style="margin-bottom:14px">
-    <button class="btn btn-primary btn-block" onclick="enviarDesafio('${desafioId}')">📤 Enviar para Aprovação</button>
+    <button class="btn btn-primary btn-block" id="btn-enviar-desafio">📤 Enviar para Aprovação</button>
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-missao')" style="margin-bottom:0">Cancelar</button>`;
+  document.getElementById('btn-enviar-desafio').addEventListener('click',()=>enviarDesafio(desafioId));
   document.getElementById('modal-missao').classList.add('active');
 }
 
@@ -4732,12 +4797,12 @@ function buscarGifs(query){
       }
       el.innerHTML = results.map(g=>{
         const src = g.media_formats?.tinygif?.url || g.media_formats?.gif?.url || '';
-        if(!src) return '';
-        const safe = src.replace(/'/g,"\'");
-        return `<div class="gif-item" onclick="enviarGif('${safe}')"><img src="${src}" loading="lazy"></div>`;
+        const safeSrc = sanitizeUrl(src);
+        if(!safeSrc) return '';
+        return `<div class="gif-item" data-gif-url="${escapeHtml(safeSrc)}"><img src="${escapeHtml(safeSrc)}" loading="lazy"></div>`;
       }).filter(Boolean).join('');
+      el.querySelectorAll('[data-gif-url]').forEach(d=>d.addEventListener('click',()=>enviarGif(d.dataset.gifUrl)));
     } catch(err){
-      console.warn('GIF erro:', err);
       // Fallback: Giphy public beta key
       try {
         const r2 = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=10&rating=g&lang=pt`);
@@ -4746,10 +4811,11 @@ function buscarGifs(query){
         if(!gifs.length) throw new Error('no results');
         el.innerHTML = gifs.map(g=>{
           const src = g.images?.fixed_height_small?.url || g.images?.downsized?.url || '';
-          if(!src) return '';
-          const safe = src.replace(/'/g,"\'");
-          return `<div class="gif-item" onclick="enviarGif('${safe}')"><img src="${src}" loading="lazy"></div>`;
+          const safeSrc = sanitizeUrl(src);
+          if(!safeSrc) return '';
+          return `<div class="gif-item" data-gif-url="${escapeHtml(safeSrc)}"><img src="${escapeHtml(safeSrc)}" loading="lazy"></div>`;
         }).filter(Boolean).join('');
+        el.querySelectorAll('[data-gif-url]').forEach(d=>d.addEventListener('click',()=>enviarGif(d.dataset.gifUrl)));
       } catch(e2){
         el.innerHTML='<div style="grid-column:1/-1;color:var(--orange);font-size:.75rem;text-align:center;padding:14px;">⚠️ GIFs indisponíveis no momento</div>';
       }
@@ -4853,29 +4919,25 @@ function chatBuscarGifs(query){
     if(!gifs.length) try {
       const d = await _gifFetch(`https://tenor.googleapis.com/v2/search?q=${q}&key=AIzaSyAyimkuYQYF_FXVALexPzfiyvL7X-doABc&limit=12&media_filter=tinygif&client_key=warpcode_edu`);
       gifs = (d.results||[]).map(g=>g.media_formats?.tinygif?.url||'').filter(Boolean);
-      console.log('[GIF] Tenor v2:', gifs.length, 'gifs');
-    } catch(e){ console.warn('[GIF] Tenor v2 falhou:', e.message); }
+    } catch(e){ /* Tenor v2 indisponível */ }
 
     // 2. Tenor v1 — legacy endpoint, different key
     if(!gifs.length) try {
       const d = await _gifFetch(`https://g.tenor.com/v1/search?q=${q}&key=LIVDSRZULELA&limit=12&contentfilter=low`);
       gifs = (d.results||[]).flatMap(g=>g.media||[]).map(m=>m.tinygif?.url||'').filter(Boolean);
-      console.log('[GIF] Tenor v1:', gifs.length, 'gifs');
-    } catch(e){ console.warn('[GIF] Tenor v1 falhou:', e.message); }
+    } catch(e){ /* Tenor v1 indisponível */ }
 
     // 3. Giphy — public beta key
     if(!gifs.length) try {
       const d = await _gifFetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${q}&limit=12&rating=g&lang=pt`);
       gifs = (d.data||[]).map(g=>g.images?.fixed_height_small?.url||g.images?.downsized?.url||'').filter(Boolean);
-      console.log('[GIF] Giphy:', gifs.length, 'gifs');
-    } catch(e){ console.warn('[GIF] Giphy falhou:', e.message); }
+    } catch(e){ /* Giphy indisponível */ }
 
     // 4. Giphy trending as last resort (no query)
     if(!gifs.length) try {
       const d = await _gifFetch(`https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=12&rating=g`);
       gifs = (d.data||[]).map(g=>g.images?.fixed_height_small?.url||'').filter(Boolean);
-      console.log('[GIF] Giphy trending:', gifs.length, 'gifs');
-    } catch(e){ console.warn('[GIF] Giphy trending falhou:', e.message); }
+    } catch(e){ /* Giphy trending indisponível */ }
 
     if(!gifs.length){
       el.innerHTML='<div style="grid-column:1/-1;color:var(--orange);font-size:.75rem;text-align:center;padding:14px;">⚠️ Não foi possível carregar GIFs.<br><small style=\'opacity:.7\'>Verifique sua conexão.</small></div>';
@@ -4883,9 +4945,14 @@ function chatBuscarGifs(query){
     }
 
     el.innerHTML = gifs.map(src=>{
-      const safe = src.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-      return `<img src="${src}" loading="lazy" style="width:100%;border-radius:6px;cursor:pointer;aspect-ratio:1;object-fit:cover;display:block;" onclick="chatEnviarGif('${safe}')" onerror="this.style.display='none'">`;
+      const safeGif = sanitizeUrl(src);
+      if(!safeGif) return '';
+      return `<img src="${escapeHtml(safeGif)}" loading="lazy" style="width:100%;border-radius:6px;cursor:pointer;aspect-ratio:1;object-fit:cover;display:block;" data-gif-url="${escapeHtml(safeGif)}" onerror="this.style.display='none'">`;
     }).join('');
+    // Event delegation seguro para GIFs
+    el.querySelectorAll('[data-gif-url]').forEach(img=>{
+      img.addEventListener('click',()=>chatEnviarGif(img.dataset.gifUrl));
+    });
   }, 500);
 }
 
@@ -4949,10 +5016,10 @@ function listenPresence(){
     if(!el) return;
     if(cnt) cnt.textContent = `🟢 ${online.length} online`;
     el.innerHTML = online.map(p=>{
-      const av = p.foto
-        ? `<img src="${p.foto}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;">`
-        : `<span>${p.avatar||'👾'}</span>`;
-      return `<div class="online-item"><div class="online-dot"></div>${av} ${(p.nome||'').split(' ')[0]}</div>`;
+      const av = p.foto && (p.foto.startsWith('data:image/') || sanitizeUrl(p.foto))
+        ? `<img src="${escapeHtml(p.foto)}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;">`
+        : `<span>${escapeHtml(p.avatar||'👾')}</span>`;
+      return `<div class="online-item"><div class="online-dot"></div>${av} ${escapeHtml((p.nome||'').split(' ')[0])}</div>`;
     }).join('');
   });
 }
@@ -4963,24 +5030,33 @@ function renderChatMsgs(msgs){
   el.innerHTML = msgs.map(m=>{
     const own = m.autorId === alunoAtual;
     const time = new Date(m.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const safeAutorId = escapeHtml(m.autorId||'');
+    const safeAutorNome = escapeHtml(m.autorNome||'');
     const avatarHtml = m.foto
-      ? `<div class="chat-avatar-sm"><img src="${m.foto}" alt=""></div>`
-      : `<div class="chat-avatar-sm">${m.avatar||'👾'}</div>`;
-    const bubble = m.tipo==='gif'
-      ? `<img src="${m.gifUrl}" class="chat-gif" alt="GIF">`
+      ? `<div class="chat-avatar-sm"><img src="${escapeHtml(m.foto)}" alt=""></div>`
+      : `<div class="chat-avatar-sm">${escapeHtml(m.avatar||'👾')}</div>`;
+    const safeGifUrl = sanitizeUrl(m.gifUrl||'');
+    const bubble = m.tipo==='gif' && safeGifUrl
+      ? `<img src="${escapeHtml(safeGifUrl)}" class="chat-gif" alt="GIF">`
       : `<div class="chat-bubble">${escapeHtml(m.texto||'')}</div>`;
+    const clickAttr = !own && safeAutorId ? `data-aluno-id="${safeAutorId}"` : '';
+    const clickStyle = !own ? 'cursor:pointer;' : '';
     return `<div class="chat-msg ${own?'own':''}">
-      <div onclick="${!own?`abrirPerfilAluno('${m.autorId}')`:''}>" style="${!own?'cursor:pointer;':''}">
+      <div ${clickAttr} class="${!own?'chat-avatar-click':''}" style="${clickStyle}">
         ${avatarHtml}
       </div>
       <div>
-        <div class="chat-author" onclick="${!own?`abrirPerfilAluno('${m.autorId}')`:''}>" style="${!own?'cursor:pointer;':''}">
-          ${own?'Você':m.autorNome} · ${time}
+        <div class="chat-author ${!own?'chat-author-click':''}" ${clickAttr} style="${clickStyle}">
+          ${own?'Você':safeAutorNome} · ${time}
         </div>
         ${bubble}
       </div>
     </div>`;
   }).join('');
+  // Event delegation seguro para abrir perfil
+  el.querySelectorAll('[data-aluno-id]').forEach(el2=>{
+    el2.addEventListener('click', ()=>abrirPerfilAluno(el2.dataset.alunoId));
+  });
   el.scrollTop = el.scrollHeight;
 }
 
@@ -5007,20 +5083,21 @@ function abrirMissaoGuilda(missaoId, guildaId){
   if(!m) return;
   // Reutiliza o modal de missão existente
   document.getElementById('modal-missao-content').innerHTML=`
-    <div class="modal-title">⚔️ ${m.titulo}</div>
+    <div class="modal-title">⚔️ ${escapeHtml(m.titulo)}</div>
     <div style="background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px;font-size:.78rem;color:var(--muted2);">
       🛡️ Enviando como <strong style="color:var(--purple)">missão da guilda</strong> — todos os membros receberão XP ao ser aprovado
     </div>
-    <div style="font-size:.86rem;color:var(--muted2);line-height:1.7;margin-bottom:12px">${m.desc}</div>
+    <div style="font-size:.86rem;color:var(--muted2);line-height:1.7;margin-bottom:12px">${escapeHtml(m.desc)}</div>
     <div class="mtags" style="margin-bottom:16px;display:flex;gap:6px;flex-wrap:wrap;">
-      <span class="mdiff diff-team">👥 ${m.vagas} pessoas</span>
-      <span class="mxp">+${m.xp} XP/membro</span>
+      <span class="mdiff diff-team">👥 ${Number(m.vagas)||0} pessoas</span>
+      <span class="mxp">+${Number(m.xp)||0} XP/membro</span>
     </div>
-    <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank">🐱 Abrir no Scratch</a>
+    <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank" rel="noopener noreferrer">🐱 Abrir no Scratch</a>
     <label>Link do projeto no Scratch</label>
     <input type="url" id="missao-link" placeholder="https://scratch.mit.edu/projects/..." style="margin-bottom:14px">
-    <button class="btn btn-primary btn-block" onclick="enviarAprovacaoGuilda('${missaoId}','${guildaId}')">⚔️ Enviar para Aprovação</button>
+    <button class="btn btn-primary btn-block" id="btn-enviar-guilda-missao">⚔️ Enviar para Aprovação</button>
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-missao')" style="margin-bottom:0">Cancelar</button>`;
+  document.getElementById('btn-enviar-guilda-missao').addEventListener('click',()=>enviarAprovacaoGuilda(missaoId, guildaId));
   document.getElementById('modal-missao').classList.add('active');
 }
 
@@ -5041,7 +5118,23 @@ async function enviarAprovacaoGuilda(missaoId, guildaId){
   } catch(e){ toast('❌ Erro ao enviar!'); }
 }
 
-function escapeHtml(t){ const d=document.createElement('div');d.textContent=t;return d.innerHTML; }
+function escapeHtml(t){ const d=document.createElement('div');d.textContent=String(t==null?'':t);return d.innerHTML; }
+
+// Valida e sanitiza URLs — bloqueia javascript:, data:, etc.
+function sanitizeUrl(url){
+  if(!url||typeof url!=='string') return '';
+  try{
+    const u=new URL(url.trim());
+    if(!['http:','https:'].includes(u.protocol)) return '';
+    return u.toString();
+  }catch(e){ return ''; }
+}
+
+// Constrói atributo href seguro — retorna string vazia se URL inválida
+function safeHref(url){
+  const s=sanitizeUrl(url);
+  return s ? `href="${escapeHtml(s)}"` : '';
+}
 
 // ══════════════════════════════════════
 //  VITRINE — ALUNO
@@ -5057,29 +5150,42 @@ function renderVitrine(){
       el.innerHTML = allVitrine.map(v=>{
         const a2 = S.alunos.find(x=>x.id===v.alunoId);
         const EMOJIS = ['❤️','🔥','⭐','🚀','💡'];
+        const safeVId = escapeHtml(v.id);
         const reactions = EMOJIS.map(e=>{
           const count = (v.reactions&&v.reactions[e])||0;
           const active = v.reactors&&v.reactors[e]&&v.reactors[e].includes(alunoAtual);
-          return `<button class="reaction-btn ${active?'active':''}" onclick="reagir('${v.id}','${e}')">${e} ${count}</button>`;
+          const safeE = escapeHtml(e);
+          return `<button class="reaction-btn ${active?'active':''}" data-action="reagir" data-vid="${safeVId}" data-emoji="${safeE}">${safeE} ${Number(count)||0}</button>`;
         }).join('');
-        const comments = (v.comentarios||[]).slice(-5).map(c=>`<div class="vitrine-comment"><div class="vitrine-comment-author">${c.avatar} ${c.nome}</div>${escapeHtml(c.texto)}</div>`).join('');
+        const comments = (v.comentarios||[]).slice(-5).map(c=>`<div class="vitrine-comment"><div class="vitrine-comment-author">${escapeHtml(c.avatar||'👾')} ${escapeHtml(c.nome||'')}</div>${escapeHtml(c.texto||'')}</div>`).join('');
+        const safeLink = sanitizeUrl(v.link||'');
         return `<div class="vitrine-card">
           <div class="vitrine-header">
-            <div style="font-size:2rem">${a2?.avatar||'👾'}</div>
-            <div style="flex:1"><div class="vitrine-projeto-nome">${v.titulo||'Projeto'}</div>
-              <div style="font-size:.72rem;color:var(--muted2)">${a2?.nome||'?'} · ${a2?.turma||''}</div>
-              ${v.link?`<a class="vitrine-link" href="${v.link}" target="_blank">🔗 Ver projeto</a>`:''}
+            <div style="font-size:2rem">${escapeHtml(a2?.avatar||'👾')}</div>
+            <div style="flex:1"><div class="vitrine-projeto-nome">${escapeHtml(v.titulo||'Projeto')}</div>
+              <div style="font-size:.72rem;color:var(--muted2)">${escapeHtml(a2?.nome||'?')} · ${escapeHtml(a2?.turma||'')}</div>
+              ${safeLink?`<a class="vitrine-link" href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer">🔗 Ver projeto</a>`:''}
             </div>
           </div>
           ${v.desc?`<div style="font-size:.82rem;color:var(--muted2);margin-bottom:10px;">${escapeHtml(v.desc)}</div>`:''}
           <div class="vitrine-reactions">${reactions}</div>
           <div class="vitrine-comments">${comments}</div>
           <div class="vitrine-add-comment">
-            <input id="cmt-${v.id}" placeholder="Deixe um comentário..." maxlength="150" style="flex:1;" onkeydown="if(event.key==='Enter')comentarVitrine('${v.id}')">
-            <button class="btn btn-outline btn-sm" onclick="comentarVitrine('${v.id}')">💬</button>
+            <input id="cmt-${safeVId}" placeholder="Deixe um comentário..." maxlength="150" style="flex:1;">
+            <button class="btn btn-outline btn-sm" data-action="comentar" data-vid="${safeVId}">💬</button>
           </div>
         </div>`;
       }).join('');
+      // Event delegation seguro para vitrine
+      el.querySelectorAll('[data-action="reagir"]').forEach(btn=>{
+        btn.addEventListener('click',()=>reagir(btn.dataset.vid, btn.dataset.emoji));
+      });
+      el.querySelectorAll('[data-action="comentar"]').forEach(btn=>{
+        btn.addEventListener('click',()=>comentarVitrine(btn.dataset.vid));
+      });
+      el.querySelectorAll('#'+el.id+' input[id^="cmt-"]').forEach(inp=>{
+        inp.addEventListener('keydown',e=>{ if(e.key==='Enter') comentarVitrine(inp.id.replace('cmt-','')); });
+      });
     }).catch(e=>{ el.innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar vitrine.</div></div>'; console.error(e); });
 }
 
@@ -5170,16 +5276,22 @@ function renderPVitrinePendentes(){
     const aluno = S.alunos.find(a=>a.id===p.alunoId);
     const missao = p.isDesafio ? (S.desafios.find(d=>d.id===p.desafioId)||{titulo:'Desafio'}) : S.missoes.find(m=>m.id===p.missaoId);
     if(!aluno||!missao) return '';
+    const safeId = escapeHtml(p.id);
+    const safeLink = sanitizeUrl(p.link||'');
     return `<div class="approval-card">
       <div class="approval-meta">
-        <div><div style="font-weight:800">${aluno.avatar||'👾'} ${aluno.nome} <span style="color:var(--muted2);font-weight:400;font-size:.8rem">${aluno.turma}</span></div>
-        <div style="font-size:.75rem;color:var(--muted2)">${missao.titulo}</div></div>
+        <div><div style="font-weight:800">${escapeHtml(aluno.avatar||'👾')} ${escapeHtml(aluno.nome)} <span style="color:var(--muted2);font-weight:400;font-size:.8rem">${escapeHtml(aluno.turma)}</span></div>
+        <div style="font-size:.75rem;color:var(--muted2)">${escapeHtml(missao.titulo)}</div></div>
       </div>
-      ${p.link?`<a class="approval-link" href="${p.link}" target="_blank">🔗 ${p.link}</a>`:''}
-      <div class="form-group" style="margin-bottom:10px;margin-top:8px;"><label>Descrição para a vitrine (opcional)</label><input id="vd-${p.id}" placeholder="Ex: Projeto incrível com loops e variáveis!"></div>
-      <button class="btn btn-primary btn-sm" onclick="adicionarVitrine('${p.id}')">⭐ Colocar em Destaque</button>
+      ${safeLink?`<a class="approval-link" href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer">🔗 ${escapeHtml(safeLink)}</a>`:''}
+      <div class="form-group" style="margin-bottom:10px;margin-top:8px;"><label>Descrição para a vitrine (opcional)</label><input id="vd-${safeId}" placeholder="Ex: Projeto incrível com loops e variáveis!"></div>
+      <button class="btn btn-primary btn-sm" data-action="adicionar-vitrine" data-id="${safeId}">⭐ Colocar em Destaque</button>
     </div>`;
   }).join('');
+  // Event delegation seguro
+  el.querySelectorAll('[data-action="adicionar-vitrine"]').forEach(btn=>{
+    btn.addEventListener('click',()=>adicionarVitrine(btn.dataset.id));
+  });
 }
 
 async function adicionarVitrine(pendId){
@@ -5210,15 +5322,21 @@ function renderPVitrineDestaques(){
       if(!destaquesAtivos.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌟</div><div class="empty-text">Nenhum projeto em destaque ainda.</div></div>';return;}
       el.innerHTML = destaquesAtivos.map(v=>{
         const a2 = S.alunos.find(x=>x.id===v.alunoId);
+        const safeId = escapeHtml(v.id);
+        const safeLink = sanitizeUrl(v.link||'');
         return `<div class="approval-card">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-            <div style="font-size:1.8rem">${a2?.avatar||'👾'}</div>
-            <div><div style="font-weight:800">${v.titulo||'Projeto'}</div><div style="font-size:.72rem;color:var(--muted2)">${a2?.nome||'?'} · ${a2?.turma||''}</div></div>
+            <div style="font-size:1.8rem">${escapeHtml(a2?.avatar||'👾')}</div>
+            <div><div style="font-weight:800">${escapeHtml(v.titulo||'Projeto')}</div><div style="font-size:.72rem;color:var(--muted2)">${escapeHtml(a2?.nome||'?')} · ${escapeHtml(a2?.turma||'')}</div></div>
           </div>
-          ${v.link?`<a class="approval-link" href="${v.link}" target="_blank" style="display:block;margin-bottom:8px;">🔗 ${v.link}</a>`:''}
-          <button class="btn btn-danger btn-sm" onclick="removerVitrine('${v.id}')">✕ Remover da Vitrine</button>
+          ${safeLink?`<a class="approval-link" href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer" style="display:block;margin-bottom:8px;">🔗 ${escapeHtml(safeLink)}</a>`:''}
+          <button class="btn btn-danger btn-sm" data-action="remover-vitrine" data-id="${safeId}">✕ Remover da Vitrine</button>
         </div>`;
       }).join('');
+      // Event delegation seguro
+      el.querySelectorAll('[data-action="remover-vitrine"]').forEach(btn=>{
+        btn.addEventListener('click',()=>removerVitrine(btn.dataset.id));
+      });
     }).catch(e=>{ el.innerHTML='<div class="empty"><div class="empty-text">Erro.</div></div>'; });
 }
 
