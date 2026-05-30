@@ -9,6 +9,7 @@
 <!-- Firebase SDK v10 (módulos via CDN compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <style>
 :root{
@@ -1813,7 +1814,7 @@ function selecionarTurma(turma){
   const el = document.getElementById('aluno-lista-nomes');
   el.innerHTML = alunosTurma.map(a => {
     const n = nivel(a.xp||0);
-    const temSenha = !!a.senha;
+    const temSenha = !!a.temSenha;
     return `<button class="aluno-pick-card" onclick="selecionarAluno('${a.id}')">
       <div style="font-size:1.6rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;
         background:rgba(0,212,255,.08);border-radius:50%;border:1px solid var(--border);flex-shrink:0;">${a.avatar||'👾'}</div>
@@ -1839,7 +1840,7 @@ function selecionarAluno(id){
   document.getElementById('senha-nome').textContent = a.nome;
   document.getElementById('senha-turma').textContent = a.turma;
 
-  if(a.senha){
+  if(a.temSenha){
     senhaEtapa = 'login';
     document.getElementById('senha-modo-titulo').textContent = 'ENTRAR';
     document.getElementById('senha-modo-sub').textContent = 'Digite sua senha de 4 dígitos';
@@ -1880,18 +1881,35 @@ function atualizarDots(){
 }
 
 // ── PROCESSAMENTO DA SENHA ──
+
+// Gera email fictício a partir do ID do aluno — alunos nunca veem isso
+function emailDoAluno(id){ return `${id}@warpcode.app`; }
+
+// Firebase exige mínimo 6 chars — PIN de 4 dígitos recebe sufixo invisível
+// Aluno digita "1234" → Firebase recebe "1234wc" (só internamente)
+function senhaFirebase(pin){ return pin + 'wc'; }
+
 async function processarSenha(){
   const a = S.alunos.find(x=>x.id===alunoAtual);
   if(!a) return;
 
   if(senhaEtapa === 'login'){
-    if(alunoSenhaBuffer === a.senha){
+    setSyncing('syncing');
+    try {
+      // Firebase Auth verifica — senha nunca fica em texto puro
+      await firebase.auth().signInWithEmailAndPassword(
+        emailDoAluno(alunoAtual),
+        senhaFirebase(alunoSenhaBuffer)
+      );
+      setSyncing('ok');
       await finalizarEntrada();
-    } else {
+    } catch(e){
+      setSyncing('ok');
       document.getElementById('senha-error').textContent = '❌ Senha incorreta. Tente novamente.';
       alunoSenhaBuffer = '';
       atualizarDots();
     }
+
   } else if(senhaEtapa === 'criar'){
     senhaCriada = alunoSenhaBuffer;
     alunoSenhaBuffer = '';
@@ -1901,11 +1919,18 @@ async function processarSenha(){
     document.getElementById('senha-hint').textContent = '';
     document.getElementById('senha-error').textContent = '';
     atualizarDots();
+
   } else if(senhaEtapa === 'confirmar'){
     if(alunoSenhaBuffer === senhaCriada){
       setSyncing('syncing');
       try {
-        await COL.alunos().doc(alunoAtual).update({senha: senhaCriada});
+        // Cria conta no Firebase Auth com email fictício — sem senha no Firestore
+        await firebase.auth().createUserWithEmailAndPassword(
+          emailDoAluno(alunoAtual),
+          senhaFirebase(senhaCriada)
+        );
+        // Marca no Firestore que já tem senha (sem guardar o valor!)
+        await COL.alunos().doc(alunoAtual).update({ temSenha: true });
         toast('🔒 Senha criada com sucesso!');
         setSyncing('ok');
         await finalizarEntrada();
@@ -1923,6 +1948,33 @@ async function processarSenha(){
       atualizarDots();
     }
   }
+}
+
+// ── MIGRAÇÃO (rodar UMA VEZ no console após ativar Firebase Auth) ──
+// Cole no DevTools → Console: migrarSenhasExistentes()
+async function migrarSenhasExistentes(){
+  const alunos = S.alunos.filter(a => a.senha);
+  if(!alunos.length){ console.log('Nenhum aluno com senha antiga para migrar.'); return; }
+  console.log(`Migrando ${alunos.length} alunos...`);
+  let ok = 0, erros = 0;
+  for(const a of alunos){
+    try {
+      await firebase.auth().createUserWithEmailAndPassword(`${a.id}@warpcode.app`, senhaFirebase(a.senha));
+      await COL.alunos().doc(a.id).update({ temSenha: true, senha: firebase.firestore.FieldValue.delete() });
+      console.log(`✅ ${a.nome}`);
+      ok++;
+    } catch(e){
+      if(e.code === 'auth/email-already-in-use'){
+        await COL.alunos().doc(a.id).update({ temSenha: true });
+        console.log(`⏭️ ${a.nome} (já existia)`);
+        ok++;
+      } else {
+        console.error(`❌ ${a.nome}:`, e.message);
+        erros++;
+      }
+    }
+  }
+  console.log(`\nPronto! ✅ ${ok} migrados  ❌ ${erros} erros`);
 }
 
 // ── ENTRADA FINAL (streak, level up, etc.) ──
@@ -2078,7 +2130,7 @@ function renderModalTurmaLista(query){
   alunos.sort((a,b)=>(b.xp||0)-(a.xp||0));
   el.innerHTML=alunos.map((a,i)=>{
     const n=nivel(a.xp||0);
-    const temSenha=a.senha?'✅':'❌';
+    const temSenha=a.temSenha?'✅':'❌';
     const safeId=escapeHtml(a.id);
     const safeNome=escapeHtml(a.nome);
     const safeTurma=escapeHtml(a.turma||'');
@@ -2113,7 +2165,7 @@ function renderModalTurmaLista(query){
 function abrirEditarAluno(id){
   const a=S.alunos.find(x=>x.id===id);if(!a)return;
   const safeId=escapeHtml(id);
-  const temSenha=!!a.senha;
+  const temSenha=!!a.temSenha;
   document.getElementById('modal-editar-aluno-content').innerHTML=`
     <div style="text-align:center;margin-bottom:16px;">
       <div style="font-size:2.8rem;">${escapeHtml(a.avatar||'👾')}</div>
@@ -2152,8 +2204,24 @@ async function salvarEdicaoAluno(id){
   if(senha&&(senha.length!==4||!/^\d{4}$/.test(senha)))return toast('⚠️ Senha deve ter exatamente 4 dígitos!');
   setSyncing('syncing');
   const update={nome,turma};
-  if(senha)update.senha=senha;
   try{
+    // Se professor digitou nova senha, atualiza no Firebase Auth
+    if(senha){
+      const email = `${id}@warpcode.app`;
+      try {
+        // Tenta criar (caso aluno ainda não tenha conta Auth)
+        await firebase.auth().createUserWithEmailAndPassword(email, senhaFirebase(senha));
+      } catch(authErr) {
+        if(authErr.code === 'auth/email-already-in-use'){
+          const cred = await firebase.auth().signInWithEmailAndPassword(email, senhaFirebase(senha)).catch(()=>null);
+          if(!cred){
+            update.senhaResetPendente = true;
+            toast('⚠️ Para trocar senha de aluno com conta ativa, o aluno deve fazer isso no próprio login.');
+          }
+        }
+      }
+      update.temSenha = true;
+    }
     await COL.alunos().doc(id).update(update);
     closeModal('modal-editar-aluno');
     renderModalTurmaLista(document.getElementById('turma-search')?.value||'');
@@ -2321,7 +2389,7 @@ function renderPSenhasTurmas(){
   // Atualizar stats extras
   const maxStreak=S.alunos.reduce((m,a)=>Math.max(m,a.streak||0),0);
   const mediaXP=S.alunos.length?Math.round(S.alunos.reduce((s,a)=>s+(a.xp||0),0)/S.alunos.length):0;
-  const comSenhaTotal=S.alunos.filter(a=>a.senha).length;
+  const comSenhaTotal=S.alunos.filter(a=>a.temSenha).length;
   const guildaCount=S.guildas?S.guildas.length:0;
   const setEl=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   setEl('stat-streak',maxStreak+'🔥');
@@ -2356,7 +2424,7 @@ function renderPSenhasTurmas(){
   el.innerHTML=turmasComAlunos.map(turma=>{
     const alunos=S.alunos.filter(a=>a.turma===turma).sort((a,b)=>a.nome.localeCompare(b.nome));
     const icon=TURMA_ICONS[turma]||'📚';
-    const comSenha=alunos.filter(a=>a.senha).length;
+    const comSenha=alunos.filter(a=>a.temSenha).length;
     const pct=alunos.length?Math.round((comSenha/alunos.length)*100):0;
     const statusColor=comSenha===alunos.length?'var(--green)':comSenha===0?'var(--orange)':'var(--yellow)';
     const statusLabel=comSenha===alunos.length?'✅ Todos':comSenha===0?'⚠️ Nenhum':'⏳ Parcial';
@@ -2375,8 +2443,8 @@ function renderPSenhasTurmas(){
         ${alunos.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 8px;background:var(--s2);border-radius:8px;border:1px solid var(--border);">
           <span style="font-size:1.1rem;flex-shrink:0;">${a.avatar||'👾'}</span>
           <span style="font-size:.78rem;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.nome}</span>
-          ${a.senha
-            ?`<span style="font-family:'Orbitron',monospace;font-size:.68rem;color:var(--accent);letter-spacing:2px;background:rgba(0,212,255,.08);padding:2px 7px;border-radius:5px;">${a.senha}</span>`
+          ${a.temSenha
+            ?`<span style="font-size:.6rem;color:var(--green);">🔒 criada</span>`
             :`<span style="font-size:.6rem;color:var(--orange);">sem senha</span>`}
           <button class="btn btn-outline btn-sm" onclick="abrirEditarAluno('${a.id}')" style="font-size:.58rem;padding:3px 7px;flex-shrink:0;">✏️</button>
         </div>`).join('')}
