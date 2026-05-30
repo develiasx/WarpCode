@@ -1968,8 +1968,12 @@ function atualizarDots(){
 
 // ── PROCESSAMENTO DA SENHA ──
 
-// Gera email fictício a partir do ID do aluno — alunos nunca veem isso
-function emailDoAluno(id){ return `${id}@warpcode.app`; }
+// Gera email fictício — sanitiza chars inválidos mas mantém @warpcode.app
+// para compatibilidade com contas já criadas no Firebase Auth
+function emailDoAluno(id){
+  const safe = (id||'').toLowerCase().replace(/[^a-z0-9._-]/g, '');
+  return `${safe}@warpcode.app`;
+}
 
 // Firebase exige mínimo 6 chars — PIN de 4 dígitos recebe sufixo invisível
 // Aluno digita "1234" → Firebase recebe "1234wc" (só internamente)
@@ -1994,6 +1998,12 @@ async function processarSenha(){
         const idx = S.alunos.findIndex(x=>x.id===alunoAtual);
         const dado = {id:alunoAtual,...docSnap.data()};
         if(idx>=0) S.alunos[idx]=dado; else S.alunos.push(dado);
+        // Migração automática: salva authEmail se ainda não tem
+        // Necessário para as Firestore Rules funcionarem
+        if(!docSnap.data().authEmail){
+          const authEmail = emailDoAluno(alunoAtual);
+          await COL.alunos().doc(alunoAtual).update({ authEmail }).catch(()=>{});
+        }
       }
       ligarListenerAlunos('aluno', alunoAtual);
       setSyncing('ok');
@@ -2020,13 +2030,15 @@ async function processarSenha(){
       setSyncing('syncing');
       try {
         // Cria conta no Firebase Auth com email fictício — sem senha no Firestore
+        const authEmail = emailDoAluno(alunoAtual);
         await firebase.auth().createUserWithEmailAndPassword(
-          emailDoAluno(alunoAtual),
+          authEmail,
           senhaFirebase(senhaCriada)
         );
-        // Marca nas duas coleções que já tem senha
+        // Salva authEmail nas duas coleções — usado pelas Firestore Rules
+        // para verificar que o aluno só acessa seus próprios dados
         await Promise.all([
-          COL.alunos().doc(alunoAtual).update({ temSenha: true }),
+          COL.alunos().doc(alunoAtual).update({ temSenha: true, authEmail }),
           COL.perfis().doc(alunoAtual).update({ temSenha: true })
         ]);
         // Carregar dados completos após criação
@@ -2065,8 +2077,9 @@ async function migrarSenhasExistentes(){
   let ok = 0, erros = 0;
   for(const a of alunos){
     try {
-      await firebase.auth().createUserWithEmailAndPassword(`${a.id}@warpcode.app`, senhaFirebase(a.senha));
-      await COL.alunos().doc(a.id).update({ temSenha: true, senha: firebase.firestore.FieldValue.delete() });
+      await firebase.auth().createUserWithEmailAndPassword(emailDoAluno(a.id), senhaFirebase(a.senha));
+      const authEmail = emailDoAluno(a.id);
+      await COL.alunos().doc(a.id).update({ temSenha: true, authEmail, senha: firebase.firestore.FieldValue.delete() });
       console.log(`✅ ${a.nome}`);
       ok++;
     } catch(e){
@@ -2338,16 +2351,19 @@ async function salvarEdicaoAluno(id){
   try{
     // Se professor digitou nova senha, atualiza no Firebase Auth
     if(senha){
-      const email = `${id}@warpcode.app`;
+      const email = emailDoAluno(id); // ← sanitizado
       try {
         // Tenta criar (caso aluno ainda não tenha conta Auth)
-        await firebase.auth().createUserWithEmailAndPassword(email, senhaFirebase(senha));
+        const cred = await firebase.auth().createUserWithEmailAndPassword(email, senhaFirebase(senha));
+        update.authEmail = email; // ← salva para as Rules
       } catch(authErr) {
         if(authErr.code === 'auth/email-already-in-use'){
           const cred = await firebase.auth().signInWithEmailAndPassword(email, senhaFirebase(senha)).catch(()=>null);
           if(!cred){
             update.senhaResetPendente = true;
             toast('⚠️ Para trocar senha de aluno com conta ativa, o aluno deve fazer isso no próprio login.');
+          } else {
+            update.authEmail = email; // ← garantir que authEmail está salvo
           }
         }
       }
