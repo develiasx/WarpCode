@@ -443,30 +443,34 @@ select option{background:var(--s1);}
 
 /* ── TABS (aluno login) ── */
 #screen-aluno-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
-.aluno-login-wrap{width:100%;max-width:400px;}
+.aluno-login-wrap{width:100%;max-width:760px;}
+/* ── TURMAS GRID NEON ── */
+.turmas-neon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px;}
+@media(max-width:600px){.turmas-neon-grid{grid-template-columns:repeat(2,1fr);gap:12px;}}
+.turma-neon-card{background:rgba(15,22,35,0.6);border:1px solid rgba(0,212,255,0.25);border-radius:16px;padding:28px 16px;cursor:pointer;transition:all .25s;text-align:center;position:relative;overflow:hidden;backdrop-filter:blur(4px);}
+.turma-neon-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(124,58,237,.08));opacity:0;transition:opacity .25s;}
+.turma-neon-card:hover{border-color:rgba(0,212,255,.7);transform:translateY(-6px);box-shadow:0 14px 36px rgba(0,212,255,.2),inset 0 1px 0 rgba(255,255,255,.05);}
+.turma-neon-card:hover::before{opacity:1;}
+.turma-neon-emoji{font-size:2.8rem;display:block;margin-bottom:10px;position:relative;z-index:1;filter:drop-shadow(0 0 8px rgba(0,212,255,.3));transition:transform .25s;}
+.turma-neon-card:hover .turma-neon-emoji{transform:scale(1.18) rotate(5deg);}
+.turma-neon-name{font-family:'Orbitron',monospace;font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:1px;position:relative;z-index:1;}
+.turma-neon-count{font-size:.68rem;color:var(--muted2);text-transform:uppercase;letter-spacing:.5px;position:relative;z-index:1;}
 
 /* ── TELA SENHA PROFESSOR ── */
 #screen-prof-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;position:relative;overflow:hidden;}
-.prof-login-wrap{width:100%;max-width:400px;position:relative;z-index:1;}
-/* Hexágono decorativo */
-.prof-hex-wrap{position:relative;width:72px;height:72px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;}
-.prof-hex-wrap svg{position:absolute;inset:0;width:100%;height:100%;}
-.prof-hex-icon{position:relative;z-index:1;font-size:1.6rem;line-height:1;}
-/* Tag professor */
-.prof-tag{display:inline-block;font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:3px;color:var(--muted2);background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);border-radius:4px;padding:3px 12px;margin-bottom:22px;}
-/* Card com cantos decorativos */
-.prof-card{position:relative;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:left;}
-.prof-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:var(--radius) var(--radius) 0 0;}
-/* Cantos do card */
-.prof-card-corner{position:absolute;width:14px;height:14px;}
-.prof-card-corner.tl{top:-1px;left:-1px;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-radius:var(--radius) 0 0 0;}
-.prof-card-corner.tr{top:-1px;right:-1px;border-top:2px solid var(--purple);border-right:2px solid var(--purple);border-radius:0 var(--radius) 0 0;}
-.prof-card-corner.bl{bottom:-1px;left:-1px;border-bottom:2px solid rgba(124,58,237,.4);border-left:2px solid rgba(124,58,237,.4);border-radius:0 0 0 var(--radius);}
-.prof-card-corner.br{bottom:-1px;right:-1px;border-bottom:2px solid rgba(0,212,255,.4);border-right:2px solid rgba(0,212,255,.4);border-radius:0 0 var(--radius) 0;}
-/* Label do input */
-.prof-card label{font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:2px;color:var(--muted);display:block;margin-bottom:10px;}
-/* Rodapé do card */
-.prof-card-footer{font-size:.6rem;color:var(--muted);text-align:center;margin-top:16px;letter-spacing:1px;opacity:.6;}
+.prof-login-wrap{width:100%;max-width:440px;position:relative;z-index:1;}
+/* Neon login card */
+.prof-card{position:relative;background:rgba(15,22,35,0.7);border:1px solid rgba(0,212,255,.35);border-radius:20px;padding:40px 32px;text-align:left;box-shadow:0 0 48px rgba(0,212,255,.12),inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter:blur(8px);}
+.prof-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:20px 20px 0 0;}
+.prof-login-icon{font-size:3.5rem;text-align:center;margin-bottom:14px;animation:profPulse 3s ease-in-out infinite;}
+@keyframes profPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.85;transform:scale(1.06);}}
+.prof-login-title{font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;letter-spacing:2px;margin-bottom:4px;}
+.prof-tag{font-size:.6rem;letter-spacing:2px;color:var(--muted2);text-align:center;display:block;text-transform:uppercase;margin-bottom:28px;}
+.prof-card label{font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:2px;color:var(--muted2);display:block;margin-bottom:10px;text-transform:uppercase;}
+.prof-card-footer{font-size:.58rem;color:var(--muted);text-align:center;margin-top:16px;letter-spacing:1px;opacity:.5;}
+/* Cantos (mantidos para compatibilidade mas sem efeito visual no novo layout) */
+.prof-card-corner{display:none;}
+.prof-hex-wrap{display:none;}
 
 /* ── TELA TURMA ── */
 #screen-turma-sel{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
@@ -481,7 +485,24 @@ select option{background:var(--s1);}
 
 /* ── TELA ALUNOS DA TURMA ── */
 #screen-aluno-lista{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
-.aluno-lista-wrap{width:100%;max-width:420px;}
+.aluno-lista-wrap{width:100%;max-width:600px;}
+/* ── GRID DE AVATARES ── */
+.aluno-search{width:100%;padding:11px 14px;background:rgba(22,32,51,0.6);border:1px solid rgba(0,212,255,.3);border-radius:12px;color:var(--text);font-size:.88rem;font-family:'Nunito',sans-serif;outline:none;margin-bottom:18px;transition:border-color .2s;}
+.aluno-search:focus{border-color:rgba(0,212,255,.7);box-shadow:0 0 16px rgba(0,212,255,.12);}
+.aluno-search::placeholder{color:var(--muted);}
+.avatar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:480px){.avatar-grid{gap:8px;}}
+.av-card{background:rgba(15,22,35,0.65);border:1px solid rgba(0,212,255,.2);border-radius:14px;padding:16px 8px 12px;text-align:center;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;}
+.av-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,212,255,.07),rgba(124,58,237,.07));opacity:0;transition:opacity .22s;}
+.av-card:hover{border-color:rgba(0,212,255,.6);transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,212,255,.18);}
+.av-card:hover::before{opacity:1;}
+.av-card:active{transform:scale(.96);}
+.av-avatar-wrap{font-size:2.6rem;margin-bottom:8px;position:relative;z-index:1;line-height:1;filter:drop-shadow(0 0 8px rgba(0,212,255,.25));transition:transform .22s;}
+.av-card:hover .av-avatar-wrap{transform:scale(1.12);}
+.av-name{font-size:.68rem;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:4px;position:relative;z-index:1;word-break:break-word;}
+.av-xp{font-family:'Orbitron',monospace;font-size:.5rem;color:var(--accent);position:relative;z-index:1;}
+.av-lock{position:absolute;top:7px;right:8px;font-size:.65rem;opacity:.5;z-index:2;}
+.av-empty{grid-column:1/-1;text-align:center;padding:32px 16px;color:var(--muted);font-size:.85rem;}
 .aluno-pick-card{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);
   background:var(--s2);color:var(--text);font-family:'Nunito',sans-serif;cursor:pointer;
   margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:all .2s;text-align:left;}
@@ -919,27 +940,11 @@ select option{background:var(--s1);}
   <div class="prof-login-wrap">
     <button class="back-btn" style="position:absolute;top:-10px;left:0;" onclick="goLogin()">← Voltar</button>
 
-    <!-- Hexágono com cadeado -->
-    <div class="prof-hex-wrap" style="margin-top:32px;">
-      <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="36,4 66,20 66,52 36,68 6,52 6,20"
-          fill="rgba(124,58,237,0.12)" stroke="rgba(0,212,255,0.7)" stroke-width="1.5"/>
-        <polygon points="36,12 58,24 58,48 36,60 14,48 14,24"
-          fill="rgba(124,58,237,0.08)" stroke="rgba(124,58,237,0.5)" stroke-width="1"/>
-      </svg>
-      <div class="prof-hex-icon">🔐</div>
-    </div>
-
-    <!-- Wordmark -->
-    <div class="logo" style="font-size:1.9rem;margin-bottom:4px;">WarpCode</div>
-    <div class="prof-tag">PROFESSOR</div>
-
-    <!-- Card -->
+    <!-- Card neon -->
     <div class="prof-card">
-      <div class="prof-card-corner tl"></div>
-      <div class="prof-card-corner tr"></div>
-      <div class="prof-card-corner bl"></div>
-      <div class="prof-card-corner br"></div>
+      <div class="prof-login-icon">🧑‍💻</div>
+      <div class="prof-login-title">WarpCode</div>
+      <span class="prof-tag">Acesso do Professor</span>
       <label>SENHA DO PROFESSOR</label>
       <input id="prof-senha-input" type="password" placeholder="Digite sua senha"
         style="margin-bottom:8px;font-size:1rem;letter-spacing:3px;"
@@ -984,8 +989,10 @@ select option{background:var(--s1);}
             <div class="form-group"><label>Nome</label><input id="p-nome" type="text" placeholder="Nome completo"></div>
             <div class="form-group"><label>Turma</label>
               <select id="p-turma">
-                <option>6º Ano A</option><option>6º Ano B</option><option>7º Ano A</option><option>7º Ano B</option>
-                <option>8º Ano A</option><option>8º Ano B</option><option>9º Ano A</option><option>9º Ano B</option>
+                <option>6º Ano A</option><option>6º Ano B</option><option>6º Ano C</option>
+                <option>7º Ano A</option><option>7º Ano B</option><option>7º Ano C</option>
+                <option>8º Ano A</option><option>8º Ano B</option><option>8º Ano C</option>
+                <option>9º Ano A</option><option>9º Ano B</option><option>9º Ano C</option>
               </select>
             </div>
             <div style="display:flex;align-items:flex-end;flex-shrink:0;">
@@ -1199,8 +1206,8 @@ select option{background:var(--s1);}
 <div id="screen-aluno-login" class="screen">
   <div class="aluno-login-wrap">
     <button class="back-btn" style="position:absolute;top:20px;left:20px;" onclick="goLogin()">←</button>
-    <div class="logo" style="font-size:1.8rem;">👾 WarpCode</div>
-    <div class="logo-sub" style="margin-bottom:28px;">Modo Aluno</div>
+    <div class="logo" style="font-size:2rem;margin-bottom:4px;">⚡ WarpCode</div>
+    <div class="logo-sub" style="margin-bottom:36px;letter-spacing:2px;">MODO ALUNO</div>
     <div id="turma-lista-inline"></div>
   </div>
 </div>
@@ -1209,10 +1216,11 @@ select option{background:var(--s1);}
 <div id="screen-aluno-lista" class="screen">
   <div class="aluno-lista-wrap">
     <button class="back-btn" style="position:absolute;top:20px;left:20px;" onclick="showScreen('screen-aluno-login')">←</button>
-    <div class="logo" style="font-size:1.8rem;">👾 WarpCode</div>
-    <div class="logo-sub" id="aluno-lista-subtitulo" style="margin-bottom:6px;">Turma</div>
-    <p style="font-size:.75rem;color:var(--muted);margin-bottom:20px;">Qual é o seu nome?</p>
-    <div id="aluno-lista-nomes"></div>
+    <div class="logo" style="font-size:2rem;margin-bottom:4px;">⚡ WarpCode</div>
+    <div class="logo-sub" id="aluno-lista-subtitulo" style="margin-bottom:4px;letter-spacing:2px;">Turma</div>
+    <p style="font-size:.72rem;color:var(--muted);margin-bottom:20px;">Qual é o seu nome?</p>
+    <input class="aluno-search" id="aluno-search-input" type="text" placeholder="🔍  Pesquisar aluno..." oninput="filtrarAlunosGrid()" autocomplete="off">
+    <div id="aluno-lista-nomes" class="avatar-grid"></div>
   </div>
 </div>
 
@@ -1956,47 +1964,75 @@ function renderTurmasSel(){
     if(!turmasMap[a.turma]) turmasMap[a.turma] = [];
     turmasMap[a.turma].push(a);
   });
-  const turmas = Object.keys(turmasMap).sort();
+  const turmas = Object.keys(turmasMap).sort((a,b)=>{
+    const ia = TURMAS_ORDER.indexOf(a), ib = TURMAS_ORDER.indexOf(b);
+    if(ia===-1 && ib===-1) return a.localeCompare(b);
+    if(ia===-1) return 1; if(ib===-1) return -1;
+    return ia - ib;
+  });
   const el = document.getElementById('turma-lista-inline');
   if(!turmas.length){
     el.innerHTML=`<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum aluno cadastrado ainda.<br>Peça ao professor para cadastrar sua turma.</div></div>`;
     return;
   }
-  const emojis = {'6':'📗','7':'📘','8':'📙','9':'📕'};
-  el.innerHTML = turmas.map(t => {
-    const ano = t.charAt(0);
-    const ic = emojis[ano] || '📚';
-    const qtd = turmasMap[t].length;
-    return `<button class="turma-card" onclick="selecionarTurma('${t}')">
-      <div class="turma-card-icon">${ic}</div>
-      <div style="flex:1;text-align:left;">
-        <div style="font-weight:800;font-size:1rem;">${t}</div>
-        <div class="turma-card-count">${qtd} aluno${qtd!==1?'s':''} cadastrado${qtd!==1?'s':''}</div>
-      </div>
-      <div style="color:var(--muted);font-size:1.1rem;">›</div>
-    </button>`;
+  /* Agrupa turmas por ano (ex: "8" → [8ºA, 8ºB, 8ºC]) */
+  const porAno = {};
+  turmas.forEach(t => {
+    const ano = t.replace(/[^0-9]/g,'');
+    if(!porAno[ano]) porAno[ano] = [];
+    porAno[ano].push(t);
+  });
+  const anos = Object.keys(porAno).sort((a,b)=>Number(a)-Number(b));
+  el.innerHTML = anos.map(ano => {
+    const turmasDoAno = porAno[ano];
+    const cards = turmasDoAno.map(t => {
+      const ic = TURMA_ICONS[t] || '📚';
+      const qtd = turmasMap[t].length;
+      return `<button class="turma-neon-card" onclick="selecionarTurma('${t}')">
+        <span class="turma-neon-emoji">${ic}</span>
+        <div class="turma-neon-name">${t}</div>
+        <div class="turma-neon-count">${qtd} aluno${qtd!==1?'s':''}</div>
+      </button>`;
+    }).join('');
+    return `<div class="turmas-neon-grid" style="margin-bottom:18px;">${cards}</div>`;
   }).join('');
 }
 
 // ── ETAPA 2: Listar alunos da turma ──
+let _alunosTurmaAtual = [];
+
 function selecionarTurma(turma){
-  const alunosTurma = S.perfis.filter(a => a.turma === turma).sort((a,b)=>a.nome.localeCompare(b.nome));
+  _alunosTurmaAtual = S.perfis.filter(a => a.turma === turma).sort((a,b)=>a.nome.localeCompare(b.nome));
   document.getElementById('aluno-lista-subtitulo').textContent = turma;
+  const searchEl = document.getElementById('aluno-search-input');
+  if(searchEl) searchEl.value = '';
+  renderAlunosGrid(_alunosTurmaAtual);
+  showScreen('screen-aluno-lista');
+  setTimeout(()=>{ if(searchEl) searchEl.focus(); }, 300);
+}
+
+function renderAlunosGrid(lista){
   const el = document.getElementById('aluno-lista-nomes');
-  el.innerHTML = alunosTurma.map(a => {
+  if(!lista.length){
+    el.innerHTML = `<div class="av-empty">😶 Nenhum aluno encontrado.</div>`;
+    return;
+  }
+  el.innerHTML = lista.map(a => {
     const n = nivel(a.xp||0);
     const temSenha = !!a.temSenha;
-    return `<button class="aluno-pick-card" onclick="selecionarAluno('${a.id}')">
-      <div style="font-size:1.6rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;
-        background:rgba(0,212,255,.08);border-radius:50%;border:1px solid var(--border);flex-shrink:0;">${a.avatar||'👾'}</div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-weight:800;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.nome}</div>
-        <div style="font-size:.68rem;color:var(--muted2);margin-top:2px;">${n.e} ${n.n} · ${a.xp||0} XP</div>
-      </div>
-      <div style="font-size:.65rem;color:${temSenha?'var(--green)':'var(--muted)'};flex-shrink:0;">${temSenha?'🔒':'🔓'}</div>
+    return `<button class="av-card" onclick="selecionarAluno('${a.id}')">
+      <div class="av-lock">${temSenha?'🔒':'🔓'}</div>
+      <div class="av-avatar-wrap">${a.avatar||'👾'}</div>
+      <div class="av-name">${a.nome}</div>
+      <div class="av-xp">${a.xp||0} XP</div>
     </button>`;
   }).join('');
-  showScreen('screen-aluno-lista');
+}
+
+function filtrarAlunosGrid(){
+  const q = (document.getElementById('aluno-search-input').value||'').toLowerCase().trim();
+  const filtrados = q ? _alunosTurmaAtual.filter(a=>a.nome.toLowerCase().includes(q)) : _alunosTurmaAtual;
+  renderAlunosGrid(filtrados);
 }
 
 // ── ETAPA 3: Tela de senha ──
@@ -2571,8 +2607,8 @@ function alunoTab(tab,snavId,isMobile=false,mnavId=''){
 // ══════════════════════════════════════
 function renderProf(){renderPAlunos();renderPAprovacoes();renderPRanking();renderPStats();renderPLoja();renderPResgates();renderPDesafio();renderSelects();}
 
-const TURMAS_ORDER=['6º Ano A','6º Ano B','7º Ano A','7º Ano B','8º Ano A','8º Ano B','9º Ano A','9º Ano B'];
-const TURMA_ICONS={'6º Ano A':'🌱','6º Ano B':'🌿','7º Ano A':'⚡','7º Ano B':'🔥','8º Ano A':'🚀','8º Ano B':'💫','9º Ano A':'🏆','9º Ano B':'👑'};
+const TURMAS_ORDER=['6º Ano A','6º Ano B','6º Ano C','7º Ano A','7º Ano B','7º Ano C','8º Ano A','8º Ano B','8º Ano C','9º Ano A','9º Ano B','9º Ano C'];
+const TURMA_ICONS={'6º Ano A':'🌱','6º Ano B':'🌿','6º Ano C':'🍀','7º Ano A':'⚡','7º Ano B':'🔥','7º Ano C':'💡','8º Ano A':'⚔️','8º Ano B':'🛡️','8º Ano C':'🗡️','9º Ano A':'🎮','9º Ano B':'🛸','9º Ano C':'🌌'};
 
 function renderPAlunos(){
   const el=document.getElementById('p-turmas-grid');if(!el)return;
