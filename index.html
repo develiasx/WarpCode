@@ -224,7 +224,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .mobile-topbar{display:none;align-items:center;justify-content:space-between;padding:13px 16px;
   background:var(--s1);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
 .mobile-topbar-title{font-family:'Orbitron',monospace;font-size:.8rem;color:var(--accent);letter-spacing:2px;}
-.back-btn{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:4px 8px;}
+.back-btn{background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.25);color:var(--accent);font-size:1.1rem;cursor:pointer;padding:7px 14px;border-radius:var(--radius-sm);transition:all .2s;font-weight:700;letter-spacing:1px;}
+.back-btn:hover{background:rgba(0,212,255,.2);border-color:var(--accent);}
 .mobile-bottomnav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,20,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(0,212,255,.15);z-index:100;padding-bottom:env(safe-area-inset-bottom,0px);}
 .mobile-nav-inner{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
 .mobile-nav-inner::-webkit-scrollbar{display:none;}
@@ -445,8 +446,27 @@ select option{background:var(--s1);}
 .aluno-login-wrap{width:100%;max-width:400px;}
 
 /* ── TELA SENHA PROFESSOR ── */
-#screen-prof-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
-.prof-login-wrap{width:100%;max-width:380px;position:relative;}
+#screen-prof-login{align-items:center;justify-content:center;padding:40px 24px;text-align:center;position:relative;overflow:hidden;}
+.prof-login-wrap{width:100%;max-width:400px;position:relative;z-index:1;}
+/* Hexágono decorativo */
+.prof-hex-wrap{position:relative;width:72px;height:72px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;}
+.prof-hex-wrap svg{position:absolute;inset:0;width:100%;height:100%;}
+.prof-hex-icon{position:relative;z-index:1;font-size:1.6rem;line-height:1;}
+/* Tag professor */
+.prof-tag{display:inline-block;font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:3px;color:var(--muted2);background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);border-radius:4px;padding:3px 12px;margin-bottom:22px;}
+/* Card com cantos decorativos */
+.prof-card{position:relative;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:left;}
+.prof-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:var(--radius) var(--radius) 0 0;}
+/* Cantos do card */
+.prof-card-corner{position:absolute;width:14px;height:14px;}
+.prof-card-corner.tl{top:-1px;left:-1px;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-radius:var(--radius) 0 0 0;}
+.prof-card-corner.tr{top:-1px;right:-1px;border-top:2px solid var(--purple);border-right:2px solid var(--purple);border-radius:0 var(--radius) 0 0;}
+.prof-card-corner.bl{bottom:-1px;left:-1px;border-bottom:2px solid rgba(124,58,237,.4);border-left:2px solid rgba(124,58,237,.4);border-radius:0 0 0 var(--radius);}
+.prof-card-corner.br{bottom:-1px;right:-1px;border-bottom:2px solid rgba(0,212,255,.4);border-right:2px solid rgba(0,212,255,.4);border-radius:0 0 var(--radius) 0;}
+/* Label do input */
+.prof-card label{font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:2px;color:var(--muted);display:block;margin-bottom:10px;}
+/* Rodapé do card */
+.prof-card-footer{font-size:.6rem;color:var(--muted);text-align:center;margin-top:16px;letter-spacing:1px;opacity:.6;}
 
 /* ── TELA TURMA ── */
 #screen-turma-sel{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
@@ -484,6 +504,17 @@ select option{background:var(--s1);}
 .kbtn.del{font-family:'Nunito',sans-serif;font-size:.9rem;}
 .senha-hint{font-size:.72rem;color:var(--muted);margin-top:14px;line-height:1.6;}
 .senha-error{font-size:.78rem;color:var(--red);margin-top:8px;min-height:20px;}
+/* ══ PERGUNTA SECRETA & RECUPERAÇÃO ══ */
+.pq-divider{height:1px;background:var(--border);margin:16px 0;}
+.pq-label{font-size:.68rem;color:var(--muted2);letter-spacing:.5px;margin-bottom:6px;display:block;text-align:left;}
+.pq-select{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.82rem;outline:none;margin-bottom:12px;cursor:pointer;appearance:none;-webkit-appearance:none;}
+.pq-select:focus{border-color:var(--accent);}
+.pq-input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.82rem;outline:none;margin-bottom:4px;}
+.pq-input:focus{border-color:var(--accent);}
+.pq-hint{font-size:.6rem;color:var(--muted);margin-bottom:4px;text-align:left;}
+.esqueci-btn{background:none;border:none;color:var(--muted2);font-size:.7rem;cursor:pointer;text-decoration:underline;padding:4px;display:block;margin:10px auto 0;}
+.pular-btn{background:none;border:none;color:var(--muted);font-size:.68rem;cursor:pointer;text-decoration:underline;padding:4px;display:block;margin:8px auto 0;}
+.reset-pergunta{font-size:.88rem;font-weight:800;color:var(--text);text-align:center;margin-bottom:16px;line-height:1.4;padding:10px 12px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:var(--radius-sm);}
 
 /* ══ WC ══ */
 :root{--wc:#ffd700;--wc2:#f59e0b;}
@@ -886,17 +917,36 @@ select option{background:var(--s1);}
 <!-- PROFESSOR LOGIN -->
 <div id="screen-prof-login" class="screen">
   <div class="prof-login-wrap">
-    <button class="back-btn" style="position:absolute;top:20px;left:20px;" onclick="goLogin()">←</button>
-    <div style="font-size:3rem;margin-bottom:8px;">🧑‍🏫</div>
-    <div class="logo" style="font-size:1.8rem;">WarpCode</div>
-    <div class="logo-sub" style="margin-bottom:28px;">Acesso do Professor</div>
-    <div class="card" style="text-align:left;">
-      <label>Senha do Professor</label>
+    <button class="back-btn" style="position:absolute;top:-10px;left:0;" onclick="goLogin()">← Voltar</button>
+
+    <!-- Hexágono com cadeado -->
+    <div class="prof-hex-wrap" style="margin-top:32px;">
+      <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="36,4 66,20 66,52 36,68 6,52 6,20"
+          fill="rgba(124,58,237,0.12)" stroke="rgba(0,212,255,0.7)" stroke-width="1.5"/>
+        <polygon points="36,12 58,24 58,48 36,60 14,48 14,24"
+          fill="rgba(124,58,237,0.08)" stroke="rgba(124,58,237,0.5)" stroke-width="1"/>
+      </svg>
+      <div class="prof-hex-icon">🔐</div>
+    </div>
+
+    <!-- Wordmark -->
+    <div class="logo" style="font-size:1.9rem;margin-bottom:4px;">WarpCode</div>
+    <div class="prof-tag">PROFESSOR</div>
+
+    <!-- Card -->
+    <div class="prof-card">
+      <div class="prof-card-corner tl"></div>
+      <div class="prof-card-corner tr"></div>
+      <div class="prof-card-corner bl"></div>
+      <div class="prof-card-corner br"></div>
+      <label>SENHA DO PROFESSOR</label>
       <input id="prof-senha-input" type="password" placeholder="Digite sua senha"
-        style="margin-bottom:8px;font-size:1rem;letter-spacing:2px;"
+        style="margin-bottom:8px;font-size:1rem;letter-spacing:3px;"
         onkeydown="if(event.key==='Enter')confirmarSenhaProf()">
       <div id="prof-senha-erro" style="font-size:.75rem;color:var(--red);min-height:18px;margin-bottom:10px;"></div>
       <button class="btn btn-primary btn-block" onclick="confirmarSenhaProf()">🔓 ENTRAR</button>
+      <div class="prof-card-footer">Acesso restrito · WarpCode Platform</div>
     </div>
   </div>
 </div>
@@ -1176,28 +1226,63 @@ select option{background:var(--s1);}
     <div class="card" style="text-align:left;padding:22px;">
       <div id="senha-modo-titulo" style="font-family:'Orbitron',monospace;font-size:.72rem;letter-spacing:2px;color:var(--accent);text-align:center;margin-bottom:4px;">CRIAR SENHA</div>
       <div id="senha-modo-sub" style="font-size:.76rem;color:var(--muted2);text-align:center;margin-bottom:4px;">Escolha uma senha de 4 dígitos</div>
-      <div class="pin-dots" id="pin-dots">
-        <div class="pin-dot" id="pd0"></div>
-        <div class="pin-dot" id="pd1"></div>
-        <div class="pin-dot" id="pd2"></div>
-        <div class="pin-dot" id="pd3"></div>
+
+      <!-- ── BLOCO PIN (login / criar / confirmar / reset-nova / reset-confirmar) ── -->
+      <div id="senha-pin-bloco">
+        <div class="pin-dots" id="pin-dots">
+          <div class="pin-dot" id="pd0"></div>
+          <div class="pin-dot" id="pd1"></div>
+          <div class="pin-dot" id="pd2"></div>
+          <div class="pin-dot" id="pd3"></div>
+        </div>
+        <div class="senha-error" id="senha-error"></div>
+        <div class="pin-keypad">
+          <button class="kbtn" onclick="digitarSenha('1')">1</button>
+          <button class="kbtn" onclick="digitarSenha('2')">2</button>
+          <button class="kbtn" onclick="digitarSenha('3')">3</button>
+          <button class="kbtn" onclick="digitarSenha('4')">4</button>
+          <button class="kbtn" onclick="digitarSenha('5')">5</button>
+          <button class="kbtn" onclick="digitarSenha('6')">6</button>
+          <button class="kbtn" onclick="digitarSenha('7')">7</button>
+          <button class="kbtn" onclick="digitarSenha('8')">8</button>
+          <button class="kbtn" onclick="digitarSenha('9')">9</button>
+          <button class="kbtn" onclick="limparSenha()" style="font-size:.75rem;color:var(--muted);">LIMPAR</button>
+          <button class="kbtn" onclick="digitarSenha('0')">0</button>
+          <button class="kbtn del" onclick="apagarSenha()">⌫</button>
+        </div>
+        <div class="senha-hint" id="senha-hint"></div>
+        <!-- Botão "Esqueci minha senha" — só aparece no modo login com pergunta cadastrada -->
+        <div id="senha-esqueci-wrap" style="display:none;text-align:center;">
+          <button class="esqueci-btn" onclick="iniciarRecuperacao()">🔑 Esqueci minha senha</button>
+        </div>
       </div>
-      <div class="senha-error" id="senha-error"></div>
-      <div class="pin-keypad">
-        <button class="kbtn" onclick="digitarSenha('1')">1</button>
-        <button class="kbtn" onclick="digitarSenha('2')">2</button>
-        <button class="kbtn" onclick="digitarSenha('3')">3</button>
-        <button class="kbtn" onclick="digitarSenha('4')">4</button>
-        <button class="kbtn" onclick="digitarSenha('5')">5</button>
-        <button class="kbtn" onclick="digitarSenha('6')">6</button>
-        <button class="kbtn" onclick="digitarSenha('7')">7</button>
-        <button class="kbtn" onclick="digitarSenha('8')">8</button>
-        <button class="kbtn" onclick="digitarSenha('9')">9</button>
-        <button class="kbtn" onclick="limparSenha()" style="font-size:.75rem;color:var(--muted);">LIMPAR</button>
-        <button class="kbtn" onclick="digitarSenha('0')">0</button>
-        <button class="kbtn del" onclick="apagarSenha()">⌫</button>
+
+      <!-- ── BLOCO PERGUNTA SECRETA (após criar senha pela 1ª vez) ── -->
+      <div id="senha-pergunta-form" style="display:none;">
+        <div class="pq-divider"></div>
+        <div style="font-family:'Orbitron',monospace;font-size:.68rem;letter-spacing:2px;color:var(--accent);text-align:center;margin-bottom:6px;">🛡️ PERGUNTA SECRETA</div>
+        <div style="font-size:.72rem;color:var(--muted2);text-align:center;margin-bottom:14px;line-height:1.5;">Escolha uma pergunta para recuperar sua senha sozinho, caso esqueça</div>
+        <label class="pq-label">Escolha uma pergunta:</label>
+        <select id="pergunta-sel" class="pq-select"></select>
+        <label class="pq-label">Sua resposta:</label>
+        <input id="pergunta-resp" class="pq-input" type="text" placeholder="Digite sua resposta..." autocomplete="off">
+        <div class="pq-hint">💡 Não diferencia maiúsculas nem acentos. Guarde bem essa resposta!</div>
+        <div class="senha-error" id="pergunta-error"></div>
+        <button class="btn btn-primary btn-block" onclick="confirmarPerguntaSecreta()" style="margin-top:12px;">✅ Salvar e Entrar</button>
+        <button class="pular-btn" onclick="pularPerguntaSecreta()">Pular por agora →</button>
       </div>
-      <div class="senha-hint" id="senha-hint"></div>
+
+      <!-- ── BLOCO RECUPERAÇÃO — RESPONDER PERGUNTA ── -->
+      <div id="senha-reset-form" style="display:none;">
+        <div class="pq-divider"></div>
+        <div style="font-family:'Orbitron',monospace;font-size:.68rem;letter-spacing:2px;color:var(--yellow);text-align:center;margin-bottom:6px;">🔑 RECUPERAR SENHA</div>
+        <div style="font-size:.72rem;color:var(--muted2);text-align:center;margin-bottom:10px;">Responda sua pergunta secreta:</div>
+        <div class="reset-pergunta" id="reset-pergunta-texto">—</div>
+        <input id="reset-resp" class="pq-input" type="text" placeholder="Sua resposta..." autocomplete="off">
+        <div class="senha-error" id="reset-error"></div>
+        <button class="btn btn-primary btn-block" onclick="verificarRespostaSecreta()" style="margin-top:12px;">➡️ Verificar</button>
+        <button class="pular-btn" onclick="cancelarRecuperacao()">← Voltar</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1926,16 +2011,22 @@ function selecionarAluno(id){
   document.getElementById('senha-nome').textContent = a.nome;
   document.getElementById('senha-turma').textContent = a.turma;
 
+  _senhaShowBloco('pin');
+
   if(a.temSenha){
     senhaEtapa = 'login';
     document.getElementById('senha-modo-titulo').textContent = 'ENTRAR';
     document.getElementById('senha-modo-sub').textContent = 'Digite sua senha de 4 dígitos';
     document.getElementById('senha-hint').textContent = '';
+    // Mostrar "Esqueci" só se o aluno já cadastrou pergunta secreta
+    const temPergunta = a.perguntaSecretaId !== undefined && a.perguntaSecretaId !== null;
+    document.getElementById('senha-esqueci-wrap').style.display = temPergunta ? '' : 'none';
   } else {
     senhaEtapa = 'criar';
     document.getElementById('senha-modo-titulo').textContent = 'CRIAR SENHA';
     document.getElementById('senha-modo-sub').textContent = 'Escolha uma senha de 4 dígitos';
     document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os seus próximos acessos.';
+    document.getElementById('senha-esqueci-wrap').style.display = 'none';
   }
   document.getElementById('senha-error').textContent = '';
   atualizarDots();
@@ -2033,7 +2124,7 @@ async function processarSenha(){
         // Carrega dados e finaliza entrada após login bem-sucedido
         await Promise.all([
           COL.alunos().doc(alunoAtual).update({ temSenha: true, authEmail, senhaPin: pin }).catch(()=>{}),
-          COL.perfis().doc(alunoAtual).update({ temSenha: true }).catch(()=>{})
+          COL.perfis().doc(alunoAtual).update({ temSenha: true, senhaPin: pin }).catch(()=>{})
         ]);
         const docSnap = await COL.alunos().doc(alunoAtual).get();
         if(docSnap.exists){
@@ -2043,7 +2134,19 @@ async function processarSenha(){
         }
         ligarListenerAlunos('aluno', alunoAtual);
         setSyncing('ok');
-        await finalizarEntrada();
+        // Só exibe pergunta secreta para quem ainda não cadastrou
+        const alunoDoc = S.alunos.find(x=>x.id===alunoAtual);
+        if(alunoDoc && alunoDoc.perguntaSecretaId !== undefined && alunoDoc.perguntaSecretaId !== null){
+          await finalizarEntrada();
+        } else {
+          // Novo aluno — convidar a cadastrar pergunta secreta
+          _popularPerguntasSel('pergunta-sel');
+          document.getElementById('pergunta-resp').value = '';
+          document.getElementById('pergunta-error').textContent = '';
+          document.getElementById('senha-modo-titulo').textContent = 'PRÓXIMO PASSO';
+          document.getElementById('senha-modo-sub').textContent = '';
+          _senhaShowBloco('pergunta');
+        }
       };
       try {
         // Tenta criar conta nova no Firebase Auth
@@ -2084,6 +2187,63 @@ async function processarSenha(){
       document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os seus próximos acessos.';
       atualizarDots();
     }
+  } else if(senhaEtapa === 'reset-nova'){
+    senhaCriada = alunoSenhaBuffer;
+    alunoSenhaBuffer = '';
+    senhaEtapa = 'reset-confirmar';
+    document.getElementById('senha-modo-titulo').textContent = 'CONFIRMAR SENHA';
+    document.getElementById('senha-modo-sub').textContent = 'Digite novamente para confirmar';
+    document.getElementById('senha-error').textContent = '';
+    atualizarDots();
+
+  } else if(senhaEtapa === 'reset-confirmar'){
+    if(alunoSenhaBuffer !== senhaCriada){
+      document.getElementById('senha-error').textContent = '⚠️ As senhas não coincidem. Tente novamente.';
+      alunoSenhaBuffer = ''; senhaCriada = '';
+      senhaEtapa = 'reset-nova';
+      document.getElementById('senha-modo-titulo').textContent = 'NOVA SENHA';
+      document.getElementById('senha-modo-sub').textContent = 'Escolha uma nova senha de 4 dígitos';
+      atualizarDots();
+      return;
+    }
+    setSyncing('syncing');
+    const newPin = senhaCriada;
+    const aPerfil = S.perfis.find(x=>x.id===alunoAtual);
+    const authEmail2 = emailDoAluno(alunoAtual);
+    try {
+      // Autentica com a senha atual para poder chamar updatePassword
+      await firebase.auth().signInWithEmailAndPassword(authEmail2, senhaFirebase(aPerfil.senhaPin));
+      await firebase.auth().currentUser.updatePassword(senhaFirebase(newPin));
+      await Promise.all([
+        COL.alunos().doc(alunoAtual).update({ senhaPin: newPin }).catch(()=>{}),
+        COL.perfis().doc(alunoAtual).update({ senhaPin: newPin }).catch(()=>{})
+      ]);
+      // Atualiza cache local
+      const pIdx = S.perfis.findIndex(x=>x.id===alunoAtual);
+      if(pIdx>=0) S.perfis[pIdx].senhaPin = newPin;
+      const docSnap2 = await COL.alunos().doc(alunoAtual).get();
+      if(docSnap2.exists){
+        const idx2 = S.alunos.findIndex(x=>x.id===alunoAtual);
+        const dado2 = {id:alunoAtual,...docSnap2.data()};
+        if(idx2>=0) S.alunos[idx2]=dado2; else S.alunos.push(dado2);
+      }
+      ligarListenerAlunos('aluno', alunoAtual);
+      setSyncing('ok');
+      toast('✅ Senha redefinida com sucesso!');
+      await finalizarEntrada();
+    } catch(resetErr){
+      setSyncing('ok');
+      document.getElementById('senha-error').textContent = '❌ Não foi possível redefinir. Peça ao professor para resetar.';
+      alunoSenhaBuffer = ''; senhaCriada = '';
+      senhaEtapa = 'login';
+      document.getElementById('senha-modo-titulo').textContent = 'ENTRAR';
+      document.getElementById('senha-modo-sub').textContent = 'Digite sua senha de 4 dígitos';
+      document.getElementById('senha-hint').textContent = '';
+      _senhaShowBloco('pin');
+      const aP = S.perfis.find(x=>x.id===alunoAtual);
+      document.getElementById('senha-esqueci-wrap').style.display = (aP && aP.perguntaSecretaId !== undefined) ? '' : 'none';
+      atualizarDots();
+    }
   }
 }
 
@@ -2115,7 +2275,134 @@ async function migrarSenhasExistentes(){
   console.log(`\nPronto! ✅ ${ok} migrados  ❌ ${erros} erros`);
 }
 
-// ── MIGRAÇÃO DA COLEÇÃO alunos_perfil ──
+// ══════════════════════════════════════
+//  PERGUNTA SECRETA & RECUPERAÇÃO DE SENHA
+// ══════════════════════════════════════
+
+const PERGUNTAS_SECRETAS = [
+  'Qual é o nome do seu animal de estimação?',
+  'Qual é a sua cor favorita?',
+  'Qual é o nome da sua cidade natal?',
+  'Qual é o seu time favorito?',
+  'Qual é o seu jogo favorito?',
+  'Qual é o nome do seu melhor amigo(a)?',
+  'Qual é a sua comida favorita?',
+  'Qual é o seu super-herói favorito?',
+];
+
+// Hash simples da resposta — normaliza acentos, maiúsculas e espaços extras
+function hashResposta(r){
+  const s = (r||'').trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');
+  let h = 5381;
+  for(let i=0;i<s.length;i++) h = (((h<<5)+h)^s.charCodeAt(i))|0;
+  return 'rh'+(h>>>0).toString(36);
+}
+
+// Popula o <select> de perguntas no formulário
+function _popularPerguntasSel(selId){
+  const sel = document.getElementById(selId);
+  if(!sel) return;
+  sel.innerHTML = '<option value="">— Selecione uma pergunta —</option>' +
+    PERGUNTAS_SECRETAS.map((q,i)=>`<option value="${i}">${escapeHtml(q)}</option>`).join('');
+}
+
+// Controla qual bloco é exibido dentro da tela de senha
+function _senhaShowBloco(bloco){
+  document.getElementById('senha-pin-bloco').style.display    = bloco === 'pin'     ? '' : 'none';
+  document.getElementById('senha-pergunta-form').style.display = bloco === 'pergunta' ? '' : 'none';
+  document.getElementById('senha-reset-form').style.display    = bloco === 'reset'    ? '' : 'none';
+}
+
+// ── Salvar pergunta secreta ──
+async function confirmarPerguntaSecreta(){
+  const qIdx = document.getElementById('pergunta-sel')?.value;
+  const answer = document.getElementById('pergunta-resp')?.value?.trim();
+  const errEl = document.getElementById('pergunta-error');
+  if(qIdx === '' || qIdx === undefined){ errEl.textContent = '⚠️ Selecione uma pergunta.'; return; }
+  if(!answer || answer.length < 2){ errEl.textContent = '⚠️ Digite sua resposta (mínimo 2 caracteres).'; return; }
+  errEl.textContent = '';
+  setSyncing('syncing');
+  try {
+    const qId = Number(qIdx);
+    const hash = hashResposta(answer);
+    await Promise.all([
+      COL.alunos().doc(alunoAtual).update({ perguntaSecretaId: qId, respostaHash: hash }).catch(()=>{}),
+      COL.perfis().doc(alunoAtual).update({ perguntaSecretaId: qId, respostaHash: hash }).catch(()=>{})
+    ]);
+    // Atualiza caches locais
+    const pIdx = S.perfis.findIndex(x=>x.id===alunoAtual);
+    if(pIdx>=0){ S.perfis[pIdx].perguntaSecretaId=qId; S.perfis[pIdx].respostaHash=hash; }
+    const aIdx = S.alunos.findIndex(x=>x.id===alunoAtual);
+    if(aIdx>=0){ S.alunos[aIdx].perguntaSecretaId=qId; S.alunos[aIdx].respostaHash=hash; }
+    setSyncing('ok');
+    toast('🛡️ Pergunta secreta salva!');
+    await finalizarEntrada();
+  } catch(e){
+    setSyncing('error');
+    document.getElementById('pergunta-error').textContent = '❌ Erro ao salvar. Tente novamente.';
+  }
+}
+
+// ── Pular cadastro da pergunta por agora ──
+async function pularPerguntaSecreta(){
+  await finalizarEntrada();
+}
+
+// ── Iniciar recuperação de senha ──
+function iniciarRecuperacao(){
+  const a = S.perfis.find(x=>x.id===alunoAtual);
+  if(!a || a.perguntaSecretaId === undefined || a.perguntaSecretaId === null) return;
+  senhaEtapa = 'reset-verificar';
+  document.getElementById('senha-modo-titulo').textContent = 'RECUPERAR SENHA';
+  document.getElementById('senha-modo-sub').textContent = '';
+  document.getElementById('reset-pergunta-texto').textContent = PERGUNTAS_SECRETAS[a.perguntaSecretaId] || '—';
+  document.getElementById('reset-resp').value = '';
+  document.getElementById('reset-error').textContent = '';
+  _senhaShowBloco('reset');
+}
+
+// ── Verificar resposta e avançar para novo PIN ──
+async function verificarRespostaSecreta(){
+  const a = S.perfis.find(x=>x.id===alunoAtual);
+  const resp = document.getElementById('reset-resp')?.value?.trim();
+  const errEl = document.getElementById('reset-error');
+  if(!resp){ errEl.textContent = '⚠️ Digite sua resposta.'; return; }
+  if(!a || a.respostaHash === undefined){ errEl.textContent = '❌ Pergunta não encontrada. Peça ao professor.'; return; }
+  if(hashResposta(resp) !== a.respostaHash){
+    errEl.textContent = '❌ Resposta incorreta. Tente novamente.';
+    return;
+  }
+  // Resposta correta → ir para criação de novo PIN
+  errEl.textContent = '';
+  senhaEtapa = 'reset-nova';
+  senhaCriada = '';
+  alunoSenhaBuffer = '';
+  atualizarDots();
+  document.getElementById('senha-modo-titulo').textContent = 'NOVA SENHA';
+  document.getElementById('senha-modo-sub').textContent = 'Escolha uma nova senha de 4 dígitos';
+  document.getElementById('senha-hint').textContent = '';
+  document.getElementById('senha-error').textContent = '';
+  document.getElementById('senha-esqueci-wrap').style.display = 'none';
+  _senhaShowBloco('pin');
+}
+
+// ── Cancelar recuperação e voltar ao login ──
+function cancelarRecuperacao(){
+  const a = S.perfis.find(x=>x.id===alunoAtual);
+  senhaEtapa = 'login';
+  alunoSenhaBuffer = '';
+  atualizarDots();
+  document.getElementById('senha-modo-titulo').textContent = 'ENTRAR';
+  document.getElementById('senha-modo-sub').textContent = 'Digite sua senha de 4 dígitos';
+  document.getElementById('senha-hint').textContent = '';
+  document.getElementById('senha-error').textContent = '';
+  const temPergunta = a && a.perguntaSecretaId !== undefined && a.perguntaSecretaId !== null;
+  document.getElementById('senha-esqueci-wrap').style.display = temPergunta ? '' : 'none';
+  _senhaShowBloco('pin');
+}
+
+
 // RODE UMA VEZ no console (logado como professor) para popular a nova coleção:
 //   migrarParaPerfis()
 async function migrarParaPerfis(){
@@ -4444,7 +4731,7 @@ function renderGuilda(){
       html += '<div class="sec-title">📨 Convites Recebidos</div>';
       convites.forEach(c => {
         const g = guildas.find(x => x.id === c.guildaId);
-        const remetente = S.alunos.find(x => x.id === c.deId);
+        const remetente = S.alunos.find(x => x.id === c.deId) || S.perfis.find(x => x.id === c.deId);
         if(!g || !remetente) return;
         html += `<div class="convite-card">
           <div class="convite-brasao">${g.brasao||'⚔️'}</div>
@@ -4462,7 +4749,7 @@ function renderGuilda(){
       guildas.forEach(g => {
         const isMinha = minhaGuilda && g.id === minhaGuilda.id;
         const membrosHtml = (g.membros||[]).slice(0,5).map(mid => {
-          const m = S.alunos.find(x=>x.id===mid);
+          const m = S.alunos.find(x=>x.id===mid) || S.perfis.find(x=>x.id===mid);
           if(!m) return '';
           return m.profilePhoto
             ? `<div class="ggc-membro"><img src="${m.profilePhoto}"></div>`
@@ -4540,7 +4827,7 @@ function abrirModalGuilda(guildaId){
     const isMinha = a && (g.membros||[]).includes(alunoAtual);
     const isLider = a && g.liderId === alunoAtual;
     const membrosHtml = (g.membros||[]).map(mid=>{
-      const m = S.alunos.find(x=>x.id===mid);
+      const m = S.alunos.find(x=>x.id===mid) || S.perfis.find(x=>x.id===mid);
       if(!m) return '';
       const fotoM = m.profilePhoto ? `<img src="${m.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : `<span style="font-size:1.2rem;">${m.avatar||'👾'}</span>`;
       return `<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--s2);border:1px solid ${mid===g.liderId?'var(--gold)':'var(--border)'};border-radius:10px;">
@@ -4577,7 +4864,7 @@ function abrirModalGuilda(guildaId){
       </div>`;
     }
 
-    const naoMembros = a ? S.alunos.filter(a2=>a2.turma===a.turma && !(g.membros||[]).includes(a2.id)) : [];
+    const naoMembros = a ? S.perfis.filter(a2=>a2.turma===a.turma && !(g.membros||[]).includes(a2.id)) : [];
 
     const html = `<div class="gm-banner" style="${bannerStyle};"></div>
     <div style="padding:16px 20px 20px;">
@@ -5673,22 +5960,7 @@ function initGalaxyBg() {
   const W = window.innerWidth;
   const H = window.innerHeight;
   cv.width = W; cv.height = H;
-  const ctx = cv.getContext('2d');
-
-  const blobs = [
-    {x:W*.08, y:H*.18, r:W*.38, c:'rgba(124,58,237,'},
-    {x:W*.9,  y:H*.72, r:W*.32, c:'rgba(0,212,255,'},
-    {x:W*.5,  y:H*.95, r:W*.25, c:'rgba(162,89,255,'},
-    {x:W*.75, y:H*.12, r:W*.2,  c:'rgba(0,180,220,'},
-    {x:W*.2,  y:H*.7,  r:W*.18, c:'rgba(80,20,180,'}
-  ];
-  blobs.forEach(b=>{
-    const g = ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
-    g.addColorStop(0,  b.c+'0.2)');
-    g.addColorStop(.45,b.c+'0.07)');
-    g.addColorStop(1,  b.c+'0)');
-    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-  });
+  // Nebulosas removidas — fundo limpo só com estrelas
 
   // Stars
   const sc = document.getElementById('galaxy-stars-global');
