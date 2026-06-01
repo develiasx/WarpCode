@@ -2752,32 +2752,42 @@ async function salvarEdicaoAluno(id){
     if(senha){
       const email = emailDoAluno(id);
       update.senhaPin = senha;
+
+      // IMPORTANTE: usar app secundário em TODAS as operações Auth do aluno.
+      // createUserWithEmailAndPassword no app principal desloga o professor
+      // automaticamente, fazendo isProfessor() falhar no write do Firestore.
+      const appName = `sec_${Date.now()}`;
+      let secApp = null;
       try {
-        const cred = await firebase.auth().createUserWithEmailAndPassword(email, senhaFirebase(senha));
-        update.authEmail = email;
-        update.authUid = cred.user.uid; // Grava o Auth Uid
-        update.senhaResetPendente = false;
-      } catch(authErr) {
-        if(authErr.code === 'auth/email-already-in-use'){
-          // Conta já existe — troca senha via app secundário sem deslogar o professor
-          const oldPin = (S.alunos.find(a=>a.id===id)||{}).senhaPin;
-          const appName = `sec_${Date.now()}`;
-          let secApp = null;
-          try {
-            if(!oldPin) throw new Error('sem-pin-anterior');
-            secApp = firebase.initializeApp(firebase.app().options, appName);
-            const secCred = await secApp.auth().signInWithEmailAndPassword(email, senhaFirebase(oldPin));
-            await secCred.user.updatePassword(senhaFirebase(senha));
-            update.authUid = secCred.user.uid;
-            update.authEmail = email;
-            update.senhaResetPendente = false;
-          } catch(secErr){
-            update.senhaResetPendente = true;
-            toast('⚠️ PIN salvo no sistema. Para ativar no Auth, o aluno precisa acessar com a senha antiga primeiro.');
-          } finally {
-            if(secApp) await secApp.delete().catch(()=>{});
+        secApp = firebase.initializeApp(firebase.app().options, appName);
+        const secAuth = secApp.auth();
+        let uid = null;
+        try {
+          const cred = await secAuth.createUserWithEmailAndPassword(email, senhaFirebase(senha));
+          uid = cred.user.uid;
+          update.senhaResetPendente = false;
+        } catch(createErr){
+          if(createErr.code === 'auth/email-already-in-use'){
+            const oldPin = (S.alunos.find(a=>a.id===id)||{}).senhaPin;
+            if(oldPin){
+              try {
+                const cred = await secAuth.signInWithEmailAndPassword(email, senhaFirebase(oldPin));
+                await cred.user.updatePassword(senhaFirebase(senha));
+                uid = cred.user.uid;
+                update.senhaResetPendente = false;
+              } catch(loginErr){
+                update.senhaResetPendente = true;
+                toast('⚠️ PIN salvo! Aluno precisa acessar com a senha antiga primeiro.');
+              }
+            } else {
+              update.senhaResetPendente = true;
+              toast('⚠️ PIN salvo! Aluno precisa acessar com a senha antiga primeiro.');
+            }
           }
         }
+        if(uid){ update.authEmail = email; update.authUid = uid; }
+      } finally {
+        if(secApp) await secApp.delete().catch(()=>{});
       }
       update.temSenha = true;
     }
@@ -2792,7 +2802,7 @@ async function salvarEdicaoAluno(id){
     toast('✅ Aluno atualizado!');
     setSyncing('ok');
   }catch(e){
-    toast('❌ Erro!');
+    toast('❌ Erro: '+(e.message||e));
     setSyncing('error');
   }
 }
