@@ -2173,10 +2173,15 @@ async function processarSenha(){
         const updateData = { temSenha: true, authEmail, senhaPin: pin };
         if(authUid) updateData.authUid = authUid; // Salva o UID gerado
 
-        await Promise.all([
-          COL.alunos().doc(alunoAtual).update(updateData).catch(()=>{}),
-          COL.perfis().doc(alunoAtual).update(updateData).catch(()=>{})
-        ]);
+        // set({merge:true}) grava mesmo que o doc não exista; erros são logados, não engolidos.
+        const okAlunos = await COL.alunos().doc(alunoAtual).set(updateData,{merge:true})
+          .then(()=>true).catch(e=>{console.error('[WC] Falha ao salvar senha em alunos:',e.code||e.message);return false;});
+        const okPerfil = await COL.perfis().doc(alunoAtual).set(updateData,{merge:true})
+          .then(()=>true).catch(e=>{console.error('[WC] Falha ao salvar senha em alunos_perfil:',e.code||e.message);return false;});
+        if(!okPerfil){
+          // Crítico: a tela de seleção lê temSenha de alunos_perfil. Se falhar aqui, o aluno seria forçado a recriar a senha.
+          toast('⚠️ Senha criada, mas o status não foi salvo. Veja o Console (provável bloqueio das Regras do Firestore).');
+        }
         const docSnap = await COL.alunos().doc(alunoAtual).get();
         if(docSnap.exists){
           const idx = S.alunos.findIndex(x=>x.id===alunoAtual);
@@ -2379,10 +2384,11 @@ async function confirmarPerguntaSecreta(){
   try {
     const qId = Number(qIdx);
     const hash = hashResposta(answer);
-    await Promise.all([
-      COL.alunos().doc(alunoAtual).update({ perguntaSecretaId: qId, respostaHash: hash }).catch(()=>{}),
-      COL.perfis().doc(alunoAtual).update({ perguntaSecretaId: qId, respostaHash: hash }).catch(()=>{})
-    ]);
+    const dados = { perguntaSecretaId: qId, respostaHash: hash };
+    await COL.alunos().doc(alunoAtual).set(dados,{merge:true})
+      .catch(e=>console.error('[WC] Falha ao salvar pergunta em alunos:',e.code||e.message));
+    await COL.perfis().doc(alunoAtual).set(dados,{merge:true})
+      .catch(e=>console.error('[WC] Falha ao salvar pergunta em alunos_perfil:',e.code||e.message));
     // Atualiza caches locais
     const pIdx = S.perfis.findIndex(x=>x.id===alunoAtual);
     if(pIdx>=0){ S.perfis[pIdx].perguntaSecretaId=qId; S.perfis[pIdx].respostaHash=hash; }
@@ -4229,15 +4235,23 @@ async function wcComprar(itemId){
 }
 async function wcEquipar(itemId,cat){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
-  try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});if(cat==='theme')applyTheme(itemId);if(['border','avatar','banner','title'].includes(cat))await COL.perfis().doc(a.id).update({['wc_eq_'+cat]:itemId}).catch(()=>{});toast('✅ Equipado!');}catch(e){toast('❌ Erro!');}
+  try{
+    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});
+    if(cat==='theme')applyTheme(itemId);
+    if(['border','avatar','banner','title'].includes(cat))
+      await COL.perfis().doc(a.id).set({['wc_eq_'+cat]:itemId},{merge:true}).catch(e=>console.error('[WC] espelhar equip no perfil:',e.code||e.message));
+    toast('✅ Equipado!');
+  }catch(e){console.error('[WC] equipar:',e.code||e.message);toast('❌ Erro ao equipar: '+(e.code||e.message));}
 }
 async function wcDesequipar(cat){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
   try{
-    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:null});if(['border','avatar','banner','title'].includes(cat))await COL.perfis().doc(a.id).update({['wc_eq_'+cat]:null}).catch(()=>{});
+    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:null});
+    if(['border','avatar','banner','title'].includes(cat))
+      await COL.perfis().doc(a.id).set({['wc_eq_'+cat]:null},{merge:true}).catch(e=>console.error('[WC] espelhar remoção no perfil:',e.code||e.message));
     if(cat==='theme'){const def=WC_ITEMS.find(i=>i.id==='theme_default');if(def&&def.vars)Object.entries(def.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}
     toast('Removido.');
-  }catch(e){toast('❌ Erro!');}
+  }catch(e){console.error('[WC] remover:',e.code||e.message);toast('❌ Erro ao remover: '+(e.code||e.message));}
 }
 
 // ── TROCAR XP → WC ──
@@ -4365,7 +4379,12 @@ async function aplicarCustom(itemId,cat,el){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
   el.closest('.custom-section')?.querySelectorAll('.border-opt-prev,.custom-opt,.banner-opt').forEach(e=>e.classList.remove('selected'));
   el.classList.add('selected');
-  try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});if(['border','avatar','banner','title'].includes(cat))await COL.perfis().doc(a.id).update({['wc_eq_'+cat]:itemId}).catch(()=>{});toast('✅ Aplicado!');}catch(e){toast('❌ Erro!');}
+  try{
+    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});
+    if(['border','avatar','banner','title'].includes(cat))
+      await COL.perfis().doc(a.id).set({['wc_eq_'+cat]:itemId},{merge:true}).catch(e=>console.error('[WC] espelhar custom no perfil:',e.code||e.message));
+    toast('✅ Aplicado!');
+  }catch(e){console.error('[WC] aplicarCustom:',e.code||e.message);toast('❌ Erro ao aplicar: '+(e.code||e.message));}
 }
 
 // ── LOOT BOX ──
