@@ -2752,8 +2752,24 @@ async function salvarEdicaoAluno(id){
         update.senhaResetPendente = false;
       } catch(authErr) {
         if(authErr.code === 'auth/email-already-in-use'){
-          update.senhaResetPendente = true;
-          toast('⚠️ PIN salvo! O aluno deve entrar com a senha antiga e depois o professor pode resetar via edição.');
+          // Conta já existe — troca senha via app secundário sem deslogar o professor
+          const oldPin = (S.alunos.find(a=>a.id===id)||{}).senhaPin;
+          const appName = `sec_${Date.now()}`;
+          let secApp = null;
+          try {
+            if(!oldPin) throw new Error('sem-pin-anterior');
+            secApp = firebase.initializeApp(firebase.app().options, appName);
+            const secCred = await secApp.auth().signInWithEmailAndPassword(email, senhaFirebase(oldPin));
+            await secCred.user.updatePassword(senhaFirebase(senha));
+            update.authUid = secCred.user.uid;
+            update.authEmail = email;
+            update.senhaResetPendente = false;
+          } catch(secErr){
+            update.senhaResetPendente = true;
+            toast('⚠️ PIN salvo no sistema. Para ativar no Auth, o aluno precisa acessar com a senha antiga primeiro.');
+          } finally {
+            if(secApp) await secApp.delete().catch(()=>{});
+          }
         }
       }
       update.temSenha = true;
