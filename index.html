@@ -1010,6 +1010,15 @@ select option{background:var(--s1);}
             </div>
           </div>
         </div>
+        <div class="card" style="border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.05);">
+          <div class="sec-title">📢 Aviso para Todos os Alunos</div>
+          <div class="form-row">
+            <div class="form-group" style="flex:3;"><label>Mensagem que vai para o Correios de todos</label><input id="p-msg-todos-texto" placeholder="Ex: Aula de robótica adiantada para quinta! 🤖" maxlength="200"></div>
+            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
+              <button class="btn btn-primary" onclick="enviarAvisoTodos()" style="background:linear-gradient(135deg,#f59e0b,#f97316);color:#000;">📢 Enviar a Todos</button>
+            </div>
+          </div>
+        </div>
         <div class="sec-title">Turmas</div>
         <div id="p-turmas-grid" class="grid-4" style="margin-bottom:14px;"></div>
       </div>
@@ -2566,8 +2575,9 @@ async function finalizarEntrada(){
   renderAluno();
   atualizarBadgeCorreios();
   verificarStreakRisco(alunoAtual);
-  setTimeout(()=>mostrarPopupCorreios(), 800);
-  injetarLogAtualizacoes(alunoAtual);
+  // Injeta as notas de versão e só então mostra o popup, para o aluno ver as
+  // novidades já neste login.
+  injetarLogAtualizacoes(alunoAtual).finally(()=>setTimeout(mostrarPopupCorreios, 600));
 
   const aAtual = S.alunos.find(x=>x.id===alunoAtual);
   if(aAtual){
@@ -3360,6 +3370,31 @@ async function enviarMsgProfessor(){
     toast(`✉️ Mensagem enviada para ${a.nome}!`);
     setSyncing('ok');
   } catch(e){ toast('❌ Erro ao enviar.'); setSyncing('error'); }
+}
+
+async function enviarAvisoTodos(){
+  const texto=document.getElementById('p-msg-todos-texto')?.value.trim();
+  if(!texto) return toast('⚠️ Digite uma mensagem!');
+  if(!S.alunos.length) return toast('⚠️ Nenhum aluno cadastrado.');
+  if(!confirm(`Enviar este aviso para ${S.alunos.length} aluno(s)?`)) return;
+  setSyncing('syncing');
+  try {
+    const baseId='n'+Date.now();
+    // Lotes de 400 para respeitar o limite de operações por batch do Firestore.
+    for(let i=0;i<S.alunos.length;i+=400){
+      const grupo=S.alunos.slice(i,i+400);
+      const batch=db.batch();
+      grupo.forEach(a=>{
+        const notif={id:baseId+'_'+a.id,tipo:'professor',titulo:'📢 Aviso do Professor',desc:texto,ts:Date.now(),lido:false};
+        const correios=[notif,...(a.correios||[])].slice(0,50);
+        batch.update(COL.alunos().doc(a.id),{correios});
+      });
+      await batch.commit();
+    }
+    document.getElementById('p-msg-todos-texto').value='';
+    toast(`📢 Aviso enviado para ${S.alunos.length} aluno(s)!`);
+    setSyncing('ok');
+  } catch(e){ console.error('[WC] avisoTodos:', e.code||e.message); toast('❌ Erro ao enviar: '+(e.code||e.message)); setSyncing('error'); }
 }
 
 async function darXP(){
@@ -4727,7 +4762,7 @@ function mostrarPopupCorreios(){
   const a = S.alunos.find(x=>x.id===alunoAtual); if(!a) return;
   const naoLidas = (a.correios||[]).filter(n=>!n.lido);
   if(!naoLidas.length) return;
-  const icones={aprovado:'✅',rejeitado:'❌',reacao:'😊',guilda:'⚔️',vitrine:'🌟',ranking:'🏆',professor:'✉️',streak:'🔥'};
+  const icones={aprovado:'✅',rejeitado:'❌',reacao:'😊',guilda:'⚔️',vitrine:'🌟',ranking:'🏆',professor:'✉️',streak:'🔥',update:'🛠️'};
   const preview = naoLidas.slice(0,4).map(n=>`<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(0,212,255,.08);">
     <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,212,255,.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">${icones[n.tipo]||'📬'}</div>
     <div style="flex:1;min-width:0;">
@@ -4791,24 +4826,42 @@ const LOG_WARPCODE = [
   },
 ];
 
+// Envia uma notificação ao Correios de QUALQUER aluno. Lê o doc na hora porque
+// no modo aluno S.alunos só contém o próprio aluno logado.
+async function notificarAluno(alunoId, notif){
+  if(!alunoId) return;
+  try{
+    const ref = COL.alunos().doc(alunoId);
+    const snap = await ref.get();
+    if(!snap.exists) return;
+    const atuais = snap.data().correios || [];
+    const correios = [notif, ...atuais].slice(0,50);
+    await ref.update({correios});
+  }catch(e){ console.error('[WC] notificarAluno:', e.code||e.message); }
+}
+
 async function injetarLogAtualizacoes(alunoId){
   try {
     const a = S.alunos.find(x=>x.id===alunoId); if(!a) return;
-    const correiosAtuais = a.correios||[];
-    const idsExistentes = new Set(correiosAtuais.map(n=>n.id));
-    const novos = LOG_WARPCODE.filter(u=>!idsExistentes.has(u.id)).map(u=>({
-      id: u.id,
-      tipo: 'update',
-      titulo: u.titulo,
-      desc: u.desc,
-      itens: u.itens,
-      ts: Date.now(),
-      lido: false
-    }));
+    // updatesVistos guarda os ids já entregues de forma permanente, então cada
+    // nota de versão aparece exatamente uma vez — mesmo que os correios sejam
+    // truncados depois. Para enviar uma nova nota, basta adicionar um item novo
+    // (com id único) ao array LOG_WARPCODE abaixo.
+    const vistos = new Set(a.updatesVistos || []);
+    const novos = LOG_WARPCODE.filter(u=>!vistos.has(u.id));
     if(!novos.length) return;
-    const correiosUpd = [...novos, ...correiosAtuais].slice(0,60);
-    await COL.alunos().doc(alunoId).update({correios: correiosUpd});
-  } catch(e){}
+    const correiosAtuais = a.correios||[];
+    const notifs = novos.map(u=>({
+      id: u.id, tipo: 'update', titulo: u.titulo, desc: u.desc,
+      itens: u.itens, ts: Date.now(), lido: false
+    }));
+    const correiosUpd = [...notifs, ...correiosAtuais].slice(0,60);
+    const updatesVistos = [...(a.updatesVistos||[]), ...novos.map(u=>u.id)];
+    await COL.alunos().doc(alunoId).update({correios: correiosUpd, updatesVistos});
+    // Atualiza cache local para o popup já enxergar as novas notas neste login.
+    const idx = S.alunos.findIndex(x=>x.id===alunoId);
+    if(idx>=0){ S.alunos[idx].correios = correiosUpd; S.alunos[idx].updatesVistos = updatesVistos; }
+  } catch(e){ console.error('[WC] injetarLog:', e.code||e.message); }
 }
 
 function atualizarBadgeCorreios(){
@@ -5842,7 +5895,9 @@ function renderVitrine(){
       const allVitrine = snap.docs.map(d=>({id:d.id,...d.data()})).filter(v=>v.ativo).sort((a,b)=>(b.destaqueEm||0)-(a.destaqueEm||0)).slice(0,30);
       if(!allVitrine.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌟</div><div class="empty-text">Nenhum projeto em destaque ainda. Envie suas missões e conquiste um lugar aqui!</div></div>';return;}
       el.innerHTML = allVitrine.map(v=>{
-        const a2 = S.alunos.find(x=>x.id===v.alunoId);
+        // No modo aluno, S.alunos só tem o próprio aluno. Nome/avatar/turma dos
+        // autores vêm de alunos_perfil (S.perfis), que contém todos os alunos.
+        const a2 = S.perfis.find(x=>x.id===v.alunoId) || S.alunos.find(x=>x.id===v.alunoId);
         const EMOJIS = ['❤️','🔥','⭐','🚀','💡'];
         const safeVId = escapeHtml(v.id);
         const reactions = EMOJIS.map(e=>{
@@ -5907,14 +5962,9 @@ async function reagir(vitrineId, emoji){
       });
       // Notificar dono do projeto
       if(v.alunoId && v.alunoId !== alunoAtual){
-        const donoVitrine = S.alunos.find(x=>x.id===v.alunoId);
-        if(donoVitrine){
-          const meuAvatar2 = (S.alunos.find(x=>x.id===alunoAtual)||{}).avatar||'👾';
-          const meuNome2 = (S.alunos.find(x=>x.id===alunoAtual)||{}).nome||'Alguém';
-          const notifVitrine={id:'n'+Date.now(),tipo:'vitrine',titulo:`${emoji} Reação na sua vitrine!`,desc:`${meuAvatar2} ${meuNome2} reagiu com ${emoji} no seu projeto "${v.titulo||'seu projeto'}"!`,ts:Date.now(),lido:false};
-          const correiosVitrine=[notifVitrine,...(donoVitrine.correios||[])].slice(0,50);
-          await COL.alunos().doc(v.alunoId).update({correios:correiosVitrine});
-        }
+        const eu = S.alunos.find(x=>x.id===alunoAtual) || S.perfis.find(x=>x.id===alunoAtual) || {};
+        const notifVitrine={id:'n'+Date.now()+Math.random().toString(36).slice(2,6),tipo:'vitrine',titulo:`${emoji} Reação na sua vitrine!`,desc:`${eu.avatar||'👾'} ${eu.nome||'Alguém'} reagiu com ${emoji} no seu projeto "${v.titulo||'seu projeto'}"!`,ts:Date.now(),lido:false};
+        await notificarAluno(v.alunoId, notifVitrine);
       }
     }
     await batch.commit();
@@ -5939,12 +5989,8 @@ async function comentarVitrine(vitrineId){
     if(vitrineSnap.exists){
       const vData = vitrineSnap.data();
       if(vData.alunoId && vData.alunoId !== alunoAtual){
-        const donoVitrine = S.alunos.find(x=>x.id===vData.alunoId);
-        if(donoVitrine){
-          const notifCmt={id:'n'+Date.now(),tipo:'vitrine',titulo:`💬 Comentário no seu projeto!`,desc:`${a.avatar||'👾'} ${a.nome} comentou: "${texto.slice(0,60)}${texto.length>60?'...':''}"`,ts:Date.now(),lido:false};
-          const correiosCmt=[notifCmt,...(donoVitrine.correios||[])].slice(0,50);
-          await COL.alunos().doc(vData.alunoId).update({correios:correiosCmt});
-        }
+        const notifCmt={id:'n'+Date.now()+Math.random().toString(36).slice(2,6),tipo:'vitrine',titulo:`💬 Comentário no seu projeto!`,desc:`${a.avatar||'👾'} ${a.nome} comentou: "${texto.slice(0,60)}${texto.length>60?'...':''}"`,ts:Date.now(),lido:false};
+        await notificarAluno(vData.alunoId, notifCmt);
       }
     }
     toast('💬 Comentário enviado!');
