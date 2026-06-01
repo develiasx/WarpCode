@@ -2724,6 +2724,13 @@ function abrirEditarAluno(id){
       <input id="edit-senha" type="password" maxlength="4" pattern="[0-9]{4}" placeholder="Digite 4 números para redefinir" style="letter-spacing:4px;font-family:'Orbitron',monospace;">
       <div style="font-size:.65rem;color:var(--muted);margin-top:4px;">Deixe em branco para não alterar a senha</div>
     </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 12px;margin-bottom:16px;">
+      <div style="font-size:.62rem;color:var(--muted);margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase;">E-mail no Firebase Auth</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:.72rem;color:var(--muted2);font-family:'Courier New',monospace;word-break:break-all;flex:1;">${escapeHtml(a.authEmail||emailDoAluno(id))}</span>
+        <button onclick="navigator.clipboard.writeText('${escapeHtml(a.authEmail||emailDoAluno(id))}').then(()=>toast('📋 E-mail copiado!'))" style="background:none;border:1px solid rgba(255,255,255,.15);border-radius:5px;color:var(--muted2);cursor:pointer;padding:3px 8px;font-size:.65rem;white-space:nowrap;">📋 Copiar</button>
+      </div>
+    </div>
     <button class="btn btn-primary btn-block" id="btn-salvar-edicao-aluno">💾 Salvar Alterações</button>
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-editar-aluno')" style="margin-bottom:0;">Cancelar</button>`;
   // Preencher o valor do nome de forma segura (sem innerHTML)
