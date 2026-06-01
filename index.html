@@ -2091,9 +2091,6 @@ function atualizarDots(){
     const el = document.getElementById('pd'+i);
     el.classList.toggle('filled', i < alunoSenhaBuffer.length);
   }
-<<<<<<< HEAD
-}async function processarSenha(){
-=======
 }
 
 // ── PROCESSAMENTO DA SENHA ──
@@ -2111,50 +2108,32 @@ function senhaFirebase(pin){ return pin + 'wc'; }
 
 async function processarSenha(){
   // Antes do login, dados estão em S.perfis; após login, em S.alunos
->>>>>>> 9966376d61b1cb506a7d61d237c5bce03d706aab
   const a = S.perfis.find(x=>x.id===alunoAtual) || S.alunos.find(x=>x.id===alunoAtual);
   if(!a) return;
 
   if(senhaEtapa === 'login'){
     setSyncing('syncing');
     try {
-<<<<<<< HEAD
       const cred = await firebase.auth().signInWithEmailAndPassword(
         emailDoAluno(alunoAtual),
         senhaFirebase(alunoSenhaBuffer)
       );
-      
+
       const newAuthUid = cred.user.uid; // Obtém UID do Auth
-      
-=======
-      // Firebase Auth verifica — senha nunca fica em texto puro
-      await firebase.auth().signInWithEmailAndPassword(
-        emailDoAluno(alunoAtual),
-        senhaFirebase(alunoSenhaBuffer)
-      );
-      // Carregar dados completos do aluno após autenticação
->>>>>>> 9966376d61b1cb506a7d61d237c5bce03d706aab
+
       const docSnap = await COL.alunos().doc(alunoAtual).get();
       if(docSnap.exists){
         const idx = S.alunos.findIndex(x=>x.id===alunoAtual);
         const dado = {id:alunoAtual,...docSnap.data()};
         if(idx>=0) S.alunos[idx]=dado; else S.alunos.push(dado);
-<<<<<<< HEAD
-        
+
         // Sincroniza authEmail e authUid automaticamente
         const updateData = {};
         if(!docSnap.data().authEmail) updateData.authEmail = emailDoAluno(alunoAtual);
         if(!docSnap.data().authUid) updateData.authUid = newAuthUid;
-        
+
         if(Object.keys(updateData).length > 0){
           await COL.alunos().doc(alunoAtual).update(updateData).catch(()=>{});
-=======
-        // Migração automática: salva authEmail se ainda não tem
-        // Necessário para as Firestore Rules funcionarem
-        if(!docSnap.data().authEmail){
-          const authEmail = emailDoAluno(alunoAtual);
-          await COL.alunos().doc(alunoAtual).update({ authEmail }).catch(()=>{});
->>>>>>> 9966376d61b1cb506a7d61d237c5bce03d706aab
         }
       }
       ligarListenerAlunos('aluno', alunoAtual);
@@ -2162,7 +2141,6 @@ async function processarSenha(){
       await finalizarEntrada();
     } catch(e){
       setSyncing('ok');
-<<<<<<< HEAD
       // Tratamento de erro que não mascara o bloqueio do Firestore
       if (e.code === 'permission-denied' || (e.message && e.message.includes('permission'))) {
         document.getElementById('senha-error').textContent = '❌ Erro: Regras do Firestore bloqueando acesso.';
@@ -2172,9 +2150,6 @@ async function processarSenha(){
       } else {
         document.getElementById('senha-error').textContent = '❌ Erro: ' + e.message;
       }
-=======
-      document.getElementById('senha-error').textContent = '❌ Senha incorreta. Tente novamente.';
->>>>>>> 9966376d61b1cb506a7d61d237c5bce03d706aab
       alunoSenhaBuffer = '';
       atualizarDots();
     }
@@ -2193,8 +2168,7 @@ async function processarSenha(){
     if(alunoSenhaBuffer === senhaCriada){
       setSyncing('syncing');
       const authEmail = emailDoAluno(alunoAtual);
-<<<<<<< HEAD
-      
+
       const _entrarComSenha = async (pin, authUid) => {
         const updateData = { temSenha: true, authEmail, senhaPin: pin };
         if(authUid) updateData.authUid = authUid; // Salva o UID gerado
@@ -2202,13 +2176,6 @@ async function processarSenha(){
         await Promise.all([
           COL.alunos().doc(alunoAtual).update(updateData).catch(()=>{}),
           COL.perfis().doc(alunoAtual).update(updateData).catch(()=>{})
-=======
-      const _entrarComSenha = async (pin) => {
-        // Carrega dados e finaliza entrada após login bem-sucedido
-        await Promise.all([
-          COL.alunos().doc(alunoAtual).update({ temSenha: true, authEmail, senhaPin: pin }).catch(()=>{}),
-          COL.perfis().doc(alunoAtual).update({ temSenha: true, senhaPin: pin }).catch(()=>{})
->>>>>>> 9966376d61b1cb506a7d61d237c5bce03d706aab
         ]);
         const docSnap = await COL.alunos().doc(alunoAtual).get();
         if(docSnap.exists){
@@ -2218,19 +2185,11 @@ async function processarSenha(){
         }
         ligarListenerAlunos('aluno', alunoAtual);
         setSyncing('ok');
-<<<<<<< HEAD
-        
-=======
-        // Só exibe pergunta secreta para quem ainda não cadastrou
->>>>>>> 9966376d61b1cb506a7d61d237c5bce03d706aab
+
         const alunoDoc = S.alunos.find(x=>x.id===alunoAtual);
         if(alunoDoc && alunoDoc.perguntaSecretaId !== undefined && alunoDoc.perguntaSecretaId !== null){
           await finalizarEntrada();
         } else {
-<<<<<<< HEAD
-=======
-          // Novo aluno — convidar a cadastrar pergunta secreta
->>>>>>> 9966376d61b1cb506a7d61d237c5bce03d706aab
           _popularPerguntasSel('pergunta-sel');
           document.getElementById('pergunta-resp').value = '';
           document.getElementById('pergunta-error').textContent = '';
@@ -2239,7 +2198,6 @@ async function processarSenha(){
           _senhaShowBloco('pergunta');
         }
       };
-<<<<<<< HEAD
 
       try {
         const cred = await firebase.auth().createUserWithEmailAndPassword(authEmail, senhaFirebase(senhaCriada));
@@ -2275,7 +2233,7 @@ async function processarSenha(){
       document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os acessos.';
       atualizarDots();
     }
-    
+
   } else if(senhaEtapa === 'reset-nova'){
     senhaCriada = alunoSenhaBuffer;
     alunoSenhaBuffer = '';
@@ -2334,205 +2292,6 @@ async function processarSenha(){
   }
 }
 
-// ── PROCESSAMENTO DA SENHA ──
-
-// Gera email fictício — sanitiza chars inválidos mas mantém @warpcode.app
-// para compatibilidade com contas já criadas no Firebase Auth
-function emailDoAluno(id){
-  const safe = (id||'').toLowerCase().replace(/[^a-z0-9._-]/g, '');
-  return `${safe}@warpcode.app`;
-}
-
-// Firebase exige mínimo 6 chars — PIN de 4 dígitos recebe sufixo invisível
-// Aluno digita "1234" → Firebase recebe "1234wc" (só internamente)
-function senhaFirebase(pin){ return pin + 'wc'; }
-
-  // Antes do login, dados estão em S.perfis; após login, em S.alunos
-  const a = S.perfis.find(x=>x.id===alunoAtual) || S.alunos.find(x=>x.id===alunoAtual);
-  if(!a) return;
-
-  if(senhaEtapa === 'login'){
-    setSyncing('syncing');
-    try {
-      // Firebase Auth verifica — senha nunca fica em texto puro
-      await firebase.auth().signInWithEmailAndPassword(
-        emailDoAluno(alunoAtual),
-        senhaFirebase(alunoSenhaBuffer)
-      );
-      // Carregar dados completos do aluno após autenticação
-      const docSnap = await COL.alunos().doc(alunoAtual).get();
-      if(docSnap.exists){
-        const idx = S.alunos.findIndex(x=>x.id===alunoAtual);
-        const dado = {id:alunoAtual,...docSnap.data()};
-        if(idx>=0) S.alunos[idx]=dado; else S.alunos.push(dado);
-        // Migração automática: salva authEmail se ainda não tem
-        // Necessário para as Firestore Rules funcionarem
-        if(!docSnap.data().authEmail){
-          const authEmail = emailDoAluno(alunoAtual);
-          await COL.alunos().doc(alunoAtual).update({ authEmail }).catch(()=>{});
-        }
-      }
-      ligarListenerAlunos('aluno', alunoAtual);
-      setSyncing('ok');
-      await finalizarEntrada();
-    } catch(e){
-      setSyncing('ok');
-      document.getElementById('senha-error').textContent = '❌ Senha incorreta. Tente novamente.';
-      alunoSenhaBuffer = '';
-      atualizarDots();
-    }
-
-  } else if(senhaEtapa === 'criar'){
-    senhaCriada = alunoSenhaBuffer;
-    alunoSenhaBuffer = '';
-    senhaEtapa = 'confirmar';
-    document.getElementById('senha-modo-titulo').textContent = 'CONFIRMAR SENHA';
-    document.getElementById('senha-modo-sub').textContent = 'Digite novamente para confirmar';
-    document.getElementById('senha-hint').textContent = '';
-    document.getElementById('senha-error').textContent = '';
-    atualizarDots();
-
-  } else if(senhaEtapa === 'confirmar'){
-    if(alunoSenhaBuffer === senhaCriada){
-      setSyncing('syncing');
-      const authEmail = emailDoAluno(alunoAtual);
-      const _entrarComSenha = async (pin) => {
-        // Carrega dados e finaliza entrada após login bem-sucedido
-        await Promise.all([
-          COL.alunos().doc(alunoAtual).update({ temSenha: true, authEmail, senhaPin: pin }).catch(()=>{}),
-          COL.perfis().doc(alunoAtual).update({ temSenha: true, senhaPin: pin }).catch(()=>{})
-        ]);
-        const docSnap = await COL.alunos().doc(alunoAtual).get();
-        if(docSnap.exists){
-          const idx = S.alunos.findIndex(x=>x.id===alunoAtual);
-          const dado = {id:alunoAtual,...docSnap.data()};
-          if(idx>=0) S.alunos[idx]=dado; else S.alunos.push(dado);
-        }
-        ligarListenerAlunos('aluno', alunoAtual);
-        setSyncing('ok');
-        // Só exibe pergunta secreta para quem ainda não cadastrou
-        const alunoDoc = S.alunos.find(x=>x.id===alunoAtual);
-        if(alunoDoc && alunoDoc.perguntaSecretaId !== undefined && alunoDoc.perguntaSecretaId !== null){
-          await finalizarEntrada();
-        } else {
-          // Novo aluno — convidar a cadastrar pergunta secreta
-          _popularPerguntasSel('pergunta-sel');
-          document.getElementById('pergunta-resp').value = '';
-          document.getElementById('pergunta-error').textContent = '';
-          document.getElementById('senha-modo-titulo').textContent = 'PRÓXIMO PASSO';
-          document.getElementById('senha-modo-sub').textContent = '';
-          _senhaShowBloco('pergunta');
-        }
-      };
-      try {
-        // Tenta criar conta nova no Firebase Auth
-        await firebase.auth().createUserWithEmailAndPassword(authEmail, senhaFirebase(senhaCriada));
-        // Salva temSenha, authEmail e senhaPin (visível no analytics do professor)
-        toast('🔒 Senha criada com sucesso!');
-        await _entrarComSenha(senhaCriada);
-      } catch(e){
-        if(e.code === 'auth/email-already-in-use'){
-=======
-      try {
-        // Tenta criar conta nova no Firebase Auth
-        await firebase.auth().createUserWithEmailAndPassword(authEmail, senhaFirebase(senhaCriada));
-        // Salva temSenha, authEmail e senhaPin (visível no analytics do professor)
-        toast('🔒 Senha criada com sucesso!');
-        await _entrarComSenha(senhaCriada);
-      } catch(e){
-        if(e.code === 'auth/email-already-in-use'){
->>>>>>> 9966376d61b1cb506a7d61d237c5bce03d706aab
-          // Conta já existe no Firebase Auth — tenta logar com a senha digitada
-          // (ocorre quando temSenha ficou desincronizado ou aluno criou senha antes)
-          try {
-            await firebase.auth().signInWithEmailAndPassword(authEmail, senhaFirebase(senhaCriada));
-            toast('🔒 Acesso confirmado!');
-            await _entrarComSenha(senhaCriada);
-          } catch(loginErr){
-            // Senha não confere com a conta existente no Firebase Auth
-            setSyncing('ok');
-            document.getElementById('senha-error').textContent = '⚠️ Sua conta já existe mas a senha não confere. Peça ao professor para redefinir.';
-            alunoSenhaBuffer = ''; senhaCriada = '';
-            senhaEtapa = 'criar';
-            document.getElementById('senha-modo-titulo').textContent = 'CRIAR SENHA';
-            document.getElementById('senha-modo-sub').textContent = 'Escolha uma senha de 4 dígitos';
-            document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os seus próximos acessos.';
-            atualizarDots();
-          }
-        } else {
-          toast('❌ Erro ao salvar senha!'); setSyncing('error');
-          alunoSenhaBuffer=''; atualizarDots();
-        }
-      }
-    } else {
-      document.getElementById('senha-error').textContent = '⚠️ As senhas não coincidem. Tente novamente.';
-      alunoSenhaBuffer = ''; senhaCriada = '';
-      senhaEtapa = 'criar';
-      document.getElementById('senha-modo-titulo').textContent = 'CRIAR SENHA';
-      document.getElementById('senha-modo-sub').textContent = 'Escolha uma senha de 4 dígitos';
-      document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os seus próximos acessos.';
-      atualizarDots();
-    }
-  } else if(senhaEtapa === 'reset-nova'){
-    senhaCriada = alunoSenhaBuffer;
-    alunoSenhaBuffer = '';
-    senhaEtapa = 'reset-confirmar';
-    document.getElementById('senha-modo-titulo').textContent = 'CONFIRMAR SENHA';
-    document.getElementById('senha-modo-sub').textContent = 'Digite novamente para confirmar';
-    document.getElementById('senha-error').textContent = '';
-    atualizarDots();
-
-  } else if(senhaEtapa === 'reset-confirmar'){
-    if(alunoSenhaBuffer !== senhaCriada){
-      document.getElementById('senha-error').textContent = '⚠️ As senhas não coincidem. Tente novamente.';
-      alunoSenhaBuffer = ''; senhaCriada = '';
-      senhaEtapa = 'reset-nova';
-      document.getElementById('senha-modo-titulo').textContent = 'NOVA SENHA';
-      document.getElementById('senha-modo-sub').textContent = 'Escolha uma nova senha de 4 dígitos';
-      atualizarDots();
-      return;
-    }
-    setSyncing('syncing');
-    const newPin = senhaCriada;
-    const aPerfil = S.perfis.find(x=>x.id===alunoAtual);
-    const authEmail2 = emailDoAluno(alunoAtual);
-    try {
-      // Autentica com a senha atual para poder chamar updatePassword
-      await firebase.auth().signInWithEmailAndPassword(authEmail2, senhaFirebase(aPerfil.senhaPin));
-      await firebase.auth().currentUser.updatePassword(senhaFirebase(newPin));
-      await Promise.all([
-        COL.alunos().doc(alunoAtual).update({ senhaPin: newPin }).catch(()=>{}),
-        COL.perfis().doc(alunoAtual).update({ senhaPin: newPin }).catch(()=>{})
-      ]);
-      // Atualiza cache local
-      const pIdx = S.perfis.findIndex(x=>x.id===alunoAtual);
-      if(pIdx>=0) S.perfis[pIdx].senhaPin = newPin;
-      const docSnap2 = await COL.alunos().doc(alunoAtual).get();
-      if(docSnap2.exists){
-        const idx2 = S.alunos.findIndex(x=>x.id===alunoAtual);
-        const dado2 = {id:alunoAtual,...docSnap2.data()};
-        if(idx2>=0) S.alunos[idx2]=dado2; else S.alunos.push(dado2);
-      }
-      ligarListenerAlunos('aluno', alunoAtual);
-      setSyncing('ok');
-      toast('✅ Senha redefinida com sucesso!');
-      await finalizarEntrada();
-    } catch(resetErr){
-      setSyncing('ok');
-      document.getElementById('senha-error').textContent = '❌ Não foi possível redefinir. Peça ao professor para resetar.';
-      alunoSenhaBuffer = ''; senhaCriada = '';
-      senhaEtapa = 'login';
-      document.getElementById('senha-modo-titulo').textContent = 'ENTRAR';
-      document.getElementById('senha-modo-sub').textContent = 'Digite sua senha de 4 dígitos';
-      document.getElementById('senha-hint').textContent = '';
-      _senhaShowBloco('pin');
-      const aP = S.perfis.find(x=>x.id===alunoAtual);
-      document.getElementById('senha-esqueci-wrap').style.display = (aP && aP.perguntaSecretaId !== undefined) ? '' : 'none';
-      atualizarDots();
-    }
-  }
-}
-
 // ── MIGRAÇÃO (rodar UMA VEZ no console após ativar Firebase Auth) ──
 // Cole no DevTools → Console: migrarSenhasExistentes()
 async function migrarSenhasExistentes(){
@@ -2540,46 +2299,19 @@ async function migrarSenhasExistentes(){
   if(!alunos.length){ console.log('Nenhum aluno com senha antiga para migrar.'); return; }
   console.log(`Migrando ${alunos.length} alunos...`);
   let ok = 0, erros = 0;
-<<<<<<< HEAD
-  
+
   for(const a of alunos){
     try {
       const cred = await firebase.auth().createUserWithEmailAndPassword(emailDoAluno(a.id), senhaFirebase(a.senha));
       const authEmail = emailDoAluno(a.id);
       const authUid = cred.user.uid; // Extrai o UID
-      
-      await COL.alunos().doc(a.id).update({ 
-        temSenha: true, 
-        authEmail, 
-        authUid, 
-        senha: firebase.firestore.FieldValue.delete() 
+
+      await COL.alunos().doc(a.id).update({
+        temSenha: true,
+        authEmail,
+        authUid,
+        senha: firebase.firestore.FieldValue.delete()
       });
-      console.log(`✅ ${a.nome}`);
-      ok++;
-    } catch(e){
-      if(e.code === 'auth/email-already-in-use'){
-        await COL.alunos().doc(a.id).update({ temSenha: true });
-        console.log(`⏭️ ${a.nome} (já existia)`);
-        ok++;
-      } else {
-        console.error(`❌ ${a.nome}:`, e.message);
-        erros++;
-      }
-    }
-  }
-  console.log(`\nPronto! ✅ ${ok} migrados  ❌ ${erros} erros`);
-}
-  const alunos = S.alunos.filter(a => a.senha);
-  if(!alunos.length){ console.log('Nenhum aluno com senha antiga para migrar.'); return; }
-  console.log(`Migrando ${alunos.length} alunos...`);
-  let ok = 0, erros = 0;
-=======
->>>>>>> 9966376d61b1cb506a7d61d237c5bce03d706aab
-  for(const a of alunos){
-    try {
-      await firebase.auth().createUserWithEmailAndPassword(emailDoAluno(a.id), senhaFirebase(a.senha));
-      const authEmail = emailDoAluno(a.id);
-      await COL.alunos().doc(a.id).update({ temSenha: true, authEmail, senha: firebase.firestore.FieldValue.delete() });
       console.log(`✅ ${a.nome}`);
       ok++;
     } catch(e){
@@ -3009,8 +2741,6 @@ async function salvarEdicaoAluno(id){
   if(senha&&(senha.length!==4||!/^\d{4}$/.test(senha)))return toast('⚠️ Senha deve ter exatamente 4 dígitos!');
   setSyncing('syncing');
   const update={nome,turma};
-<<<<<<< HEAD
-  
   try{
     if(senha){
       const email = emailDoAluno(id);
@@ -3028,11 +2758,11 @@ async function salvarEdicaoAluno(id){
       }
       update.temSenha = true;
     }
-    
+
     await COL.alunos().doc(id).update(update);
     const perfilUpdate={nome,turma};
     if(update.temSenha!==undefined) perfilUpdate.temSenha=update.temSenha;
-    
+
     await COL.perfis().doc(id).update(perfilUpdate);
     closeModal('modal-editar-aluno');
     renderModalTurmaLista(document.getElementById('turma-search')?.value||'');
@@ -3042,45 +2772,6 @@ async function salvarEdicaoAluno(id){
     toast('❌ Erro!');
     setSyncing('error');
   }
-}
-  const nome=document.getElementById('edit-nome')?.value.trim();
-  const turma=document.getElementById('edit-turma')?.value;
-  const senha=document.getElementById('edit-senha')?.value.trim();
-  if(!nome)return toast('⚠️ Digite o nome!');
-  if(senha&&(senha.length!==4||!/^\d{4}$/.test(senha)))return toast('⚠️ Senha deve ter exatamente 4 dígitos!');
-  setSyncing('syncing');
-  const update={nome,turma};
-=======
->>>>>>> 9966376d61b1cb506a7d61d237c5bce03d706aab
-  try{
-    // Se professor digitou nova senha, atualiza no Firebase Auth
-    if(senha){
-      const email = emailDoAluno(id); // ← sanitizado
-      update.senhaPin = senha; // ← sempre salvar PIN para analytics
-      try {
-        // Tenta criar (caso aluno ainda não tenha conta Auth)
-        await firebase.auth().createUserWithEmailAndPassword(email, senhaFirebase(senha));
-        update.authEmail = email; // ← salva para as Rules
-        update.senhaResetPendente = false;
-      } catch(authErr) {
-        if(authErr.code === 'auth/email-already-in-use'){
-          // Conta já existe — PIN salvo no Firestore, aluno entra com a senha antiga
-          // Na próxima vez que o aluno acessar com a senha antiga, o sistema atualiza
-          update.senhaResetPendente = true;
-          toast('⚠️ PIN salvo! O aluno deve entrar com a senha antiga e depois o professor pode resetar via edição.');
-        }
-      }
-      update.temSenha = true;
-    }
-    await COL.alunos().doc(id).update(update);
-    // Sincronizar campos de perfil público
-    const perfilUpdate={nome,turma};
-    if(update.temSenha!==undefined) perfilUpdate.temSenha=update.temSenha;
-    await COL.perfis().doc(id).update(perfilUpdate);
-    closeModal('modal-editar-aluno');
-    renderModalTurmaLista(document.getElementById('turma-search')?.value||'');
-    toast('✅ Aluno atualizado!');setSyncing('ok');
-  }catch(e){toast('❌ Erro!');setSyncing('error');}
 }
 
 function renderPAprovacoes(){
