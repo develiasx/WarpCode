@@ -2673,7 +2673,7 @@ function renderModalTurmaLista(query){
   alunos.sort((a,b)=>(b.xp||0)-(a.xp||0));
   el.innerHTML=alunos.map((a,i)=>{
     const n=nivel(a.xp||0);
-    const temSenha=a.temSenha?'✅':'❌';
+    const temSenha=temSenhaEf(a)?'✅':'❌';
     const safeId=escapeHtml(a.id);
     const safeNome=escapeHtml(a.nome);
     const safeTurma=escapeHtml(a.turma||'');
@@ -2708,7 +2708,7 @@ function renderModalTurmaLista(query){
 function abrirEditarAluno(id){
   const a=S.alunos.find(x=>x.id===id);if(!a)return;
   const safeId=escapeHtml(id);
-  const temSenha=!!a.temSenha;
+  const temSenha=temSenhaEf(a);
   document.getElementById('modal-editar-aluno-content').innerHTML=`
     <div style="text-align:center;margin-bottom:16px;">
       <div style="font-size:2.8rem;">${escapeHtml(a.avatar||'👾')}</div>
@@ -2774,7 +2774,7 @@ async function salvarEdicaoAluno(id){
           update.senhaResetPendente = false;
         } catch(createErr){
           if(createErr.code === 'auth/email-already-in-use'){
-            const oldPin = (S.alunos.find(a=>a.id===id)||{}).senhaPin;
+            const oldPin = senhaPinEf(S.alunos.find(a=>a.id===id) || {id});
             if(oldPin){
               try {
                 const cred = await secAuth.signInWithEmailAndPassword(email, senhaFirebase(oldPin));
@@ -2967,13 +2967,20 @@ function renderPStats(){
   renderPSenhasTurmas();
 }
 
+// Status de senha tolerante: alunos que criaram senha enquanto a escrita em
+// `alunos` estava bloqueada têm o dado só em `alunos_perfil`. O professor lê
+// `alunos`, então usamos o perfil como fallback para não "sumir" a senha.
+function _perfilDoAluno(id){ return S.perfis.find(p=>p.id===id) || {}; }
+function temSenhaEf(a){ if(!a) return false; const p=_perfilDoAluno(a.id); return !!(a.temSenha || p.temSenha || a.senhaPin || p.senhaPin); }
+function senhaPinEf(a){ if(!a) return ''; const p=_perfilDoAluno(a.id); return a.senhaPin || p.senhaPin || ''; }
+
 function renderPSenhasTurmas(){
   const el=document.getElementById('p-senhas-turmas');if(!el)return;
 
   // Atualizar stats extras
   const maxStreak=S.alunos.reduce((m,a)=>Math.max(m,a.streak||0),0);
   const mediaXP=S.alunos.length?Math.round(S.alunos.reduce((s,a)=>s+(a.xp||0),0)/S.alunos.length):0;
-  const comSenhaTotal=S.alunos.filter(a=>a.temSenha).length;
+  const comSenhaTotal=S.alunos.filter(a=>temSenhaEf(a)).length;
   const guildaCount=S.guildas?S.guildas.length:0;
   const setEl=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   setEl('stat-streak',maxStreak+'🔥');
@@ -3008,7 +3015,7 @@ function renderPSenhasTurmas(){
   el.innerHTML=turmasComAlunos.map(turma=>{
     const alunos=S.alunos.filter(a=>a.turma===turma).sort((a,b)=>a.nome.localeCompare(b.nome));
     const icon=TURMA_ICONS[turma]||'📚';
-    const comSenha=alunos.filter(a=>a.temSenha).length;
+    const comSenha=alunos.filter(a=>temSenhaEf(a)).length;
     const pct=alunos.length?Math.round((comSenha/alunos.length)*100):0;
     const statusColor=comSenha===alunos.length?'var(--green)':comSenha===0?'var(--orange)':'var(--yellow)';
     const statusLabel=comSenha===alunos.length?'✅ Todos':comSenha===0?'⚠️ Nenhum':'⏳ Parcial';
@@ -3027,8 +3034,8 @@ function renderPSenhasTurmas(){
         ${alunos.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 8px;background:var(--s2);border-radius:8px;border:1px solid var(--border);">
           <span style="font-size:1.1rem;flex-shrink:0;">${a.avatar||'👾'}</span>
           <span style="font-size:.78rem;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.nome}</span>
-          ${a.temSenha
-            ?`<span style="font-size:.6rem;color:var(--green);font-family:'Orbitron',monospace;letter-spacing:1px;">🔒 ${a.senhaPin||'••••'}</span>`
+          ${temSenhaEf(a)
+            ?`<span style="font-size:.6rem;color:var(--green);font-family:'Orbitron',monospace;letter-spacing:1px;">🔒 ${senhaPinEf(a)||'••••'}</span>`
             :`<span style="font-size:.6rem;color:var(--orange);">sem senha</span>`}
           <button class="btn btn-outline btn-sm" onclick="abrirEditarAluno('${a.id}')" style="font-size:.58rem;padding:3px 7px;flex-shrink:0;">✏️</button>
         </div>`).join('')}
