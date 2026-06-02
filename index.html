@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>WarpCode — ScratchQuest Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -255,11 +255,14 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .page.active{display:block;}
 #apage-chat{height:calc(100vh - 60px);}
 #apage-chat.active{display:flex;flex-direction:column;}
+#ppage-chat{height:calc(100vh - 60px);}
+#ppage-chat.active{display:flex;flex-direction:column;}
 .chat-online-panel{width:150px;flex-shrink:0;}
 @media(max-width:768px){
   .chat-online-panel{display:none;}
   #apage-chat{height:calc(100dvh - 60px - 72px) !important;}
-  #chat-msgs{min-height:180px;}
+  #ppage-chat{height:calc(100dvh - 60px - 72px) !important;}
+  #chat-msgs,#p-chat-msgs{min-height:180px;}
 }
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
@@ -719,7 +722,6 @@ select option{background:var(--s1);}
 .correio-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;padding:2px 6px;border-radius:6px;opacity:0;transition:opacity .15s;}
 .correio-item:hover .correio-del{opacity:1;}
 .correio-del:hover{color:var(--red);background:rgba(239,68,68,.1);}
-.correios-filtros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
 .correio-filtro{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:.65rem;font-family:"Orbitron",monospace;cursor:pointer;transition:all .18s;letter-spacing:.5px;color:var(--muted2);}
 .correio-filtro:hover,.correio-filtro.ativo{background:rgba(0,212,255,.15);border-color:var(--accent);color:var(--accent);}
 .correio-badge{position:absolute;top:10px;right:10px;background:var(--accent);color:#000;font-size:.5rem;font-weight:900;padding:2px 7px;border-radius:10px;font-family:'Orbitron',monospace;letter-spacing:1px;}
@@ -869,6 +871,188 @@ select option{background:var(--s1);}
   position: relative;
   z-index: 1;
 }
+/* ══════════════════════════════════════
+   MOBILE RESPONSIVENESS — CORREÇÕES
+══════════════════════════════════════ */
+
+/* ── Toast acima do nav bar ── */
+@media (max-width: 768px) {
+  .toast {
+    bottom: calc(76px + env(safe-area-inset-bottom, 6px)) !important;
+    font-size: .8rem;
+    padding: 10px 16px;
+    max-width: 85vw;
+    white-space: normal;
+    text-align: center;
+  }
+
+  /* Conteúdo principal: safe-area no fundo */
+  .main-content {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* ── Emoji grid: 7 colunas (tappable) ── */
+  #chat-ep-grid,
+  #p-chat-ep-grid {
+    grid-template-columns: repeat(7, 1fr) !important;
+  }
+  .emoji-btn {
+    font-size: 1.15rem !important;
+    min-height: 38px;
+    padding: 4px 2px !important;
+  }
+
+  /* ── GIF grid: 2 colunas no mobile ── */
+  #chat-gif-results,
+  #p-chat-gif-results {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* ── Weekly card: badge não sobrepõe conteúdo ── */
+  .weekly-card::before {
+    position: static !important;
+    display: inline-block !important;
+    margin-bottom: 8px !important;
+    font-size: .5rem !important;
+  }
+  .weekly-card { padding: 14px !important; }
+
+  /* ── Form-row: botões viram bloco ── */
+  .form-row > div:not(.form-group) {
+    width: 100% !important;
+    flex-shrink: 0 !important;
+  }
+  .form-row > div:not(.form-group) > .btn,
+  .form-row > div:not(.form-group) .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── Approval actions: botões full width ── */
+  .approval-actions {
+    flex-direction: column;
+  }
+  .approval-actions > .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── Page-hdr: ações em linha flexível ── */
+  .page-hdr {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .page-hdr > div:last-child:not(:first-child) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+  .page-hdr > div:last-child:not(:first-child) > .btn {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* ── Stat boxes: fonte menor no grid 2x2 ── */
+  .stat-val { font-size: 1.35rem; }
+  .stat-lbl { font-size: .55rem; }
+
+  /* ── Rank item: mais compacto ── */
+  .rank-item {
+    padding: 10px 11px;
+    gap: 8px;
+  }
+  .rnum { font-size: .88rem; width: 26px; }
+
+  /* ── Remove hover transforms (touch) ── */
+  .rank-item:hover,
+  .mission-card:hover,
+  .turma-neon-card:hover,
+  .btn-primary:hover {
+    transform: none !important;
+  }
+
+  /* ── WC balance: compacto no page-hdr ── */
+  .wc-balance-big { font-size: 1.5rem !important; }
+
+  /* ── WC exchange: botão full width ── */
+  .wc-exchange-box .form-row {
+    flex-direction: column;
+  }
+  .wc-exchange-box .btn {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+
+  /* ── Vitrine header: sem overflow ── */
+  .vitrine-header { flex-wrap: wrap; }
+
+  /* ── Modal mobile: padding menor ── */
+  .modal { padding: 18px 14px !important; }
+
+  /* ── Shop card footer: stack em telas estreitas ── */
+  .shop-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .shop-footer > div { width: 100%; display: flex; gap: 6px; }
+  .shop-footer > div > .btn { flex: 1; }
+
+  /* ── Guilda grid: sempre 2 colunas ── */
+  .guilda-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* ── Activity feed: sem overflow ── */
+  .activity-time { font-size: .58rem; }
+
+  /* ── Turmas na aba alunos: 2 colunas ── */
+  #p-turmas-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* ── Chat page: tab-bar sticky não colide com topbar ── */
+  #apage-missoes > div[style*="sticky"] { top: 0 !important; }
+
+  /* ── Student card botões: tap targets ── */
+  .student-card > div:last-child > .btn { min-height: 34px; }
+
+  /* ── Desafio form-row dentro de card ── */
+  #ppage-desafio .card .form-row { flex-direction: column; }
+
+  /* ── Botão enviar semanal ── */
+  #d-enviar-btn { width: 100%; justify-content: center; }
+
+  /* ── Correios: filtros scrolláveis sem wrap ── */
+  .correios-filtros { flex-wrap: nowrap !important; overflow-x: auto; padding-bottom: 4px; gap: 5px; }
+  .correio-filtro { flex-shrink: 0; }
+
+  /* ── Loja aluno: filtros scrolláveis ── */
+  #apage-wcloja > div[style*="flex-wrap"] { flex-wrap: nowrap !important; overflow-x: auto; padding-bottom: 4px; gap: 5px; }
+  #apage-wcloja > div[style*="flex-wrap"] > .btn { flex-shrink: 0; }
+
+  /* ── Sync indicator: menor ── */
+  .sync-indicator { font-size: .65rem; gap: 4px; }
+}
+
+/* ── Telas muito pequenas (≤ 400px) ── */
+@media (max-width: 400px) {
+  .main-content { padding: 10px; padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)) !important; }
+  .card { padding: 12px; }
+  .page-title { font-size: .85rem; }
+  .steam-stat-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .stat-val { font-size: 1.15rem; }
+  .badge-grid { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); }
+  #chat-ep-grid, #p-chat-ep-grid { grid-template-columns: repeat(6, 1fr) !important; }
+  .emoji-btn { font-size: 1rem !important; min-height: 34px; }
+  .btn { font-size: .8rem; padding: 9px 14px; }
+  .btn-sm { font-size: .68rem; padding: 5px 10px; }
+  .weekly-timer { font-size: .64rem !important; }
+  .rank-item { gap: 6px; padding: 9px 8px; }
+  .rnum { width: 22px; font-size: .78rem; }
+  .mtitle { font-size: .86rem; }
+  .mdesc { font-size: .74rem; }
+  .turma-neon-card { padding: 18px 10px; }
+}
+
 </style>
 </head>
 <body>
@@ -970,6 +1154,7 @@ select option{background:var(--s1);}
         <button class="snav" id="snav-ranking" onclick="profTab('ranking','snav-ranking')"><span class="snav-ic">🏆</span>Ranking</button>
         <button class="snav" id="snav-pin" onclick="profTab('pin','snav-pin')"><span class="snav-ic">📊</span>Analytics</button>
         <button class="snav" id="snav-vitrine" onclick="profTab('vitrine','snav-vitrine')"><span class="snav-ic">🌟</span>Vitrine</button>
+        <button class="snav" id="snav-chat" onclick="profTab('chat','snav-chat')"><span class="snav-ic">💬</span>Chat da Turma</button>
       </nav>
       <div class="sidebar-back"><button onclick="goLogin()">← Sair</button></div>
     </aside>
@@ -995,8 +1180,9 @@ select option{background:var(--s1);}
                 <option>9º Ano A</option><option>9º Ano B</option><option>9º Ano C</option>
               </select>
             </div>
-            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
-              <button class="btn btn-primary" onclick="cadastrarAluno()">➕ Cadastrar</button>
+            <div class="form-group" style="flex:0 0 auto;align-self:flex-end;">
+              <label style="opacity:0;pointer-events:none;">‎</label>
+              <button class="btn btn-primary" style="width:100%;" onclick="cadastrarAluno()">➕ Cadastrar</button>
             </div>
           </div>
         </div>
@@ -1005,8 +1191,9 @@ select option{background:var(--s1);}
           <div class="form-row">
             <div class="form-group" style="flex:1;"><label>Aluno</label><select id="p-msg-aluno"></select></div>
             <div class="form-group" style="flex:3;"><label>Mensagem personalizada</label><input id="p-msg-texto" placeholder="Ex: Parabéns pelo projeto! Continue assim 🚀" maxlength="200"></div>
-            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
-              <button class="btn btn-primary" onclick="enviarMsgProfessor()" style="background:linear-gradient(135deg,var(--accent),var(--purple));">✉️ Enviar</button>
+            <div class="form-group" style="flex:0 0 auto;align-self:flex-end;">
+              <label style="opacity:0;pointer-events:none;">‎</label>
+              <button class="btn btn-primary" style="width:100%;" onclick="enviarMsgProfessor()" style="background:linear-gradient(135deg,var(--accent),var(--purple));">✉️ Enviar</button>
             </div>
           </div>
         </div>
@@ -1014,8 +1201,9 @@ select option{background:var(--s1);}
           <div class="sec-title">📢 Aviso para Todos os Alunos</div>
           <div class="form-row">
             <div class="form-group" style="flex:3;"><label>Mensagem que vai para o Correios de todos</label><input id="p-msg-todos-texto" placeholder="Ex: Aula de robótica adiantada para quinta! 🤖" maxlength="200"></div>
-            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
-              <button class="btn btn-primary" onclick="enviarAvisoTodos()" style="background:linear-gradient(135deg,#f59e0b,#f97316);color:#000;">📢 Enviar a Todos</button>
+            <div class="form-group" style="flex:0 0 auto;align-self:flex-end;">
+              <label style="opacity:0;pointer-events:none;">‎</label>
+              <button class="btn btn-primary" style="width:100%;background:linear-gradient(135deg,#f59e0b,#f97316);color:#000;" onclick="enviarAvisoTodos()">📢 Enviar a Todos</button>
             </div>
           </div>
         </div>
@@ -1041,8 +1229,9 @@ select option{background:var(--s1);}
                 <option value="500">Desafio especial (+500 XP)</option>
               </select>
             </div>
-            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
-              <button class="btn btn-primary" onclick="darXP()">⚡ Dar XP</button>
+            <div class="form-group" style="flex:0 0 auto;align-self:flex-end;">
+              <label style="opacity:0;pointer-events:none;">‎</label>
+              <button class="btn btn-primary" style="width:100%;" onclick="darXP()">⚡ Dar XP</button>
             </div>
           </div>
         </div>
@@ -1126,8 +1315,65 @@ select option{background:var(--s1);}
           </div>
         </div>
 
-        <div class="sec-title">Desafios Ativos</div>
-        <div id="p-desafio-atual"></div>
+        <!-- LISTA DESAFIOS SEMANAIS -->
+        <div class="sec-title" style="margin-top:8px;">🔥 Desafios em Aberto <span id="p-desafio-count-ativos" style="font-size:.7rem;color:var(--muted);font-family:'Orbitron',monospace;"></span></div>
+        <div id="p-desafio-ativos"></div>
+        <div class="sec-title" style="margin-top:20px;color:var(--muted2);">📦 Desafios Encerrados <span id="p-desafio-count-enc" style="font-size:.7rem;color:var(--muted);font-family:'Orbitron',monospace;"></span></div>
+        <div id="p-desafio-encerrados"></div>
+
+        <!-- MISSÕES PUBLICADAS -->
+        <div class="sec-title" style="margin-top:24px;color:var(--accent);">🎯 Missões Publicadas para Alunos <span id="p-missoes-count" style="font-size:.7rem;color:var(--muted);font-family:'Orbitron',monospace;"></span></div>
+        <div style="font-size:.75rem;color:var(--muted2);margin-bottom:10px;">Todas as missões individuais e de equipe disponíveis na aba de missões dos alunos.</div>
+        <div id="p-missoes-publicadas"></div>
+
+        <!-- MODAL EDITAR DESAFIO SEMANAL -->
+        <div id="modal-edit-desafio" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9991;align-items:center;justify-content:center;padding:20px;">
+          <div style="background:var(--s1);border:1px solid var(--border2);border-radius:var(--radius);padding:26px;max-width:500px;width:100%;max-height:92vh;overflow-y:auto;position:relative;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--accent));border-radius:var(--radius) var(--radius) 0 0;"></div>
+            <input type="hidden" id="edit-desafio-id">
+            <div style="font-family:'Orbitron',monospace;font-size:.9rem;color:var(--orange);margin-bottom:16px;">✏️ Editar Desafio Semanal</div>
+            <div class="form-group" style="margin-bottom:12px;"><label>Título</label><input id="edit-d-titulo" maxlength="100"></div>
+            <div class="form-group" style="margin-bottom:12px;"><label>Descrição</label><textarea id="edit-d-desc" style="min-height:80px;"></textarea></div>
+            <div class="form-group" style="margin-bottom:12px;"><label>🎬 Link de Vídeo (opcional)</label><input id="edit-d-video" type="url" placeholder="https://youtube.com/watch?v=..."></div>
+            <div class="form-row" style="gap:10px;margin-bottom:6px;">
+              <div class="form-group" style="flex:1;"><label>XP Bônus</label><input id="edit-d-xp" type="number" min="50" step="50"></div>
+              <div class="form-group" style="flex:1;"><label>Estender por (dias)</label><input id="edit-d-dias" type="number" min="0" max="60" placeholder="0 = manter"></div>
+            </div>
+            <div style="font-size:.72rem;color:var(--muted);margin-bottom:14px;">💡 Deixe em 0 para manter a data atual. Informe um valor para recalcular a partir de hoje.</div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-outline" style="flex:1;" onclick="fecharModalEditDesafio()">Cancelar</button>
+              <button class="btn btn-orange" style="flex:2;background:linear-gradient(135deg,var(--orange),#f97316);border:none;color:#000;font-weight:700;" onclick="salvarEdicaoDesafio()">💾 Salvar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL EDITAR MISSÃO COMUM -->
+        <div id="modal-edit-missao" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9991;align-items:center;justify-content:center;padding:20px;">
+          <div style="background:var(--s1);border:1px solid rgba(0,212,255,.3);border-radius:var(--radius);padding:26px;max-width:500px;width:100%;max-height:92vh;overflow-y:auto;position:relative;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:var(--radius) var(--radius) 0 0;"></div>
+            <input type="hidden" id="edit-missao-id">
+            <div style="font-family:'Orbitron',monospace;font-size:.9rem;color:var(--accent);margin-bottom:16px;">✏️ Editar Missão</div>
+            <div class="form-group" style="margin-bottom:12px;"><label>Título</label><input id="edit-m-titulo" maxlength="100"></div>
+            <div class="form-group" style="margin-bottom:12px;"><label>Descrição</label><textarea id="edit-m-desc" style="min-height:80px;"></textarea></div>
+            <div class="form-group" style="margin-bottom:12px;"><label>🎬 Link de Vídeo (opcional)</label><input id="edit-m-video" type="url" placeholder="https://youtube.com/watch?v=..."></div>
+            <div class="form-row" style="gap:10px;margin-bottom:16px;">
+              <div class="form-group" style="flex:1;"><label>⚡ XP</label><input id="edit-m-xp" type="number" min="50" step="50"></div>
+              <div class="form-group" style="flex:1;"><label>🪙 WarpCoins</label><input id="edit-m-wc" type="number" min="0" step="5"></div>
+              <div class="form-group" style="flex:1;"><label>Dificuldade</label>
+                <select id="edit-m-dif">
+                  <option value="easy">🟢 Fácil</option>
+                  <option value="medium">🟡 Médio</option>
+                  <option value="hard">🔴 Difícil</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-outline" style="flex:1;" onclick="fecharModalEditMissao()">Cancelar</button>
+              <button class="btn btn-primary" style="flex:2;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;" onclick="salvarEdicaoMissao()">💾 Salvar</button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- LOJA -->
@@ -1198,6 +1444,36 @@ select option{background:var(--s1);}
         <div id="pin-display" style="display:none;"></div>
       </div>
 
+      <!-- CHAT PROFESSOR -->
+      <div id="ppage-chat" class="page">
+        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com os alunos em tempo real</div></div><div id="p-online-count" style="font-size:.75rem;color:var(--green);font-weight:700;"></div></div>
+        <div style="display:flex;gap:14px;flex:1;min-height:0;overflow:hidden;">
+          <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
+            <div id="p-chat-msgs" style="flex:1;overflow-y:auto;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:14px;display:flex;flex-direction:column;gap:8px;"></div>
+            <div id="p-chat-emoji-panel" style="display:none;background:var(--s2);border:1px solid var(--border);border-top:none;max-height:220px;overflow:hidden;flex-direction:column;">
+              <div style="display:flex;gap:2px;padding:6px 8px;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;" id="p-chat-ep-cats"></div>
+              <div id="p-chat-ep-grid" style="display:grid;grid-template-columns:repeat(10,1fr);gap:1px;padding:6px;overflow-y:auto;flex:1;"></div>
+            </div>
+            <div id="p-chat-gif-panel" style="display:none;background:var(--s2);border:1px solid var(--border);border-top:none;max-height:240px;overflow:hidden;flex-direction:column;">
+              <div style="padding:8px;border-bottom:1px solid var(--border);flex-shrink:0;">
+                <input id="p-chat-gif-search" placeholder="🔍 Buscar GIF..." style="width:100%;" oninput="profChatBuscarGifs(this.value)">
+              </div>
+              <div id="p-chat-gif-results" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;padding:8px;overflow-y:auto;flex:1;"></div>
+            </div>
+            <div style="display:flex;gap:6px;background:var(--s2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:8px;align-items:center;flex-shrink:0;">
+              <button class="btn btn-outline btn-sm" onclick="profChatToggleEmoji()" title="Emojis" style="font-size:1.1rem;padding:6px 10px;flex-shrink:0;">😊</button>
+              <button class="btn btn-outline btn-sm" onclick="profChatToggleGif()" title="GIF" style="font-size:.68rem;font-weight:900;padding:6px 9px;letter-spacing:1px;flex-shrink:0;">GIF</button>
+              <input id="p-chat-input" placeholder="Digite uma mensagem como Professor..." style="flex:1;min-width:0;" onkeydown="if(event.key==='Enter')enviarChatProf()" maxlength="300">
+              <button class="btn btn-primary btn-sm" onclick="enviarChatProf()" style="flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--purple));">➤</button>
+            </div>
+          </div>
+          <div class="chat-online-panel">
+            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online</div>
+            <div id="p-online-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+          </div>
+        </div>
+      </div>
+
     </main>
     <div class="mobile-bottomnav">
       <div class="mobile-nav-inner">
@@ -1206,6 +1482,7 @@ select option{background:var(--s1);}
         <button class="mnav" id="mnav-desafio" onclick="profTab('desafio','mnav-desafio',true)"><span class="mnav-ic">🔥</span>Desafio</button>
         <button class="mnav" id="mnav-loja" onclick="profTab('loja','mnav-loja',true)"><span class="mnav-ic">🛒</span>Loja</button>
         <button class="mnav" id="mnav-pin" onclick="profTab('pin','mnav-pin',true)"><span class="mnav-ic">📊</span>Analytics</button>
+        <button class="mnav" id="mnav-chat" onclick="profTab('chat','mnav-chat',true)"><span class="mnav-ic">💬</span>Chat</button>
       </div>
     </div>
   </div>
@@ -1387,11 +1664,10 @@ select option{background:var(--s1);}
       <!-- CORREIOS -->
       <div id="apage-correios" class="page">
         <div class="page-hdr"><div><div class="page-title">📬 Correios</div><div class="page-sub">Suas notificações e mensagens</div></div>
-          <div style="display:flex;gap:6px;flex-shrink:0;">
+          <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
             <button class="btn btn-outline btn-sm" style="font-size:.68rem;" onclick="marcarTodosLidos()">✓ Marcar lidos</button>
             <button class="btn btn-outline btn-sm" style="font-size:.68rem;color:var(--red);border-color:var(--red);" onclick="limparTodosCorreios()">🗑️ Limpar tudo</button>
           </div>
-          <button class="btn btn-outline btn-sm" onclick="marcarTodosLidos()" style="font-size:.68rem;">✓ Marcar tudo como lido</button>
         </div>
         <div id="correios-lista"></div>
       </div>
@@ -2587,7 +2863,7 @@ async function finalizarEntrada(){
   }
 }
 
-const PROF_LABELS={alunos:'Alunos',aprovar:'Aprovar Missões',desafio:'Desafio da Semana',loja:'Loja',ranking:'Ranking',pin:'Analytics',vitrine:'Vitrine'};
+const PROF_LABELS={alunos:'Alunos',aprovar:'Aprovar Missões',desafio:'Desafio da Semana',loja:'Loja',ranking:'Ranking',pin:'Analytics',vitrine:'Vitrine',chat:'Chat da Turma'};
 function profTab(tab,navId,isMobile=false){
   document.querySelectorAll('[id^="ppage-"]').forEach(p=>p.classList.remove('active'));
   const pg=document.getElementById('ppage-'+tab);if(pg)pg.classList.add('active');
@@ -2597,6 +2873,7 @@ function profTab(tab,navId,isMobile=false){
   const mb=document.getElementById('mnav-'+tab);if(mb)mb.classList.add('active');
   document.getElementById('prof-topbar-title').textContent=(PROF_LABELS[tab]||'').toUpperCase();
   if(tab==='vitrine') renderPVitrine();
+  else if(tab==='chat') initProfChat();
   else renderProf();
 }
 let _missTabAtual = 'abertas';
@@ -2938,30 +3215,128 @@ function renderPResgates(){
 }
 
 function renderPDesafio(){
-  const el=document.getElementById('p-desafio-atual');
-  const ativos=S.desafios.filter(d=>new Date(d.expira)>new Date());
-  if(!ativos.length){el.innerHTML=`<div class="empty" style="padding:20px;"><div class="empty-icon">🔥</div><div class="empty-text">Nenhum desafio ativo.<br>Configure acima!</div></div>`;return;}
-  el.innerHTML=ativos.map(d=>{
-    const expira=new Date(d.expira);
-    const dias=Math.max(0,Math.ceil((expira-new Date())/(1000*60*60*24)));
-    const safeVideo=sanitizeUrl(d.video||'');
-    const safeId=escapeHtml(d.id);
-    return `<div class="weekly-card" style="margin-bottom:12px;">
-      <div class="mtitle">${escapeHtml(d.titulo)}</div>
-      <div class="mdesc">${escapeHtml(d.desc)}</div>
-      ${safeVideo?`<div style="margin-top:8px;font-size:.75rem;color:var(--accent);">🎬 <a href="${escapeHtml(safeVideo)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(safeVideo)}</a></div>`:''}
-      <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
-        <span class="mdiff diff-weekly">Semanal</span>
-        <span class="mxp">+${Number(d.xp)||0} XP</span>
-        <span class="weekly-timer">⏱ ${dias} dia(s) restante(s)</span>
+  const now = new Date();
+  const ativos     = S.desafios.filter(d => new Date(d.expira) > now);
+  const encerrados = S.desafios.filter(d => new Date(d.expira) <= now);
+  const cntAtivos  = document.getElementById('p-desafio-count-ativos');
+  const cntEnc     = document.getElementById('p-desafio-count-enc');
+  if(cntAtivos) cntAtivos.textContent = ativos.length ? `(${ativos.length})` : '';
+  if(cntEnc)    cntEnc.textContent    = encerrados.length ? `(${encerrados.length})` : '';
+
+  function desafioCardHtml(d, isAtivo){
+    const expira   = new Date(d.expira);
+    const diffDias = Math.ceil(Math.abs(expira - now) / (1000*60*60*24));
+    const tempoTxt = isAtivo ? `⏱ ${diffDias} dia(s) restante(s)` : `🕒 Encerrado há ${diffDias} dia(s)`;
+    const safeVideo = sanitizeUrl(d.video||'');
+    const safeId    = escapeHtml(d.id);
+    const envios    = S.pendentes.filter(p => p.desafioId === d.id).length;
+    const aprovados = S.pendentes.filter(p => p.desafioId === d.id && p.aprovado).length;
+    const borderColor = isAtivo ? 'rgba(249,115,22,.35)' : 'rgba(100,116,139,.2)';
+    const bgColor     = isAtivo ? 'rgba(249,115,22,.04)' : 'rgba(100,116,139,.03)';
+    const statusColor = isAtivo ? 'var(--orange)' : 'var(--muted)';
+    return `<div class="weekly-card" style="margin-bottom:12px;border-color:${borderColor};background:${bgColor};">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+        <div class="mtitle" style="color:${statusColor};">${escapeHtml(d.titulo)}</div>
+        <span style="font-size:.62rem;font-family:'Orbitron',monospace;padding:2px 8px;border-radius:5px;background:${isAtivo?'rgba(249,115,22,.15)':'rgba(100,116,139,.15)'};color:${statusColor};white-space:nowrap;">${isAtivo?'✅ ATIVO':'⛔ ENCERRADO'}</span>
       </div>
-      <button class="btn btn-danger btn-sm" style="margin-top:12px;" data-action="remover-desafio" data-id="${safeId}">Encerrar</button>
+      ${d.desc?`<div class="mdesc" style="margin-top:6px;">${escapeHtml(d.desc)}</div>`:''}
+      ${safeVideo?`<div style="margin-top:6px;font-size:.73rem;color:var(--accent);">🎬 <a href="${escapeHtml(safeVideo)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(safeVideo)}</a></div>`:''}
+      <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+        <span class="mxp">+${Number(d.xp)||0} XP</span>
+        <span class="weekly-timer" style="color:${statusColor};">${tempoTxt}</span>
+        <span style="font-size:.72rem;background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.25);padding:2px 8px;border-radius:5px;">📤 ${envios} envio(s) · ✅ ${aprovados} aprovado(s)</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" data-action="editar-desafio" data-id="${safeId}" style="color:var(--accent);border-color:rgba(0,212,255,.35);">✏️ Editar</button>
+        ${isAtivo
+          ? `<button class="btn btn-danger btn-sm" data-action="encerrar-desafio" data-id="${safeId}">⛔ Encerrar</button>`
+          : `<button class="btn btn-danger btn-sm" data-action="excluir-desafio" data-id="${safeId}" style="background:rgba(239,68,68,.12);color:var(--red);">🗑️ Excluir</button>`
+        }
+      </div>
     </div>`;
-  }).join('');
-  // Event delegation seguro
-  el.querySelectorAll('[data-action="remover-desafio"]').forEach(btn=>{
-    btn.addEventListener('click',()=>removerDesafio(btn.dataset.id));
+  }
+
+  const elAtivos = document.getElementById('p-desafio-ativos');
+  if(elAtivos){
+    elAtivos.innerHTML = ativos.length
+      ? ativos.map(d => desafioCardHtml(d, true)).join('')
+      : `<div class="empty" style="padding:20px;"><div class="empty-icon">🔥</div><div class="empty-text">Nenhum desafio ativo.<br>Configure acima!</div></div>`;
+  }
+  const elEnc = document.getElementById('p-desafio-encerrados');
+  if(elEnc){
+    elEnc.innerHTML = encerrados.length
+      ? encerrados.map(d => desafioCardHtml(d, false)).join('')
+      : `<div style="color:var(--muted);font-size:.78rem;padding:12px 0;">Nenhum desafio encerrado ainda.</div>`;
+  }
+  [elAtivos, elEnc].forEach(container => {
+    if(!container) return;
+    container.querySelectorAll('[data-action="editar-desafio"]').forEach(btn =>
+      btn.addEventListener('click', () => abrirEditarDesafio(btn.dataset.id))
+    );
+    container.querySelectorAll('[data-action="encerrar-desafio"]').forEach(btn =>
+      btn.addEventListener('click', () => encerrarDesafio(btn.dataset.id))
+    );
+    container.querySelectorAll('[data-action="excluir-desafio"]').forEach(btn =>
+      btn.addEventListener('click', () => excluirDesafio(btn.dataset.id))
+    );
   });
+  renderPMissoesPublicadas();
+}
+
+function renderPMissoesPublicadas(){
+  const el = document.getElementById('p-missoes-publicadas');
+  if(!el) return;
+  const cnt = document.getElementById('p-missoes-count');
+  if(cnt) cnt.textContent = S.missoes.length ? `(${S.missoes.length})` : '';
+  if(!S.missoes.length){
+    el.innerHTML = `<div class="empty" style="padding:20px;"><div class="empty-icon">🎯</div><div class="empty-text">Nenhuma missão publicada ainda.<br>Use o Gerador acima para criar!</div></div>`;
+    return;
+  }
+  const difLabel = {easy:'🟢 Fácil', medium:'🟡 Médio', hard:'🔴 Difícil'};
+  const difColor  = {easy:'var(--green)', medium:'var(--yellow)', hard:'var(--red)'};
+  const indiv  = S.missoes.filter(m => m.tipo === 'individual');
+  const equipe = S.missoes.filter(m => m.tipo === 'equipe');
+  function missaoCardHtml(m){
+    const safeId    = escapeHtml(m.id);
+    const pendentes = S.pendentes.filter(p => p.missaoId === m.id && !p.aprovado && !p.rejeitado).length;
+    const aprovados = (m.done||[]).length;
+    const safeVideo = sanitizeUrl(m.video||'');
+    return `<div style="background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+        <div style="font-family:'Orbitron',monospace;font-size:.82rem;font-weight:700;color:var(--text);line-height:1.3;">${escapeHtml(m.titulo)}</div>
+        <span style="font-size:.62rem;padding:2px 8px;border-radius:5px;background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.2);white-space:nowrap;">${m.tipo==='equipe'?'👥 Equipe':'👤 Individual'}</span>
+      </div>
+      ${m.desc?`<div style="font-size:.75rem;color:var(--muted2);line-height:1.6;margin-bottom:8px;">${escapeHtml(m.desc)}</div>`:''}
+      ${safeVideo?`<div style="font-size:.72rem;color:var(--accent);margin-bottom:8px;">🎬 <a href="${escapeHtml(safeVideo)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(safeVideo)}</a></div>`:''}
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+        <span style="font-size:.68rem;color:${difColor[m.dif]||'var(--muted)'};font-weight:700;">${difLabel[m.dif]||m.dif}</span>
+        <span class="mxp" style="font-size:.68rem;">+${Number(m.xp)||0} XP</span>
+        ${m.wc?`<span style="font-size:.68rem;color:var(--gold);">🪙 ${m.wc} WC</span>`:''}
+        ${m.tipo==='equipe'&&m.vagas?`<span style="font-size:.68rem;color:var(--purple);">👥 ${m.vagas} pessoas</span>`:''}
+        <span style="font-size:.68rem;background:rgba(0,212,255,.08);color:var(--accent);border:1px solid rgba(0,212,255,.2);padding:2px 8px;border-radius:5px;">⏳ ${pendentes} pendente(s) · ✅ ${aprovados} concluída(s)</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" data-action="editar-missao" data-id="${safeId}" style="color:var(--accent);border-color:rgba(0,212,255,.35);">✏️ Editar</button>
+        <button class="btn btn-danger btn-sm" data-action="remover-missao" data-id="${safeId}" style="background:rgba(239,68,68,.1);color:var(--red);">🗑️ Remover</button>
+      </div>
+    </div>`;
+  }
+  let html = '';
+  if(indiv.length){
+    html += `<div style="font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">👤 Individuais (${indiv.length})</div>`;
+    html += indiv.map(missaoCardHtml).join('');
+  }
+  if(equipe.length){
+    html += `<div style="font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;">👥 Equipe (${equipe.length})</div>`;
+    html += equipe.map(missaoCardHtml).join('');
+  }
+  el.innerHTML = html;
+  el.querySelectorAll('[data-action="editar-missao"]').forEach(btn =>
+    btn.addEventListener('click', () => abrirEditarMissao(btn.dataset.id))
+  );
+  el.querySelectorAll('[data-action="remover-missao"]').forEach(btn =>
+    btn.addEventListener('click', () => removerMissao(btn.dataset.id))
+  );
 }
 
 function renderPStats(){
@@ -3881,12 +4256,201 @@ function renderProjetosIA(projetos){
     </div>`).join('')}</div>`;
 }
 
-async function removerDesafio(id){
-  if(!confirm('Encerrar este desafio?'))return;
-  try {
-    await COL.desafios().doc(id).delete();
-    toast('Desafio encerrado.');
-  } catch(e){ toast('❌ Erro!'); }
+async function encerrarDesafio(id){
+  if(!confirm('Encerrar este desafio? Ele ficará visível na seção de encerrados.')) return;
+  const ontem = new Date(); ontem.setDate(ontem.getDate()-1);
+  try { await COL.desafios().doc(id).update({expira:ontem.toISOString()}); toast('Desafio encerrado.'); }
+  catch(e){ toast('❌ Erro!'); }
+}
+async function removerDesafio(id){ return encerrarDesafio(id); }
+
+async function excluirDesafio(id){
+  if(!confirm('Excluir permanentemente este desafio?')) return;
+  try { await COL.desafios().doc(id).delete(); toast('Desafio excluído.'); }
+  catch(e){ toast('❌ Erro!'); }
+}
+
+function abrirEditarDesafio(id){
+  const d = S.desafios.find(x=>x.id===id); if(!d) return toast('⚠️ Desafio não encontrado.');
+  document.getElementById('edit-desafio-id').value = id;
+  document.getElementById('edit-d-titulo').value   = d.titulo||'';
+  document.getElementById('edit-d-desc').value     = d.desc||'';
+  document.getElementById('edit-d-video').value    = d.video||'';
+  document.getElementById('edit-d-xp').value       = d.xp||300;
+  document.getElementById('edit-d-dias').value     = '';
+  document.getElementById('modal-edit-desafio').style.display='flex';
+}
+function fecharModalEditDesafio(){ document.getElementById('modal-edit-desafio').style.display='none'; }
+async function salvarEdicaoDesafio(){
+  const id    = document.getElementById('edit-desafio-id').value;
+  const titulo= document.getElementById('edit-d-titulo').value.trim();
+  const desc  = document.getElementById('edit-d-desc').value.trim();
+  const video = document.getElementById('edit-d-video').value.trim();
+  const xp    = parseInt(document.getElementById('edit-d-xp').value)||300;
+  const dias  = parseInt(document.getElementById('edit-d-dias').value)||0;
+  if(!titulo) return toast('⚠️ Digite um título!');
+  const upd={titulo,desc,video,xp};
+  if(dias>0){ const exp=new Date(); exp.setDate(exp.getDate()+dias); upd.expira=exp.toISOString(); }
+  setSyncing('syncing');
+  try { await COL.desafios().doc(id).update(upd); fecharModalEditDesafio(); toast('✅ Desafio atualizado!'); setSyncing('ok'); }
+  catch(e){ toast('❌ Erro: '+(e.message||'')); setSyncing('error'); }
+}
+
+function abrirEditarMissao(id){
+  const m = S.missoes.find(x=>x.id===id); if(!m) return toast('⚠️ Missão não encontrada.');
+  document.getElementById('edit-missao-id').value = id;
+  document.getElementById('edit-m-titulo').value  = m.titulo||'';
+  document.getElementById('edit-m-desc').value    = m.desc||'';
+  document.getElementById('edit-m-video').value   = m.video||'';
+  document.getElementById('edit-m-xp').value      = m.xp||150;
+  document.getElementById('edit-m-wc').value      = m.wc||0;
+  document.getElementById('edit-m-dif').value     = m.dif||'easy';
+  document.getElementById('modal-edit-missao').style.display='flex';
+}
+function fecharModalEditMissao(){ document.getElementById('modal-edit-missao').style.display='none'; }
+async function salvarEdicaoMissao(){
+  const id    = document.getElementById('edit-missao-id').value;
+  const titulo= document.getElementById('edit-m-titulo').value.trim();
+  const desc  = document.getElementById('edit-m-desc').value.trim();
+  const video = document.getElementById('edit-m-video').value.trim();
+  const xp    = parseInt(document.getElementById('edit-m-xp').value)||150;
+  const wc    = parseInt(document.getElementById('edit-m-wc').value)||0;
+  const dif   = document.getElementById('edit-m-dif').value||'easy';
+  if(!titulo) return toast('⚠️ Digite um título!');
+  setSyncing('syncing');
+  try { await COL.missoes().doc(id).update({titulo,desc,video,xp,wc,dif}); fecharModalEditMissao(); toast('✅ Missão atualizada!'); setSyncing('ok'); }
+  catch(e){ toast('❌ Erro: '+(e.message||'')); setSyncing('error'); }
+}
+async function removerMissao(id){
+  if(!confirm('Remover esta missão? Ela deixará de aparecer para os alunos.\nAprovações já feitas não serão apagadas.')) return;
+  setSyncing('syncing');
+  try { await COL.missoes().doc(id).delete(); toast('🗑️ Missão removida.'); setSyncing('ok'); }
+  catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+// ══════════════════════════════════════
+//  CHAT DO PROFESSOR
+// ══════════════════════════════════════
+let _profChatListener    = null;
+let _profPresListener    = null;
+let _profChatEmojiBuilt  = false;
+let _profChatGifDebounce = null;
+
+function initProfChat(){
+  const ep=document.getElementById('p-chat-emoji-panel');
+  const gp=document.getElementById('p-chat-gif-panel');
+  if(ep) ep.style.display='none';
+  if(gp) gp.style.display='none';
+  _profChatEmojiBuilt=false;
+  if(_profChatListener) _profChatListener();
+  const cutoff6h=Date.now()-6*60*60*1000;
+  _profChatListener=COL.chat().limit(100).onSnapshot(snap=>{
+    const msgs=snap.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.ts>cutoff6h).sort((a,b)=>a.ts-b.ts).slice(-60);
+    renderProfChatMsgs(msgs);
+    snap.docs.forEach(d=>{ if(d.data().ts<cutoff6h) d.ref.delete().catch(()=>{}); });
+  });
+  if(_profPresListener) _profPresListener();
+  _profPresListener=COL.presence().onSnapshot(snap=>{
+    const online=snap.docs.map(d=>d.data()).filter(p=>p.ts>Date.now()-65000);
+    const el=document.getElementById('p-online-list');
+    const cnt=document.getElementById('p-online-count');
+    if(!el) return;
+    if(cnt) cnt.textContent=`🟢 ${online.length} online`;
+    el.innerHTML=online.map(p=>{
+      const av=p.foto&&(p.foto.startsWith('data:image/')||sanitizeUrl(p.foto))
+        ?`<img src="${escapeHtml(p.foto)}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;">`
+        :`<span>${escapeHtml(p.avatar||'👾')}</span>`;
+      return `<div class="online-item"><div class="online-dot"></div>${av} ${escapeHtml((p.nome||'').split(' ')[0])}</div>`;
+    }).join('');
+  });
+}
+
+function renderProfChatMsgs(msgs){
+  const el=document.getElementById('p-chat-msgs'); if(!el) return;
+  el.innerHTML=msgs.map(m=>{
+    const own=m.autorId==='professor';
+    const time=new Date(m.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const avatarHtml=m.foto&&(m.foto.startsWith('data:image/')||sanitizeUrl(m.foto))
+      ?`<div class="chat-avatar-sm"><img src="${escapeHtml(m.foto)}" alt=""></div>`
+      :`<div class="chat-avatar-sm">${escapeHtml(m.avatar||'👾')}</div>`;
+    const safeGifUrl=sanitizeUrl(m.gifUrl||'');
+    const bubble=m.tipo==='gif'&&safeGifUrl
+      ?`<img src="${escapeHtml(safeGifUrl)}" class="chat-gif" alt="GIF">`
+      :`<div class="chat-bubble">${escapeHtml(m.texto||'')}</div>`;
+    const authorLabel=own
+      ?`<span style="color:var(--accent);font-weight:700;">🧑‍🏫 Você (Professor)</span> · ${time}`
+      :`${escapeHtml(m.autorNome||'')} · ${time}`;
+    return `<div class="chat-msg ${own?'own':''}"><div>${avatarHtml}</div><div><div class="chat-author">${authorLabel}</div>${bubble}</div></div>`;
+  }).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+async function enviarChatProf(){
+  const input=document.getElementById('p-chat-input');
+  const texto=input?.value.trim(); if(!texto) return;
+  input.value='';
+  try { await COL.chat().add({autorId:'professor',autorNome:'Professor',avatar:'🧑‍🏫',foto:null,turma:'all',tipo:'texto',texto,ts:Date.now()}); }
+  catch(e){ toast('❌ Erro ao enviar.'); }
+}
+
+function profChatToggleEmoji(){
+  const ep=document.getElementById('p-chat-emoji-panel');
+  const gp=document.getElementById('p-chat-gif-panel');
+  if(!ep) return;
+  const showing=ep.style.display==='flex';
+  gp.style.display='none';
+  ep.style.display=showing?'none':'flex';
+  if(!showing&&!_profChatEmojiBuilt){
+    _profChatEmojiBuilt=true;
+    document.getElementById('p-chat-ep-cats').innerHTML=EMOJI_CATS.map((c,i)=>
+      `<button class="ep-cat ${i===0?'active':''}" title="${c.label}" onclick="profChatMudarCat(${i},this)">${c.icon}</button>`
+    ).join('');
+    profChatRenderCat(0);
+  }
+}
+function profChatMudarCat(idx,btn){
+  document.querySelectorAll('#p-chat-ep-cats .ep-cat').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); profChatRenderCat(idx);
+}
+function profChatRenderCat(idx){
+  const grid=document.getElementById('p-chat-ep-grid'); if(!grid) return;
+  grid.innerHTML=EMOJI_CATS[idx].emojis.map(e=>`<button class="emoji-btn" onclick="profChatInsertEmoji('${e}')">${e}</button>`).join('');
+}
+function profChatInsertEmoji(e){
+  const inp=document.getElementById('p-chat-input'); if(!inp) return;
+  const pos=inp.selectionStart!=null?inp.selectionStart:inp.value.length;
+  inp.value=inp.value.slice(0,pos)+e+inp.value.slice(pos);
+  inp.focus(); try{ inp.setSelectionRange(pos+2,pos+2); }catch(_){}
+}
+function profChatToggleGif(){
+  const gp=document.getElementById('p-chat-gif-panel');
+  const ep=document.getElementById('p-chat-emoji-panel');
+  if(!gp) return;
+  const showing=gp.style.display==='flex';
+  ep.style.display='none';
+  gp.style.display=showing?'none':'flex';
+  if(!showing){ document.getElementById('p-chat-gif-search').value=''; profChatBuscarGifs('funny'); }
+}
+function profChatBuscarGifs(query){
+  clearTimeout(_profChatGifDebounce);
+  _profChatGifDebounce=setTimeout(async()=>{
+    const el=document.getElementById('p-chat-gif-results');
+    if(!el||!query.trim()){ if(el) el.innerHTML=''; return; }
+    el.innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:.75rem;text-align:center;padding:14px;">🔍 Buscando GIFs...</div>';
+    let gifs=[];
+    const q=encodeURIComponent(query);
+    try{ const d=await _gifFetch(`https://tenor.googleapis.com/v2/search?q=${q}&key=AIzaSyAyimkuYQYF_FXVALexPzfiyvL7X-doABc&limit=12&media_filter=tinygif&client_key=warpcode_edu`); gifs=(d.results||[]).map(g=>g.media_formats?.tinygif?.url||'').filter(Boolean); }catch(e){}
+    if(!gifs.length) try{ const d=await _gifFetch(`https://g.tenor.com/v1/search?q=${q}&key=LIVDSRZULELA&limit=12&contentfilter=low`); gifs=(d.results||[]).flatMap(g=>g.media||[]).map(m=>m.tinygif?.url||'').filter(Boolean); }catch(e){}
+    if(!gifs.length) try{ const d=await _gifFetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${q}&limit=12&rating=g&lang=pt`); gifs=(d.data||[]).map(g=>g.images?.fixed_height_small?.url||g.images?.downsized?.url||'').filter(Boolean); }catch(e){}
+    if(!gifs.length){ el.innerHTML='<div style="grid-column:1/-1;color:var(--orange);font-size:.75rem;text-align:center;padding:14px;">⚠️ GIFs indisponíveis.</div>'; return; }
+    el.innerHTML=gifs.map(src=>{ const s=sanitizeUrl(src); return s?`<img src="${escapeHtml(s)}" loading="lazy" style="width:100%;border-radius:6px;cursor:pointer;aspect-ratio:1;object-fit:cover;display:block;" data-gif-url="${escapeHtml(s)}" onerror="this.style.display='none'">`:''; }).join('');
+    el.querySelectorAll('[data-gif-url]').forEach(img=>img.addEventListener('click',()=>profChatEnviarGif(img.dataset.gifUrl)));
+  },500);
+}
+async function profChatEnviarGif(url){
+  const gp=document.getElementById('p-chat-gif-panel'); if(gp) gp.style.display='none';
+  try { await COL.chat().add({autorId:'professor',autorNome:'Professor',avatar:'🧑‍🏫',foto:null,turma:'all',tipo:'gif',gifUrl:url,ts:Date.now()}); }
+  catch(e){ toast('❌ Erro ao enviar GIF.'); }
 }
 
 // ══════════════════════════════════════
@@ -5776,6 +6340,7 @@ function renderChatMsgs(msgs){
   if(!el) return;
   el.innerHTML = msgs.map(m=>{
     const own = m.autorId === alunoAtual;
+    const isProf = m.autorId === 'professor';
     const time = new Date(m.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     const safeAutorId = escapeHtml(m.autorId||'');
     const safeAutorNome = escapeHtml(m.autorNome||'');
@@ -5785,17 +6350,16 @@ function renderChatMsgs(msgs){
     const safeGifUrl = sanitizeUrl(m.gifUrl||'');
     const bubble = m.tipo==='gif' && safeGifUrl
       ? `<img src="${escapeHtml(safeGifUrl)}" class="chat-gif" alt="GIF">`
-      : `<div class="chat-bubble">${escapeHtml(m.texto||'')}</div>`;
-    const clickAttr = !own && safeAutorId ? `data-aluno-id="${safeAutorId}"` : '';
-    const clickStyle = !own ? 'cursor:pointer;' : '';
+      : `<div class="chat-bubble"${isProf&&!own?' style="border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.07);"':''}>${escapeHtml(m.texto||'')}</div>`;
+    const clickAttr = !own && safeAutorId && !isProf ? `data-aluno-id="${safeAutorId}"` : '';
+    const clickStyle = !own && !isProf ? 'cursor:pointer;' : '';
+    const authorLabel = isProf
+      ? `<span style="color:var(--accent);font-weight:700;">🧑‍🏫 Professor</span> · ${time}`
+      : `${own?'Você':safeAutorNome} · ${time}`;
     return `<div class="chat-msg ${own?'own':''}">
-      <div ${clickAttr} class="${!own?'chat-avatar-click':''}" style="${clickStyle}">
-        ${avatarHtml}
-      </div>
+      <div ${clickAttr} class="${!own&&!isProf?'chat-avatar-click':''}" style="${clickStyle}">${avatarHtml}</div>
       <div>
-        <div class="chat-author ${!own?'chat-author-click':''}" ${clickAttr} style="${clickStyle}">
-          ${own?'Você':safeAutorNome} · ${time}
-        </div>
+        <div class="chat-author ${!own&&!isProf?'chat-author-click':''}" ${clickAttr} style="${clickStyle}">${authorLabel}</div>
         ${bubble}
       </div>
     </div>`;
