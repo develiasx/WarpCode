@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>WarpCode — ScratchQuest Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -255,11 +255,14 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .page.active{display:block;}
 #apage-chat{height:calc(100vh - 60px);}
 #apage-chat.active{display:flex;flex-direction:column;}
+#ppage-chat{height:calc(100vh - 60px);}
+#ppage-chat.active{display:flex;flex-direction:column;}
 .chat-online-panel{width:150px;flex-shrink:0;}
 @media(max-width:768px){
   .chat-online-panel{display:none;}
   #apage-chat{height:calc(100dvh - 60px - 72px) !important;}
-  #chat-msgs{min-height:180px;}
+  #ppage-chat{height:calc(100dvh - 60px - 72px) !important;}
+  #chat-msgs,#p-chat-msgs{min-height:180px;}
 }
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
@@ -719,7 +722,6 @@ select option{background:var(--s1);}
 .correio-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;padding:2px 6px;border-radius:6px;opacity:0;transition:opacity .15s;}
 .correio-item:hover .correio-del{opacity:1;}
 .correio-del:hover{color:var(--red);background:rgba(239,68,68,.1);}
-.correios-filtros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
 .correio-filtro{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:.65rem;font-family:"Orbitron",monospace;cursor:pointer;transition:all .18s;letter-spacing:.5px;color:var(--muted2);}
 .correio-filtro:hover,.correio-filtro.ativo{background:rgba(0,212,255,.15);border-color:var(--accent);color:var(--accent);}
 .correio-badge{position:absolute;top:10px;right:10px;background:var(--accent);color:#000;font-size:.5rem;font-weight:900;padding:2px 7px;border-radius:10px;font-family:'Orbitron',monospace;letter-spacing:1px;}
@@ -869,6 +871,188 @@ select option{background:var(--s1);}
   position: relative;
   z-index: 1;
 }
+/* ══════════════════════════════════════
+   MOBILE RESPONSIVENESS — CORREÇÕES
+══════════════════════════════════════ */
+
+/* ── Toast acima do nav bar ── */
+@media (max-width: 768px) {
+  .toast {
+    bottom: calc(76px + env(safe-area-inset-bottom, 6px)) !important;
+    font-size: .8rem;
+    padding: 10px 16px;
+    max-width: 85vw;
+    white-space: normal;
+    text-align: center;
+  }
+
+  /* Conteúdo principal: safe-area no fundo */
+  .main-content {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* ── Emoji grid: 7 colunas (tappable) ── */
+  #chat-ep-grid,
+  #p-chat-ep-grid {
+    grid-template-columns: repeat(7, 1fr) !important;
+  }
+  .emoji-btn {
+    font-size: 1.15rem !important;
+    min-height: 38px;
+    padding: 4px 2px !important;
+  }
+
+  /* ── GIF grid: 2 colunas no mobile ── */
+  #chat-gif-results,
+  #p-chat-gif-results {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* ── Weekly card: badge não sobrepõe conteúdo ── */
+  .weekly-card::before {
+    position: static !important;
+    display: inline-block !important;
+    margin-bottom: 8px !important;
+    font-size: .5rem !important;
+  }
+  .weekly-card { padding: 14px !important; }
+
+  /* ── Form-row: botões viram bloco ── */
+  .form-row > div:not(.form-group) {
+    width: 100% !important;
+    flex-shrink: 0 !important;
+  }
+  .form-row > div:not(.form-group) > .btn,
+  .form-row > div:not(.form-group) .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── Approval actions: botões full width ── */
+  .approval-actions {
+    flex-direction: column;
+  }
+  .approval-actions > .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── Page-hdr: ações em linha flexível ── */
+  .page-hdr {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .page-hdr > div:last-child:not(:first-child) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+  .page-hdr > div:last-child:not(:first-child) > .btn {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* ── Stat boxes: fonte menor no grid 2x2 ── */
+  .stat-val { font-size: 1.35rem; }
+  .stat-lbl { font-size: .55rem; }
+
+  /* ── Rank item: mais compacto ── */
+  .rank-item {
+    padding: 10px 11px;
+    gap: 8px;
+  }
+  .rnum { font-size: .88rem; width: 26px; }
+
+  /* ── Remove hover transforms (touch) ── */
+  .rank-item:hover,
+  .mission-card:hover,
+  .turma-neon-card:hover,
+  .btn-primary:hover {
+    transform: none !important;
+  }
+
+  /* ── WC balance: compacto no page-hdr ── */
+  .wc-balance-big { font-size: 1.5rem !important; }
+
+  /* ── WC exchange: botão full width ── */
+  .wc-exchange-box .form-row {
+    flex-direction: column;
+  }
+  .wc-exchange-box .btn {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+
+  /* ── Vitrine header: sem overflow ── */
+  .vitrine-header { flex-wrap: wrap; }
+
+  /* ── Modal mobile: padding menor ── */
+  .modal { padding: 18px 14px !important; }
+
+  /* ── Shop card footer: stack em telas estreitas ── */
+  .shop-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .shop-footer > div { width: 100%; display: flex; gap: 6px; }
+  .shop-footer > div > .btn { flex: 1; }
+
+  /* ── Guilda grid: sempre 2 colunas ── */
+  .guilda-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* ── Activity feed: sem overflow ── */
+  .activity-time { font-size: .58rem; }
+
+  /* ── Turmas na aba alunos: 2 colunas ── */
+  #p-turmas-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* ── Chat page: tab-bar sticky não colide com topbar ── */
+  #apage-missoes > div[style*="sticky"] { top: 0 !important; }
+
+  /* ── Student card botões: tap targets ── */
+  .student-card > div:last-child > .btn { min-height: 34px; }
+
+  /* ── Desafio form-row dentro de card ── */
+  #ppage-desafio .card .form-row { flex-direction: column; }
+
+  /* ── Botão enviar semanal ── */
+  #d-enviar-btn { width: 100%; justify-content: center; }
+
+  /* ── Correios: filtros scrolláveis sem wrap ── */
+  .correios-filtros { flex-wrap: nowrap !important; overflow-x: auto; padding-bottom: 4px; gap: 5px; }
+  .correio-filtro { flex-shrink: 0; }
+
+  /* ── Loja aluno: filtros scrolláveis ── */
+  #apage-wcloja > div[style*="flex-wrap"] { flex-wrap: nowrap !important; overflow-x: auto; padding-bottom: 4px; gap: 5px; }
+  #apage-wcloja > div[style*="flex-wrap"] > .btn { flex-shrink: 0; }
+
+  /* ── Sync indicator: menor ── */
+  .sync-indicator { font-size: .65rem; gap: 4px; }
+}
+
+/* ── Telas muito pequenas (≤ 400px) ── */
+@media (max-width: 400px) {
+  .main-content { padding: 10px; padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)) !important; }
+  .card { padding: 12px; }
+  .page-title { font-size: .85rem; }
+  .steam-stat-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .stat-val { font-size: 1.15rem; }
+  .badge-grid { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); }
+  #chat-ep-grid, #p-chat-ep-grid { grid-template-columns: repeat(6, 1fr) !important; }
+  .emoji-btn { font-size: 1rem !important; min-height: 34px; }
+  .btn { font-size: .8rem; padding: 9px 14px; }
+  .btn-sm { font-size: .68rem; padding: 5px 10px; }
+  .weekly-timer { font-size: .64rem !important; }
+  .rank-item { gap: 6px; padding: 9px 8px; }
+  .rnum { width: 22px; font-size: .78rem; }
+  .mtitle { font-size: .86rem; }
+  .mdesc { font-size: .74rem; }
+  .turma-neon-card { padding: 18px 10px; }
+}
+
 </style>
 </head>
 <body>
@@ -968,8 +1152,10 @@ select option{background:var(--s1);}
         <button class="snav" id="snav-desafio" onclick="profTab('desafio','snav-desafio')"><span class="snav-ic">🔥</span>Desafio da Semana</button>
         <button class="snav" id="snav-loja" onclick="profTab('loja','snav-loja')"><span class="snav-ic">🛒</span>Loja de Recompensas</button>
         <button class="snav" id="snav-ranking" onclick="profTab('ranking','snav-ranking')"><span class="snav-ic">🏆</span>Ranking</button>
+        <button class="snav" id="snav-guildas" onclick="profTab('guildas','snav-guildas')"><span class="snav-ic">⚔️</span>Guildas</button>
         <button class="snav" id="snav-pin" onclick="profTab('pin','snav-pin')"><span class="snav-ic">📊</span>Analytics</button>
         <button class="snav" id="snav-vitrine" onclick="profTab('vitrine','snav-vitrine')"><span class="snav-ic">🌟</span>Vitrine</button>
+        <button class="snav" id="snav-chat" onclick="profTab('chat','snav-chat')"><span class="snav-ic">💬</span>Chat da Turma</button>
       </nav>
       <div class="sidebar-back"><button onclick="goLogin()">← Sair</button></div>
     </aside>
@@ -995,8 +1181,9 @@ select option{background:var(--s1);}
                 <option>9º Ano A</option><option>9º Ano B</option><option>9º Ano C</option>
               </select>
             </div>
-            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
-              <button class="btn btn-primary" onclick="cadastrarAluno()">➕ Cadastrar</button>
+            <div class="form-group" style="flex:0 0 auto;align-self:flex-end;">
+              <label style="opacity:0;pointer-events:none;">‎</label>
+              <button class="btn btn-primary" style="width:100%;" onclick="cadastrarAluno()">➕ Cadastrar</button>
             </div>
           </div>
         </div>
@@ -1005,8 +1192,19 @@ select option{background:var(--s1);}
           <div class="form-row">
             <div class="form-group" style="flex:1;"><label>Aluno</label><select id="p-msg-aluno"></select></div>
             <div class="form-group" style="flex:3;"><label>Mensagem personalizada</label><input id="p-msg-texto" placeholder="Ex: Parabéns pelo projeto! Continue assim 🚀" maxlength="200"></div>
-            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
-              <button class="btn btn-primary" onclick="enviarMsgProfessor()" style="background:linear-gradient(135deg,var(--accent),var(--purple));">✉️ Enviar</button>
+            <div class="form-group" style="flex:0 0 auto;align-self:flex-end;">
+              <label style="opacity:0;pointer-events:none;">‎</label>
+              <button class="btn btn-primary" style="width:100%;" onclick="enviarMsgProfessor()" style="background:linear-gradient(135deg,var(--accent),var(--purple));">✉️ Enviar</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.05);">
+          <div class="sec-title">📢 Aviso para Todos os Alunos</div>
+          <div class="form-row">
+            <div class="form-group" style="flex:3;"><label>Mensagem que vai para o Correios de todos</label><input id="p-msg-todos-texto" placeholder="Ex: Aula de robótica adiantada para quinta! 🤖" maxlength="200"></div>
+            <div class="form-group" style="flex:0 0 auto;align-self:flex-end;">
+              <label style="opacity:0;pointer-events:none;">‎</label>
+              <button class="btn btn-primary" style="width:100%;background:linear-gradient(135deg,#f59e0b,#f97316);color:#000;" onclick="enviarAvisoTodos()">📢 Enviar a Todos</button>
             </div>
           </div>
         </div>
@@ -1032,8 +1230,9 @@ select option{background:var(--s1);}
                 <option value="500">Desafio especial (+500 XP)</option>
               </select>
             </div>
-            <div style="display:flex;align-items:flex-end;flex-shrink:0;">
-              <button class="btn btn-primary" onclick="darXP()">⚡ Dar XP</button>
+            <div class="form-group" style="flex:0 0 auto;align-self:flex-end;">
+              <label style="opacity:0;pointer-events:none;">‎</label>
+              <button class="btn btn-primary" style="width:100%;" onclick="darXP()">⚡ Dar XP</button>
             </div>
           </div>
         </div>
@@ -1117,8 +1316,74 @@ select option{background:var(--s1);}
           </div>
         </div>
 
-        <div class="sec-title">Desafios Ativos</div>
-        <div id="p-desafio-atual"></div>
+        <!-- LISTA DESAFIOS SEMANAIS -->
+        <div class="sec-title" style="margin-top:8px;">🔥 Desafios em Aberto <span id="p-desafio-count-ativos" style="font-size:.7rem;color:var(--muted);font-family:'Orbitron',monospace;"></span></div>
+        <div id="p-desafio-ativos"></div>
+        <div class="sec-title" style="margin-top:20px;color:var(--muted2);">📦 Desafios Encerrados <span id="p-desafio-count-enc" style="font-size:.7rem;color:var(--muted);font-family:'Orbitron',monospace;"></span></div>
+        <div id="p-desafio-encerrados"></div>
+
+        <!-- MISSÕES PUBLICADAS -->
+        <div class="sec-title" style="margin-top:24px;color:var(--accent);">🎯 Missões Publicadas para Alunos <span id="p-missoes-count" style="font-size:.7rem;color:var(--muted);font-family:'Orbitron',monospace;"></span></div>
+        <div style="font-size:.75rem;color:var(--muted2);margin-bottom:10px;">Todas as missões individuais e de equipe disponíveis na aba de missões dos alunos.</div>
+        <div style="max-height:400px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--s1);padding:12px 14px;">
+          <div id="p-missoes-publicadas"></div>
+        </div>
+
+        <!-- DESAFIOS APROVADOS -->
+        <div class="sec-title" style="margin-top:28px;color:var(--green);">✅ Desafios Aprovados <span id="p-desafios-aprov-count" style="font-size:.7rem;color:var(--muted);font-family:'Orbitron',monospace;"></span></div>
+        <div style="font-size:.75rem;color:var(--muted2);margin-bottom:10px;">Histórico completo de envios de desafios semanais aprovados por alunos — backup permanente.</div>
+        <div style="max-height:420px;overflow-y:auto;border:1px solid rgba(16,185,129,.25);border-radius:var(--radius);background:var(--s1);padding:12px 14px;" id="p-desafios-aprov-box">
+          <div id="p-desafios-aprovados"><div style="color:var(--muted);font-size:.78rem;padding:16px 0;text-align:center;">Carregando...</div></div>
+        </div>
+
+        <!-- MODAL EDITAR DESAFIO SEMANAL -->
+        <div id="modal-edit-desafio" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9991;align-items:center;justify-content:center;padding:20px;">
+          <div style="background:var(--s1);border:1px solid var(--border2);border-radius:var(--radius);padding:26px;max-width:500px;width:100%;max-height:92vh;overflow-y:auto;position:relative;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--accent));border-radius:var(--radius) var(--radius) 0 0;"></div>
+            <input type="hidden" id="edit-desafio-id">
+            <div style="font-family:'Orbitron',monospace;font-size:.9rem;color:var(--orange);margin-bottom:16px;">✏️ Editar Desafio Semanal</div>
+            <div class="form-group" style="margin-bottom:12px;"><label>Título</label><input id="edit-d-titulo" maxlength="100"></div>
+            <div class="form-group" style="margin-bottom:12px;"><label>Descrição</label><textarea id="edit-d-desc" style="min-height:80px;"></textarea></div>
+            <div class="form-group" style="margin-bottom:12px;"><label>🎬 Link de Vídeo (opcional)</label><input id="edit-d-video" type="url" placeholder="https://youtube.com/watch?v=..."></div>
+            <div class="form-row" style="gap:10px;margin-bottom:6px;">
+              <div class="form-group" style="flex:1;"><label>XP Bônus</label><input id="edit-d-xp" type="number" min="50" step="50"></div>
+              <div class="form-group" style="flex:1;"><label>Estender por (dias)</label><input id="edit-d-dias" type="number" min="0" max="60" placeholder="0 = manter"></div>
+            </div>
+            <div style="font-size:.72rem;color:var(--muted);margin-bottom:14px;">💡 Deixe em 0 para manter a data atual. Informe um valor para recalcular a partir de hoje.</div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-outline" style="flex:1;" onclick="fecharModalEditDesafio()">Cancelar</button>
+              <button class="btn btn-orange" style="flex:2;background:linear-gradient(135deg,var(--orange),#f97316);border:none;color:#000;font-weight:700;" onclick="salvarEdicaoDesafio()">💾 Salvar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL EDITAR MISSÃO COMUM -->
+        <div id="modal-edit-missao" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9991;align-items:center;justify-content:center;padding:20px;">
+          <div style="background:var(--s1);border:1px solid rgba(0,212,255,.3);border-radius:var(--radius);padding:26px;max-width:500px;width:100%;max-height:92vh;overflow-y:auto;position:relative;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:var(--radius) var(--radius) 0 0;"></div>
+            <input type="hidden" id="edit-missao-id">
+            <div style="font-family:'Orbitron',monospace;font-size:.9rem;color:var(--accent);margin-bottom:16px;">✏️ Editar Missão</div>
+            <div class="form-group" style="margin-bottom:12px;"><label>Título</label><input id="edit-m-titulo" maxlength="100"></div>
+            <div class="form-group" style="margin-bottom:12px;"><label>Descrição</label><textarea id="edit-m-desc" style="min-height:80px;"></textarea></div>
+            <div class="form-group" style="margin-bottom:12px;"><label>🎬 Link de Vídeo (opcional)</label><input id="edit-m-video" type="url" placeholder="https://youtube.com/watch?v=..."></div>
+            <div class="form-row" style="gap:10px;margin-bottom:16px;">
+              <div class="form-group" style="flex:1;"><label>⚡ XP</label><input id="edit-m-xp" type="number" min="50" step="50"></div>
+              <div class="form-group" style="flex:1;"><label>🪙 WarpCoins</label><input id="edit-m-wc" type="number" min="0" step="5"></div>
+              <div class="form-group" style="flex:1;"><label>Dificuldade</label>
+                <select id="edit-m-dif">
+                  <option value="easy">🟢 Fácil</option>
+                  <option value="medium">🟡 Médio</option>
+                  <option value="hard">🔴 Difícil</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-outline" style="flex:1;" onclick="fecharModalEditMissao()">Cancelar</button>
+              <button class="btn btn-primary" style="flex:2;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;" onclick="salvarEdicaoMissao()">💾 Salvar</button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- LOJA -->
@@ -1189,6 +1454,77 @@ select option{background:var(--s1);}
         <div id="pin-display" style="display:none;"></div>
       </div>
 
+      <!-- CHAT PROFESSOR -->
+      <div id="ppage-chat" class="page">
+        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com os alunos em tempo real</div></div><div id="p-online-count" style="font-size:.75rem;color:var(--green);font-weight:700;"></div></div>
+        <div style="display:flex;gap:14px;flex:1;min-height:0;overflow:hidden;">
+          <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
+            <div id="p-chat-msgs" style="flex:1;overflow-y:auto;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:14px;display:flex;flex-direction:column;gap:8px;"></div>
+            <div id="p-chat-emoji-panel" style="display:none;background:var(--s2);border:1px solid var(--border);border-top:none;max-height:220px;overflow:hidden;flex-direction:column;">
+              <div style="display:flex;gap:2px;padding:6px 8px;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;" id="p-chat-ep-cats"></div>
+              <div id="p-chat-ep-grid" style="display:grid;grid-template-columns:repeat(10,1fr);gap:1px;padding:6px;overflow-y:auto;flex:1;"></div>
+            </div>
+            <div id="p-chat-gif-panel" style="display:none;background:var(--s2);border:1px solid var(--border);border-top:none;max-height:240px;overflow:hidden;flex-direction:column;">
+              <div style="padding:8px;border-bottom:1px solid var(--border);flex-shrink:0;">
+                <input id="p-chat-gif-search" placeholder="🔍 Buscar GIF..." style="width:100%;" oninput="profChatBuscarGifs(this.value)">
+              </div>
+              <div id="p-chat-gif-results" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;padding:8px;overflow-y:auto;flex:1;"></div>
+            </div>
+            <div style="display:flex;gap:6px;background:var(--s2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:8px;align-items:center;flex-shrink:0;">
+              <button class="btn btn-outline btn-sm" onclick="profChatToggleEmoji()" title="Emojis" style="font-size:1.1rem;padding:6px 10px;flex-shrink:0;">😊</button>
+              <button class="btn btn-outline btn-sm" onclick="profChatToggleGif()" title="GIF" style="font-size:.68rem;font-weight:900;padding:6px 9px;letter-spacing:1px;flex-shrink:0;">GIF</button>
+              <input id="p-chat-input" placeholder="Digite uma mensagem como Professor..." style="flex:1;min-width:0;" onkeydown="if(event.key==='Enter')enviarChatProf()" maxlength="300">
+              <button class="btn btn-primary btn-sm" onclick="enviarChatProf()" style="flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--purple));">➤</button>
+            </div>
+          </div>
+          <div class="chat-online-panel">
+            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online</div>
+            <div id="p-online-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GUILDAS PROF -->
+      <div id="ppage-guildas" class="page">
+        <div class="page-hdr"><div><div class="page-title">⚔️ Guildas</div><div class="page-sub">Crie, edite e gerencie as guildas da turma</div></div></div>
+
+        <!-- Criar Guilda -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="sec-title">➕ Criar Nova Guilda</div>
+          <div class="form-row">
+            <div class="form-group" style="flex:0 0 auto;">
+              <label>Brasão</label>
+              <button id="pg-brasao-btn" onclick="abrirEmojiPicker(this,'pg-brasao')" style="font-size:1.8rem;width:52px;height:44px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;display:block;">⚔️</button>
+              <input id="pg-brasao" type="hidden" value="⚔️">
+            </div>
+            <div class="form-group" style="flex:2;"><label>Nome da Guilda</label><input id="pg-nome" placeholder="Ex: Dragões do Código" maxlength="30"></div>
+            <div class="form-group" style="flex:2;"><label>Grito de guerra</label><input id="pg-slogan" placeholder="Ex: Código acima de tudo!" maxlength="50"></div>
+            <div class="form-group" style="flex:0 0 auto;align-self:flex-end;">
+              <label style="opacity:0;pointer-events:none;">‎</label>
+              <button class="btn btn-primary" onclick="profCriarGuilda()">⚔️ Criar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bonus XP para Guilda -->
+        <div class="card" style="margin-bottom:20px;border-color:rgba(255,215,0,.35);background:rgba(255,215,0,.04);">
+          <div class="sec-title">⚡ Bônus de XP para Guilda</div>
+          <div class="form-row">
+            <div class="form-group"><label>Guilda</label><select id="pg-bonus-guilda"></select></div>
+            <div class="form-group"><label>XP Bônus</label><input id="pg-bonus-xp" type="number" placeholder="100" min="10" style="width:90px;"></div>
+            <div class="form-group" style="flex:2;"><label>Motivo</label><input id="pg-bonus-motivo" placeholder="Ex: Venceram o desafio semanal!" maxlength="100"></div>
+            <div class="form-group" style="flex:0 0 auto;align-self:flex-end;">
+              <label style="opacity:0;pointer-events:none;">‎</label>
+              <button class="btn btn-gold" onclick="profBonusXPGuilda()">⚡ Dar Bônus</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de Guildas -->
+        <div class="sec-title">🏰 Guildas Ativas</div>
+        <div id="ppage-guildas-lista"></div>
+      </div>
+
     </main>
     <div class="mobile-bottomnav">
       <div class="mobile-nav-inner">
@@ -1197,6 +1533,7 @@ select option{background:var(--s1);}
         <button class="mnav" id="mnav-desafio" onclick="profTab('desafio','mnav-desafio',true)"><span class="mnav-ic">🔥</span>Desafio</button>
         <button class="mnav" id="mnav-loja" onclick="profTab('loja','mnav-loja',true)"><span class="mnav-ic">🛒</span>Loja</button>
         <button class="mnav" id="mnav-pin" onclick="profTab('pin','mnav-pin',true)"><span class="mnav-ic">📊</span>Analytics</button>
+        <button class="mnav" id="mnav-chat" onclick="profTab('chat','mnav-chat',true)"><span class="mnav-ic">💬</span>Chat</button>
       </div>
     </div>
   </div>
@@ -1378,11 +1715,10 @@ select option{background:var(--s1);}
       <!-- CORREIOS -->
       <div id="apage-correios" class="page">
         <div class="page-hdr"><div><div class="page-title">📬 Correios</div><div class="page-sub">Suas notificações e mensagens</div></div>
-          <div style="display:flex;gap:6px;flex-shrink:0;">
+          <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
             <button class="btn btn-outline btn-sm" style="font-size:.68rem;" onclick="marcarTodosLidos()">✓ Marcar lidos</button>
             <button class="btn btn-outline btn-sm" style="font-size:.68rem;color:var(--red);border-color:var(--red);" onclick="limparTodosCorreios()">🗑️ Limpar tudo</button>
           </div>
-          <button class="btn btn-outline btn-sm" onclick="marcarTodosLidos()" style="font-size:.68rem;">✓ Marcar tudo como lido</button>
         </div>
         <div id="correios-lista"></div>
       </div>
@@ -1525,6 +1861,13 @@ select option{background:var(--s1);}
   <div style="display:flex;gap:10px;margin-top:6px;">
     <button class="btn btn-outline btn-sm" onclick="cancelarCrop()">✕ Cancelar</button>
     <button class="btn btn-primary btn-sm" onclick="confirmarCrop()">✓ Usar esta área</button>
+  </div>
+</div>
+<!-- MODAL EDITAR GUILDA (professor) -->
+<div class="modal-overlay" id="modal-prof-edit-guilda">
+  <div class="modal" style="max-width:440px;"><button class="modal-close" onclick="closeModal('modal-prof-edit-guilda')">✕</button>
+    <div class="modal-title">✏️ EDITAR GUILDA</div>
+    <div id="modal-prof-edit-guilda-content"></div>
   </div>
 </div>
 <!-- MODAL CRIAR GUILDA -->
@@ -2114,22 +2457,26 @@ async function processarSenha(){
   if(senhaEtapa === 'login'){
     setSyncing('syncing');
     try {
-      // Firebase Auth verifica — senha nunca fica em texto puro
-      await firebase.auth().signInWithEmailAndPassword(
+      const cred = await firebase.auth().signInWithEmailAndPassword(
         emailDoAluno(alunoAtual),
         senhaFirebase(alunoSenhaBuffer)
       );
-      // Carregar dados completos do aluno após autenticação
+
+      const newAuthUid = cred.user.uid; // Obtém UID do Auth
+
       const docSnap = await COL.alunos().doc(alunoAtual).get();
       if(docSnap.exists){
         const idx = S.alunos.findIndex(x=>x.id===alunoAtual);
         const dado = {id:alunoAtual,...docSnap.data()};
         if(idx>=0) S.alunos[idx]=dado; else S.alunos.push(dado);
-        // Migração automática: salva authEmail se ainda não tem
-        // Necessário para as Firestore Rules funcionarem
-        if(!docSnap.data().authEmail){
-          const authEmail = emailDoAluno(alunoAtual);
-          await COL.alunos().doc(alunoAtual).update({ authEmail }).catch(()=>{});
+
+        // Sincroniza authEmail e authUid automaticamente
+        const updateData = {};
+        if(!docSnap.data().authEmail) updateData.authEmail = emailDoAluno(alunoAtual);
+        if(!docSnap.data().authUid) updateData.authUid = newAuthUid;
+
+        if(Object.keys(updateData).length > 0){
+          await COL.alunos().doc(alunoAtual).update(updateData).catch(()=>{});
         }
       }
       ligarListenerAlunos('aluno', alunoAtual);
@@ -2137,7 +2484,15 @@ async function processarSenha(){
       await finalizarEntrada();
     } catch(e){
       setSyncing('ok');
-      document.getElementById('senha-error').textContent = '❌ Senha incorreta. Tente novamente.';
+      // Tratamento de erro que não mascara o bloqueio do Firestore
+      if (e.code === 'permission-denied' || (e.message && e.message.includes('permission'))) {
+        document.getElementById('senha-error').textContent = '❌ Erro: Regras do Firestore bloqueando acesso.';
+        console.error("Firestore Permission Denied:", e);
+      } else if (e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
+        document.getElementById('senha-error').textContent = '❌ Senha incorreta. Tente novamente.';
+      } else {
+        document.getElementById('senha-error').textContent = '❌ Erro: ' + e.message;
+      }
       alunoSenhaBuffer = '';
       atualizarDots();
     }
@@ -2156,12 +2511,20 @@ async function processarSenha(){
     if(alunoSenhaBuffer === senhaCriada){
       setSyncing('syncing');
       const authEmail = emailDoAluno(alunoAtual);
-      const _entrarComSenha = async (pin) => {
-        // Carrega dados e finaliza entrada após login bem-sucedido
-        await Promise.all([
-          COL.alunos().doc(alunoAtual).update({ temSenha: true, authEmail, senhaPin: pin }).catch(()=>{}),
-          COL.perfis().doc(alunoAtual).update({ temSenha: true, senhaPin: pin }).catch(()=>{})
-        ]);
+
+      const _entrarComSenha = async (pin, authUid) => {
+        const updateData = { temSenha: true, authEmail, senhaPin: pin };
+        if(authUid) updateData.authUid = authUid; // Salva o UID gerado
+
+        // set({merge:true}) grava mesmo que o doc não exista; erros são logados, não engolidos.
+        const okAlunos = await COL.alunos().doc(alunoAtual).set(updateData,{merge:true})
+          .then(()=>true).catch(e=>{console.error('[WC] Falha ao salvar senha em alunos:',e.code||e.message);return false;});
+        const okPerfil = await COL.perfis().doc(alunoAtual).set(updateData,{merge:true})
+          .then(()=>true).catch(e=>{console.error('[WC] Falha ao salvar senha em alunos_perfil:',e.code||e.message);return false;});
+        if(!okPerfil){
+          // Crítico: a tela de seleção lê temSenha de alunos_perfil. Se falhar aqui, o aluno seria forçado a recriar a senha.
+          toast('⚠️ Senha criada, mas o status não foi salvo. Veja o Console (provável bloqueio das Regras do Firestore).');
+        }
         const docSnap = await COL.alunos().doc(alunoAtual).get();
         if(docSnap.exists){
           const idx = S.alunos.findIndex(x=>x.id===alunoAtual);
@@ -2170,12 +2533,11 @@ async function processarSenha(){
         }
         ligarListenerAlunos('aluno', alunoAtual);
         setSyncing('ok');
-        // Só exibe pergunta secreta para quem ainda não cadastrou
+
         const alunoDoc = S.alunos.find(x=>x.id===alunoAtual);
         if(alunoDoc && alunoDoc.perguntaSecretaId !== undefined && alunoDoc.perguntaSecretaId !== null){
           await finalizarEntrada();
         } else {
-          // Novo aluno — convidar a cadastrar pergunta secreta
           _popularPerguntasSel('pergunta-sel');
           document.getElementById('pergunta-resp').value = '';
           document.getElementById('pergunta-error').textContent = '';
@@ -2184,29 +2546,25 @@ async function processarSenha(){
           _senhaShowBloco('pergunta');
         }
       };
+
       try {
-        // Tenta criar conta nova no Firebase Auth
-        await firebase.auth().createUserWithEmailAndPassword(authEmail, senhaFirebase(senhaCriada));
-        // Salva temSenha, authEmail e senhaPin (visível no analytics do professor)
+        const cred = await firebase.auth().createUserWithEmailAndPassword(authEmail, senhaFirebase(senhaCriada));
         toast('🔒 Senha criada com sucesso!');
-        await _entrarComSenha(senhaCriada);
+        await _entrarComSenha(senhaCriada, cred.user.uid);
       } catch(e){
         if(e.code === 'auth/email-already-in-use'){
-          // Conta já existe no Firebase Auth — tenta logar com a senha digitada
-          // (ocorre quando temSenha ficou desincronizado ou aluno criou senha antes)
           try {
-            await firebase.auth().signInWithEmailAndPassword(authEmail, senhaFirebase(senhaCriada));
+            const cred = await firebase.auth().signInWithEmailAndPassword(authEmail, senhaFirebase(senhaCriada));
             toast('🔒 Acesso confirmado!');
-            await _entrarComSenha(senhaCriada);
+            await _entrarComSenha(senhaCriada, cred.user.uid);
           } catch(loginErr){
-            // Senha não confere com a conta existente no Firebase Auth
             setSyncing('ok');
-            document.getElementById('senha-error').textContent = '⚠️ Sua conta já existe mas a senha não confere. Peça ao professor para redefinir.';
+            document.getElementById('senha-error').textContent = '⚠️ Conta existente. Senha não confere. Professor pode redefinir.';
             alunoSenhaBuffer = ''; senhaCriada = '';
             senhaEtapa = 'criar';
             document.getElementById('senha-modo-titulo').textContent = 'CRIAR SENHA';
             document.getElementById('senha-modo-sub').textContent = 'Escolha uma senha de 4 dígitos';
-            document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os seus próximos acessos.';
+            document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os acessos.';
             atualizarDots();
           }
         } else {
@@ -2220,9 +2578,10 @@ async function processarSenha(){
       senhaEtapa = 'criar';
       document.getElementById('senha-modo-titulo').textContent = 'CRIAR SENHA';
       document.getElementById('senha-modo-sub').textContent = 'Escolha uma senha de 4 dígitos';
-      document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os seus próximos acessos.';
+      document.getElementById('senha-hint').textContent = '🔒 Esta senha será usada em todos os acessos.';
       atualizarDots();
     }
+
   } else if(senhaEtapa === 'reset-nova'){
     senhaCriada = alunoSenhaBuffer;
     alunoSenhaBuffer = '';
@@ -2238,7 +2597,7 @@ async function processarSenha(){
       alunoSenhaBuffer = ''; senhaCriada = '';
       senhaEtapa = 'reset-nova';
       document.getElementById('senha-modo-titulo').textContent = 'NOVA SENHA';
-      document.getElementById('senha-modo-sub').textContent = 'Escolha uma nova senha de 4 dígitos';
+      document.getElementById('senha-modo-sub').textContent = 'Escolha nova senha de 4 dígitos';
       atualizarDots();
       return;
     }
@@ -2247,14 +2606,12 @@ async function processarSenha(){
     const aPerfil = S.perfis.find(x=>x.id===alunoAtual);
     const authEmail2 = emailDoAluno(alunoAtual);
     try {
-      // Autentica com a senha atual para poder chamar updatePassword
       await firebase.auth().signInWithEmailAndPassword(authEmail2, senhaFirebase(aPerfil.senhaPin));
       await firebase.auth().currentUser.updatePassword(senhaFirebase(newPin));
       await Promise.all([
         COL.alunos().doc(alunoAtual).update({ senhaPin: newPin }).catch(()=>{}),
         COL.perfis().doc(alunoAtual).update({ senhaPin: newPin }).catch(()=>{})
       ]);
-      // Atualiza cache local
       const pIdx = S.perfis.findIndex(x=>x.id===alunoAtual);
       if(pIdx>=0) S.perfis[pIdx].senhaPin = newPin;
       const docSnap2 = await COL.alunos().doc(alunoAtual).get();
@@ -2265,11 +2622,11 @@ async function processarSenha(){
       }
       ligarListenerAlunos('aluno', alunoAtual);
       setSyncing('ok');
-      toast('✅ Senha redefinida com sucesso!');
+      toast('✅ Senha redefinida!');
       await finalizarEntrada();
     } catch(resetErr){
       setSyncing('ok');
-      document.getElementById('senha-error').textContent = '❌ Não foi possível redefinir. Peça ao professor para resetar.';
+      document.getElementById('senha-error').textContent = '❌ Erro. Peça ao professor para resetar.';
       alunoSenhaBuffer = ''; senhaCriada = '';
       senhaEtapa = 'login';
       document.getElementById('senha-modo-titulo').textContent = 'ENTRAR';
@@ -2290,11 +2647,19 @@ async function migrarSenhasExistentes(){
   if(!alunos.length){ console.log('Nenhum aluno com senha antiga para migrar.'); return; }
   console.log(`Migrando ${alunos.length} alunos...`);
   let ok = 0, erros = 0;
+
   for(const a of alunos){
     try {
-      await firebase.auth().createUserWithEmailAndPassword(emailDoAluno(a.id), senhaFirebase(a.senha));
+      const cred = await firebase.auth().createUserWithEmailAndPassword(emailDoAluno(a.id), senhaFirebase(a.senha));
       const authEmail = emailDoAluno(a.id);
-      await COL.alunos().doc(a.id).update({ temSenha: true, authEmail, senha: firebase.firestore.FieldValue.delete() });
+      const authUid = cred.user.uid; // Extrai o UID
+
+      await COL.alunos().doc(a.id).update({
+        temSenha: true,
+        authEmail,
+        authUid,
+        senha: firebase.firestore.FieldValue.delete()
+      });
       console.log(`✅ ${a.nome}`);
       ok++;
     } catch(e){
@@ -2362,10 +2727,11 @@ async function confirmarPerguntaSecreta(){
   try {
     const qId = Number(qIdx);
     const hash = hashResposta(answer);
-    await Promise.all([
-      COL.alunos().doc(alunoAtual).update({ perguntaSecretaId: qId, respostaHash: hash }).catch(()=>{}),
-      COL.perfis().doc(alunoAtual).update({ perguntaSecretaId: qId, respostaHash: hash }).catch(()=>{})
-    ]);
+    const dados = { perguntaSecretaId: qId, respostaHash: hash };
+    await COL.alunos().doc(alunoAtual).set(dados,{merge:true})
+      .catch(e=>console.error('[WC] Falha ao salvar pergunta em alunos:',e.code||e.message));
+    await COL.perfis().doc(alunoAtual).set(dados,{merge:true})
+      .catch(e=>console.error('[WC] Falha ao salvar pergunta em alunos_perfil:',e.code||e.message));
     // Atualiza caches locais
     const pIdx = S.perfis.findIndex(x=>x.id===alunoAtual);
     if(pIdx>=0){ S.perfis[pIdx].perguntaSecretaId=qId; S.perfis[pIdx].respostaHash=hash; }
@@ -2543,8 +2909,9 @@ async function finalizarEntrada(){
   renderAluno();
   atualizarBadgeCorreios();
   verificarStreakRisco(alunoAtual);
-  setTimeout(()=>mostrarPopupCorreios(), 800);
-  injetarLogAtualizacoes(alunoAtual);
+  // Injeta as notas de versão e só então mostra o popup, para o aluno ver as
+  // novidades já neste login.
+  injetarLogAtualizacoes(alunoAtual).finally(()=>setTimeout(mostrarPopupCorreios, 600));
 
   const aAtual = S.alunos.find(x=>x.id===alunoAtual);
   if(aAtual){
@@ -2554,7 +2921,7 @@ async function finalizarEntrada(){
   }
 }
 
-const PROF_LABELS={alunos:'Alunos',aprovar:'Aprovar Missões',desafio:'Desafio da Semana',loja:'Loja',ranking:'Ranking',pin:'Analytics',vitrine:'Vitrine'};
+const PROF_LABELS={alunos:'Alunos',aprovar:'Aprovar Missões',desafio:'Desafio da Semana',loja:'Loja',ranking:'Ranking',guildas:'Guildas',pin:'Analytics',vitrine:'Vitrine',chat:'Chat da Turma'};
 function profTab(tab,navId,isMobile=false){
   document.querySelectorAll('[id^="ppage-"]').forEach(p=>p.classList.remove('active'));
   const pg=document.getElementById('ppage-'+tab);if(pg)pg.classList.add('active');
@@ -2564,6 +2931,8 @@ function profTab(tab,navId,isMobile=false){
   const mb=document.getElementById('mnav-'+tab);if(mb)mb.classList.add('active');
   document.getElementById('prof-topbar-title').textContent=(PROF_LABELS[tab]||'').toUpperCase();
   if(tab==='vitrine') renderPVitrine();
+  else if(tab==='chat') initProfChat();
+  else if(tab==='guildas') renderPGuildas();
   else renderProf();
 }
 let _missTabAtual = 'abertas';
@@ -2650,7 +3019,7 @@ function renderModalTurmaLista(query){
   alunos.sort((a,b)=>(b.xp||0)-(a.xp||0));
   el.innerHTML=alunos.map((a,i)=>{
     const n=nivel(a.xp||0);
-    const temSenha=a.temSenha?'✅':'❌';
+    const temSenha=temSenhaEf(a)?'✅':'❌';
     const safeId=escapeHtml(a.id);
     const safeNome=escapeHtml(a.nome);
     const safeTurma=escapeHtml(a.turma||'');
@@ -2685,7 +3054,7 @@ function renderModalTurmaLista(query){
 function abrirEditarAluno(id){
   const a=S.alunos.find(x=>x.id===id);if(!a)return;
   const safeId=escapeHtml(id);
-  const temSenha=!!a.temSenha;
+  const temSenha=temSenhaEf(a);
   document.getElementById('modal-editar-aluno-content').innerHTML=`
     <div style="text-align:center;margin-bottom:16px;">
       <div style="font-size:2.8rem;">${escapeHtml(a.avatar||'👾')}</div>
@@ -2707,6 +3076,13 @@ function abrirEditarAluno(id){
       <input id="edit-senha" type="password" maxlength="4" pattern="[0-9]{4}" placeholder="Digite 4 números para redefinir" style="letter-spacing:4px;font-family:'Orbitron',monospace;">
       <div style="font-size:.65rem;color:var(--muted);margin-top:4px;">Deixe em branco para não alterar a senha</div>
     </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 12px;margin-bottom:16px;">
+      <div style="font-size:.62rem;color:var(--muted);margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase;">E-mail no Firebase Auth</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:.72rem;color:var(--muted2);font-family:'Courier New',monospace;word-break:break-all;flex:1;">${escapeHtml(a.authEmail||emailDoAluno(id))}</span>
+        <button onclick="navigator.clipboard.writeText('${escapeHtml(a.authEmail||emailDoAluno(id))}').then(()=>toast('📋 E-mail copiado!'))" style="background:none;border:1px solid rgba(255,255,255,.15);border-radius:5px;color:var(--muted2);cursor:pointer;padding:3px 8px;font-size:.65rem;white-space:nowrap;">📋 Copiar</button>
+      </div>
+    </div>
     <button class="btn btn-primary btn-block" id="btn-salvar-edicao-aluno">💾 Salvar Alterações</button>
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-editar-aluno')" style="margin-bottom:0;">Cancelar</button>`;
   // Preencher o valor do nome de forma segura (sem innerHTML)
@@ -2725,34 +3101,62 @@ async function salvarEdicaoAluno(id){
   setSyncing('syncing');
   const update={nome,turma};
   try{
-    // Se professor digitou nova senha, atualiza no Firebase Auth
     if(senha){
-      const email = emailDoAluno(id); // ← sanitizado
-      update.senhaPin = senha; // ← sempre salvar PIN para analytics
+      const email = emailDoAluno(id);
+      update.senhaPin = senha;
+
+      // IMPORTANTE: usar app secundário em TODAS as operações Auth do aluno.
+      // createUserWithEmailAndPassword no app principal desloga o professor
+      // automaticamente, fazendo isProfessor() falhar no write do Firestore.
+      const appName = `sec_${Date.now()}`;
+      let secApp = null;
       try {
-        // Tenta criar (caso aluno ainda não tenha conta Auth)
-        await firebase.auth().createUserWithEmailAndPassword(email, senhaFirebase(senha));
-        update.authEmail = email; // ← salva para as Rules
-        update.senhaResetPendente = false;
-      } catch(authErr) {
-        if(authErr.code === 'auth/email-already-in-use'){
-          // Conta já existe — PIN salvo no Firestore, aluno entra com a senha antiga
-          // Na próxima vez que o aluno acessar com a senha antiga, o sistema atualiza
-          update.senhaResetPendente = true;
-          toast('⚠️ PIN salvo! O aluno deve entrar com a senha antiga e depois o professor pode resetar via edição.');
+        secApp = firebase.initializeApp(firebase.app().options, appName);
+        const secAuth = secApp.auth();
+        let uid = null;
+        try {
+          const cred = await secAuth.createUserWithEmailAndPassword(email, senhaFirebase(senha));
+          uid = cred.user.uid;
+          update.senhaResetPendente = false;
+        } catch(createErr){
+          if(createErr.code === 'auth/email-already-in-use'){
+            const oldPin = senhaPinEf(S.alunos.find(a=>a.id===id) || {id});
+            if(oldPin){
+              try {
+                const cred = await secAuth.signInWithEmailAndPassword(email, senhaFirebase(oldPin));
+                await cred.user.updatePassword(senhaFirebase(senha));
+                uid = cred.user.uid;
+                update.senhaResetPendente = false;
+              } catch(loginErr){
+                update.senhaResetPendente = true;
+                toast('⚠️ PIN salvo! Aluno precisa acessar com a senha antiga primeiro.');
+              }
+            } else {
+              update.senhaResetPendente = true;
+              toast('⚠️ PIN salvo! Aluno precisa acessar com a senha antiga primeiro.');
+            }
+          }
         }
+        if(uid){ update.authEmail = email; update.authUid = uid; }
+      } finally {
+        if(secApp) await secApp.delete().catch(()=>{});
       }
       update.temSenha = true;
     }
+
     await COL.alunos().doc(id).update(update);
-    // Sincronizar campos de perfil público
     const perfilUpdate={nome,turma};
     if(update.temSenha!==undefined) perfilUpdate.temSenha=update.temSenha;
+
     await COL.perfis().doc(id).update(perfilUpdate);
     closeModal('modal-editar-aluno');
     renderModalTurmaLista(document.getElementById('turma-search')?.value||'');
-    toast('✅ Aluno atualizado!');setSyncing('ok');
-  }catch(e){toast('❌ Erro!');setSyncing('error');}
+    toast('✅ Aluno atualizado!');
+    setSyncing('ok');
+  }catch(e){
+    toast('❌ Erro: '+(e.message||e));
+    setSyncing('error');
+  }
 }
 
 function renderPAprovacoes(){
@@ -2870,30 +3274,174 @@ function renderPResgates(){
 }
 
 function renderPDesafio(){
-  const el=document.getElementById('p-desafio-atual');
-  const ativos=S.desafios.filter(d=>new Date(d.expira)>new Date());
-  if(!ativos.length){el.innerHTML=`<div class="empty" style="padding:20px;"><div class="empty-icon">🔥</div><div class="empty-text">Nenhum desafio ativo.<br>Configure acima!</div></div>`;return;}
-  el.innerHTML=ativos.map(d=>{
-    const expira=new Date(d.expira);
-    const dias=Math.max(0,Math.ceil((expira-new Date())/(1000*60*60*24)));
-    const safeVideo=sanitizeUrl(d.video||'');
-    const safeId=escapeHtml(d.id);
-    return `<div class="weekly-card" style="margin-bottom:12px;">
-      <div class="mtitle">${escapeHtml(d.titulo)}</div>
-      <div class="mdesc">${escapeHtml(d.desc)}</div>
-      ${safeVideo?`<div style="margin-top:8px;font-size:.75rem;color:var(--accent);">🎬 <a href="${escapeHtml(safeVideo)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(safeVideo)}</a></div>`:''}
-      <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
-        <span class="mdiff diff-weekly">Semanal</span>
-        <span class="mxp">+${Number(d.xp)||0} XP</span>
-        <span class="weekly-timer">⏱ ${dias} dia(s) restante(s)</span>
+  const now = new Date();
+  const ativos     = S.desafios.filter(d => new Date(d.expira) > now);
+  const encerrados = S.desafios.filter(d => new Date(d.expira) <= now);
+  const cntAtivos  = document.getElementById('p-desafio-count-ativos');
+  const cntEnc     = document.getElementById('p-desafio-count-enc');
+  if(cntAtivos) cntAtivos.textContent = ativos.length ? `(${ativos.length})` : '';
+  if(cntEnc)    cntEnc.textContent    = encerrados.length ? `(${encerrados.length})` : '';
+
+  function desafioCardHtml(d, isAtivo){
+    const expira   = new Date(d.expira);
+    const diffDias = Math.ceil(Math.abs(expira - now) / (1000*60*60*24));
+    const tempoTxt = isAtivo ? `⏱ ${diffDias} dia(s) restante(s)` : `🕒 Encerrado há ${diffDias} dia(s)`;
+    const safeVideo = sanitizeUrl(d.video||'');
+    const safeId    = escapeHtml(d.id);
+    const envios    = S.pendentes.filter(p => p.desafioId === d.id).length;
+    const aprovados = S.pendentes.filter(p => p.desafioId === d.id && p.aprovado).length;
+    const borderColor = isAtivo ? 'rgba(249,115,22,.35)' : 'rgba(100,116,139,.2)';
+    const bgColor     = isAtivo ? 'rgba(249,115,22,.04)' : 'rgba(100,116,139,.03)';
+    const statusColor = isAtivo ? 'var(--orange)' : 'var(--muted)';
+    return `<div class="weekly-card" style="margin-bottom:12px;border-color:${borderColor};background:${bgColor};">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+        <div class="mtitle" style="color:${statusColor};">${escapeHtml(d.titulo)}</div>
+        <span style="font-size:.62rem;font-family:'Orbitron',monospace;padding:2px 8px;border-radius:5px;background:${isAtivo?'rgba(249,115,22,.15)':'rgba(100,116,139,.15)'};color:${statusColor};white-space:nowrap;">${isAtivo?'✅ ATIVO':'⛔ ENCERRADO'}</span>
       </div>
-      <button class="btn btn-danger btn-sm" style="margin-top:12px;" data-action="remover-desafio" data-id="${safeId}">Encerrar</button>
+      ${d.desc?`<div class="mdesc" style="margin-top:6px;">${escapeHtml(d.desc)}</div>`:''}
+      ${safeVideo?`<div style="margin-top:6px;font-size:.73rem;color:var(--accent);">🎬 <a href="${escapeHtml(safeVideo)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(safeVideo)}</a></div>`:''}
+      <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+        <span class="mxp">+${Number(d.xp)||0} XP</span>
+        <span class="weekly-timer" style="color:${statusColor};">${tempoTxt}</span>
+        <span style="font-size:.72rem;background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.25);padding:2px 8px;border-radius:5px;">📤 ${envios} envio(s) · ✅ ${aprovados} aprovado(s)</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" data-action="editar-desafio" data-id="${safeId}" style="color:var(--accent);border-color:rgba(0,212,255,.35);">✏️ Editar</button>
+        ${isAtivo
+          ? `<button class="btn btn-danger btn-sm" data-action="encerrar-desafio" data-id="${safeId}">⛔ Encerrar</button>`
+          : `<button class="btn btn-danger btn-sm" data-action="excluir-desafio" data-id="${safeId}" style="background:rgba(239,68,68,.12);color:var(--red);">🗑️ Excluir</button>`
+        }
+      </div>
     </div>`;
-  }).join('');
-  // Event delegation seguro
-  el.querySelectorAll('[data-action="remover-desafio"]').forEach(btn=>{
-    btn.addEventListener('click',()=>removerDesafio(btn.dataset.id));
+  }
+
+  const elAtivos = document.getElementById('p-desafio-ativos');
+  if(elAtivos){
+    elAtivos.innerHTML = ativos.length
+      ? ativos.map(d => desafioCardHtml(d, true)).join('')
+      : `<div class="empty" style="padding:20px;"><div class="empty-icon">🔥</div><div class="empty-text">Nenhum desafio ativo.<br>Configure acima!</div></div>`;
+  }
+  const elEnc = document.getElementById('p-desafio-encerrados');
+  if(elEnc){
+    elEnc.innerHTML = encerrados.length
+      ? encerrados.map(d => desafioCardHtml(d, false)).join('')
+      : `<div style="color:var(--muted);font-size:.78rem;padding:12px 0;">Nenhum desafio encerrado ainda.</div>`;
+  }
+  [elAtivos, elEnc].forEach(container => {
+    if(!container) return;
+    container.querySelectorAll('[data-action="editar-desafio"]').forEach(btn =>
+      btn.addEventListener('click', () => abrirEditarDesafio(btn.dataset.id))
+    );
+    container.querySelectorAll('[data-action="encerrar-desafio"]').forEach(btn =>
+      btn.addEventListener('click', () => encerrarDesafio(btn.dataset.id))
+    );
+    container.querySelectorAll('[data-action="excluir-desafio"]').forEach(btn =>
+      btn.addEventListener('click', () => excluirDesafio(btn.dataset.id))
+    );
   });
+  renderPMissoesPublicadas();
+  renderPDesafiosAprovados();
+}
+
+function renderPMissoesPublicadas(){
+  const el = document.getElementById('p-missoes-publicadas');
+  if(!el) return;
+  const cnt = document.getElementById('p-missoes-count');
+  if(cnt) cnt.textContent = S.missoes.length ? `(${S.missoes.length})` : '';
+  if(!S.missoes.length){
+    el.innerHTML = `<div class="empty" style="padding:20px;"><div class="empty-icon">🎯</div><div class="empty-text">Nenhuma missão publicada ainda.<br>Use o Gerador acima para criar!</div></div>`;
+    return;
+  }
+  const difLabel = {easy:'🟢 Fácil', medium:'🟡 Médio', hard:'🔴 Difícil'};
+  const difColor  = {easy:'var(--green)', medium:'var(--yellow)', hard:'var(--red)'};
+  const indiv  = S.missoes.filter(m => m.tipo === 'individual');
+  const equipe = S.missoes.filter(m => m.tipo === 'equipe');
+  function missaoCardHtml(m){
+    const safeId    = escapeHtml(m.id);
+    const pendentes = S.pendentes.filter(p => p.missaoId === m.id && !p.aprovado && !p.rejeitado).length;
+    const aprovados = (m.done||[]).length;
+    const safeVideo = sanitizeUrl(m.video||'');
+    return `<div style="background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+        <div style="font-family:'Orbitron',monospace;font-size:.82rem;font-weight:700;color:var(--text);line-height:1.3;">${escapeHtml(m.titulo)}</div>
+        <span style="font-size:.62rem;padding:2px 8px;border-radius:5px;background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.2);white-space:nowrap;">${m.tipo==='equipe'?'👥 Equipe':'👤 Individual'}</span>
+      </div>
+      ${m.desc?`<div style="font-size:.75rem;color:var(--muted2);line-height:1.6;margin-bottom:8px;">${escapeHtml(m.desc)}</div>`:''}
+      ${safeVideo?`<div style="font-size:.72rem;color:var(--accent);margin-bottom:8px;">🎬 <a href="${escapeHtml(safeVideo)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(safeVideo)}</a></div>`:''}
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+        <span style="font-size:.68rem;color:${difColor[m.dif]||'var(--muted)'};font-weight:700;">${difLabel[m.dif]||m.dif}</span>
+        <span class="mxp" style="font-size:.68rem;">+${Number(m.xp)||0} XP</span>
+        ${m.wc?`<span style="font-size:.68rem;color:var(--gold);">🪙 ${m.wc} WC</span>`:''}
+        ${m.tipo==='equipe'&&m.vagas?`<span style="font-size:.68rem;color:var(--purple);">👥 ${m.vagas} pessoas</span>`:''}
+        <span style="font-size:.68rem;background:rgba(0,212,255,.08);color:var(--accent);border:1px solid rgba(0,212,255,.2);padding:2px 8px;border-radius:5px;">⏳ ${pendentes} pendente(s) · ✅ ${aprovados} concluída(s)</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" data-action="editar-missao" data-id="${safeId}" style="color:var(--accent);border-color:rgba(0,212,255,.35);">✏️ Editar</button>
+        <button class="btn btn-danger btn-sm" data-action="remover-missao" data-id="${safeId}" style="background:rgba(239,68,68,.1);color:var(--red);">🗑️ Remover</button>
+      </div>
+    </div>`;
+  }
+  let html = '';
+  if(indiv.length){
+    html += `<div style="font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">👤 Individuais (${indiv.length})</div>`;
+    html += indiv.map(missaoCardHtml).join('');
+  }
+  if(equipe.length){
+    html += `<div style="font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;">👥 Equipe (${equipe.length})</div>`;
+    html += equipe.map(missaoCardHtml).join('');
+  }
+  el.innerHTML = html;
+  el.querySelectorAll('[data-action="editar-missao"]').forEach(btn =>
+    btn.addEventListener('click', () => abrirEditarMissao(btn.dataset.id))
+  );
+  el.querySelectorAll('[data-action="remover-missao"]').forEach(btn =>
+    btn.addEventListener('click', () => removerMissao(btn.dataset.id))
+  );
+}
+
+async function renderPDesafiosAprovados(){
+  const el  = document.getElementById('p-desafios-aprovados');
+  const cnt = document.getElementById('p-desafios-aprov-count');
+  if(!el) return;
+  el.innerHTML = '<div style="color:var(--muted);font-size:.78rem;padding:16px 0;text-align:center;">🔄 Carregando...</div>';
+  try {
+    const snap = await COL.pendentes().where('isDesafio','==',true).where('aprovado','==',true).get();
+    const items = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.aprovadoEm||b.ts||0)-(a.aprovadoEm||a.ts||0));
+    if(cnt) cnt.textContent = items.length ? `(${items.length})` : '';
+    if(!items.length){
+      el.innerHTML='<div style="color:var(--muted);font-size:.78rem;padding:20px 0;text-align:center;">Nenhum desafio aprovado ainda.<br>Os envios aparecem aqui ao aprovar.</div>';
+      return;
+    }
+    el.innerHTML = items.map(p => {
+      const aluno  = S.alunos.find(a=>a.id===p.alunoId);
+      const nome   = p.nomeAluno || aluno?.nome || '—';
+      const turma  = p.turmaAluno || aluno?.turma || '—';
+      const avatar = aluno?.avatar || '👾';
+      const desafio = S.desafios.find(d=>d.id===p.desafioId);
+      const titulo = desafio?.titulo || 'Desafio da Semana';
+      const xp     = p.xp || desafio?.xp || 0;
+      const dtEnv  = p.ts       ? new Date(p.ts).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}) : '—';
+      const dtAprov= p.aprovadoEm ? new Date(p.aprovadoEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}) : '—';
+      const safeLink = sanitizeUrl(p.link||'');
+      return `<div style="background:var(--s2);border:1px solid rgba(16,185,129,.2);border-left:3px solid var(--green);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;">
+          <span style="font-size:.88rem;">${escapeHtml(avatar)}</span>
+          <span style="font-weight:800;font-size:.85rem;">${escapeHtml(nome)}</span>
+          <span style="font-size:.7rem;color:var(--muted2);background:var(--s3);border-radius:20px;padding:1px 7px;">${escapeHtml(turma)}</span>
+          <span style="margin-left:auto;font-family:'Orbitron',monospace;font-size:.68rem;color:var(--gold);">+${xp} XP</span>
+        </div>
+        <div style="font-size:.75rem;color:var(--muted2);margin-bottom:6px;">🔥 ${escapeHtml(titulo)}</div>
+        ${safeLink ? `<div style="font-size:.72rem;margin-bottom:4px;">🔗 <a href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);word-break:break-all;">${escapeHtml(safeLink)}</a></div>` : ''}
+        <div style="display:flex;gap:12px;font-size:.62rem;color:var(--muted);margin-top:4px;">
+          <span>📤 Enviado: ${dtEnv}</span>
+          <span>✅ Aprovado: ${dtAprov}</span>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e){
+    el.innerHTML='<div style="color:var(--muted);font-size:.78rem;padding:16px 0;text-align:center;">Erro ao carregar. Tente novamente.</div>';
+    console.error('renderPDesafiosAprovados:', e);
+  }
 }
 
 function renderPStats(){
@@ -2909,13 +3457,20 @@ function renderPStats(){
   renderPSenhasTurmas();
 }
 
+// Status de senha tolerante: alunos que criaram senha enquanto a escrita em
+// `alunos` estava bloqueada têm o dado só em `alunos_perfil`. O professor lê
+// `alunos`, então usamos o perfil como fallback para não "sumir" a senha.
+function _perfilDoAluno(id){ return S.perfis.find(p=>p.id===id) || {}; }
+function temSenhaEf(a){ if(!a) return false; const p=_perfilDoAluno(a.id); return !!(a.temSenha || p.temSenha || a.senhaPin || p.senhaPin); }
+function senhaPinEf(a){ if(!a) return ''; const p=_perfilDoAluno(a.id); return a.senhaPin || p.senhaPin || ''; }
+
 function renderPSenhasTurmas(){
   const el=document.getElementById('p-senhas-turmas');if(!el)return;
 
   // Atualizar stats extras
   const maxStreak=S.alunos.reduce((m,a)=>Math.max(m,a.streak||0),0);
   const mediaXP=S.alunos.length?Math.round(S.alunos.reduce((s,a)=>s+(a.xp||0),0)/S.alunos.length):0;
-  const comSenhaTotal=S.alunos.filter(a=>a.temSenha).length;
+  const comSenhaTotal=S.alunos.filter(a=>temSenhaEf(a)).length;
   const guildaCount=S.guildas?S.guildas.length:0;
   const setEl=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   setEl('stat-streak',maxStreak+'🔥');
@@ -2950,7 +3505,7 @@ function renderPSenhasTurmas(){
   el.innerHTML=turmasComAlunos.map(turma=>{
     const alunos=S.alunos.filter(a=>a.turma===turma).sort((a,b)=>a.nome.localeCompare(b.nome));
     const icon=TURMA_ICONS[turma]||'📚';
-    const comSenha=alunos.filter(a=>a.temSenha).length;
+    const comSenha=alunos.filter(a=>temSenhaEf(a)).length;
     const pct=alunos.length?Math.round((comSenha/alunos.length)*100):0;
     const statusColor=comSenha===alunos.length?'var(--green)':comSenha===0?'var(--orange)':'var(--yellow)';
     const statusLabel=comSenha===alunos.length?'✅ Todos':comSenha===0?'⚠️ Nenhum':'⏳ Parcial';
@@ -2969,8 +3524,8 @@ function renderPSenhasTurmas(){
         ${alunos.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 8px;background:var(--s2);border-radius:8px;border:1px solid var(--border);">
           <span style="font-size:1.1rem;flex-shrink:0;">${a.avatar||'👾'}</span>
           <span style="font-size:.78rem;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.nome}</span>
-          ${a.temSenha
-            ?`<span style="font-size:.6rem;color:var(--green);font-family:'Orbitron',monospace;letter-spacing:1px;">🔒 ${a.senhaPin||'••••'}</span>`
+          ${temSenhaEf(a)
+            ?`<span style="font-size:.6rem;color:var(--green);font-family:'Orbitron',monospace;letter-spacing:1px;">🔒 ${senhaPinEf(a)||'••••'}</span>`
             :`<span style="font-size:.6rem;color:var(--orange);">sem senha</span>`}
           <button class="btn btn-outline btn-sm" onclick="abrirEditarAluno('${a.id}')" style="font-size:.58rem;padding:3px 7px;flex-shrink:0;">✏️</button>
         </div>`).join('')}
@@ -3297,6 +3852,31 @@ async function enviarMsgProfessor(){
   } catch(e){ toast('❌ Erro ao enviar.'); setSyncing('error'); }
 }
 
+async function enviarAvisoTodos(){
+  const texto=document.getElementById('p-msg-todos-texto')?.value.trim();
+  if(!texto) return toast('⚠️ Digite uma mensagem!');
+  if(!S.alunos.length) return toast('⚠️ Nenhum aluno cadastrado.');
+  if(!confirm(`Enviar este aviso para ${S.alunos.length} aluno(s)?`)) return;
+  setSyncing('syncing');
+  try {
+    const baseId='n'+Date.now();
+    // Lotes de 400 para respeitar o limite de operações por batch do Firestore.
+    for(let i=0;i<S.alunos.length;i+=400){
+      const grupo=S.alunos.slice(i,i+400);
+      const batch=db.batch();
+      grupo.forEach(a=>{
+        const notif={id:baseId+'_'+a.id,tipo:'professor',titulo:'📢 Aviso do Professor',desc:texto,ts:Date.now(),lido:false};
+        const correios=[notif,...(a.correios||[])].slice(0,50);
+        batch.update(COL.alunos().doc(a.id),{correios});
+      });
+      await batch.commit();
+    }
+    document.getElementById('p-msg-todos-texto').value='';
+    toast(`📢 Aviso enviado para ${S.alunos.length} aluno(s)!`);
+    setSyncing('ok');
+  } catch(e){ console.error('[WC] avisoTodos:', e.code||e.message); toast('❌ Erro ao enviar: '+(e.code||e.message)); setSyncing('error'); }
+}
+
 async function darXP(){
   const id=document.getElementById('p-xp-aluno').value;
   const xp=parseInt(document.getElementById('p-xp-motivo').value);
@@ -3363,8 +3943,12 @@ async function aprovar(pid){
     } else {
       await COL.alunos().doc(aluno.id).update({desafiosConcluidos:firebase.firestore.FieldValue.increment(1)});await COL.perfis().doc(aluno.id).update({desafiosConcluidos:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
     }
-    // Remove pendente
-    await COL.pendentes().doc(pid).delete();
+    // Remove pendente (missões) ou marca como aprovado (desafios — backup permanente)
+    if(pend.isDesafio){
+      await COL.pendentes().doc(pid).update({aprovado:true, aprovadoEm:Date.now(), nomeAluno:aluno.nome, turmaAluno:aluno.turma});
+    } else {
+      await COL.pendentes().doc(pid).delete();
+    }
     const depois=nivel(novoXP);
     if(depois.idx>antes) toast(`🎉 ${aluno.nome} subiu para ${depois.e} ${depois.n}!`);
     else toast(`✅ Aprovado! +${missao.xp} XP para ${aluno.nome}`);
@@ -3781,12 +4365,201 @@ function renderProjetosIA(projetos){
     </div>`).join('')}</div>`;
 }
 
-async function removerDesafio(id){
-  if(!confirm('Encerrar este desafio?'))return;
-  try {
-    await COL.desafios().doc(id).delete();
-    toast('Desafio encerrado.');
-  } catch(e){ toast('❌ Erro!'); }
+async function encerrarDesafio(id){
+  if(!confirm('Encerrar este desafio? Ele ficará visível na seção de encerrados.')) return;
+  const ontem = new Date(); ontem.setDate(ontem.getDate()-1);
+  try { await COL.desafios().doc(id).update({expira:ontem.toISOString()}); toast('Desafio encerrado.'); }
+  catch(e){ toast('❌ Erro!'); }
+}
+async function removerDesafio(id){ return encerrarDesafio(id); }
+
+async function excluirDesafio(id){
+  if(!confirm('Excluir permanentemente este desafio?')) return;
+  try { await COL.desafios().doc(id).delete(); toast('Desafio excluído.'); }
+  catch(e){ toast('❌ Erro!'); }
+}
+
+function abrirEditarDesafio(id){
+  const d = S.desafios.find(x=>x.id===id); if(!d) return toast('⚠️ Desafio não encontrado.');
+  document.getElementById('edit-desafio-id').value = id;
+  document.getElementById('edit-d-titulo').value   = d.titulo||'';
+  document.getElementById('edit-d-desc').value     = d.desc||'';
+  document.getElementById('edit-d-video').value    = d.video||'';
+  document.getElementById('edit-d-xp').value       = d.xp||300;
+  document.getElementById('edit-d-dias').value     = '';
+  document.getElementById('modal-edit-desafio').style.display='flex';
+}
+function fecharModalEditDesafio(){ document.getElementById('modal-edit-desafio').style.display='none'; }
+async function salvarEdicaoDesafio(){
+  const id    = document.getElementById('edit-desafio-id').value;
+  const titulo= document.getElementById('edit-d-titulo').value.trim();
+  const desc  = document.getElementById('edit-d-desc').value.trim();
+  const video = document.getElementById('edit-d-video').value.trim();
+  const xp    = parseInt(document.getElementById('edit-d-xp').value)||300;
+  const dias  = parseInt(document.getElementById('edit-d-dias').value)||0;
+  if(!titulo) return toast('⚠️ Digite um título!');
+  const upd={titulo,desc,video,xp};
+  if(dias>0){ const exp=new Date(); exp.setDate(exp.getDate()+dias); upd.expira=exp.toISOString(); }
+  setSyncing('syncing');
+  try { await COL.desafios().doc(id).update(upd); fecharModalEditDesafio(); toast('✅ Desafio atualizado!'); setSyncing('ok'); }
+  catch(e){ toast('❌ Erro: '+(e.message||'')); setSyncing('error'); }
+}
+
+function abrirEditarMissao(id){
+  const m = S.missoes.find(x=>x.id===id); if(!m) return toast('⚠️ Missão não encontrada.');
+  document.getElementById('edit-missao-id').value = id;
+  document.getElementById('edit-m-titulo').value  = m.titulo||'';
+  document.getElementById('edit-m-desc').value    = m.desc||'';
+  document.getElementById('edit-m-video').value   = m.video||'';
+  document.getElementById('edit-m-xp').value      = m.xp||150;
+  document.getElementById('edit-m-wc').value      = m.wc||0;
+  document.getElementById('edit-m-dif').value     = m.dif||'easy';
+  document.getElementById('modal-edit-missao').style.display='flex';
+}
+function fecharModalEditMissao(){ document.getElementById('modal-edit-missao').style.display='none'; }
+async function salvarEdicaoMissao(){
+  const id    = document.getElementById('edit-missao-id').value;
+  const titulo= document.getElementById('edit-m-titulo').value.trim();
+  const desc  = document.getElementById('edit-m-desc').value.trim();
+  const video = document.getElementById('edit-m-video').value.trim();
+  const xp    = parseInt(document.getElementById('edit-m-xp').value)||150;
+  const wc    = parseInt(document.getElementById('edit-m-wc').value)||0;
+  const dif   = document.getElementById('edit-m-dif').value||'easy';
+  if(!titulo) return toast('⚠️ Digite um título!');
+  setSyncing('syncing');
+  try { await COL.missoes().doc(id).update({titulo,desc,video,xp,wc,dif}); fecharModalEditMissao(); toast('✅ Missão atualizada!'); setSyncing('ok'); }
+  catch(e){ toast('❌ Erro: '+(e.message||'')); setSyncing('error'); }
+}
+async function removerMissao(id){
+  if(!confirm('Remover esta missão? Ela deixará de aparecer para os alunos.\nAprovações já feitas não serão apagadas.')) return;
+  setSyncing('syncing');
+  try { await COL.missoes().doc(id).delete(); toast('🗑️ Missão removida.'); setSyncing('ok'); }
+  catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+// ══════════════════════════════════════
+//  CHAT DO PROFESSOR
+// ══════════════════════════════════════
+let _profChatListener    = null;
+let _profPresListener    = null;
+let _profChatEmojiBuilt  = false;
+let _profChatGifDebounce = null;
+
+function initProfChat(){
+  const ep=document.getElementById('p-chat-emoji-panel');
+  const gp=document.getElementById('p-chat-gif-panel');
+  if(ep) ep.style.display='none';
+  if(gp) gp.style.display='none';
+  _profChatEmojiBuilt=false;
+  if(_profChatListener) _profChatListener();
+  const cutoff6h=Date.now()-6*60*60*1000;
+  _profChatListener=COL.chat().limit(100).onSnapshot(snap=>{
+    const msgs=snap.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.ts>cutoff6h).sort((a,b)=>a.ts-b.ts).slice(-60);
+    renderProfChatMsgs(msgs);
+    snap.docs.forEach(d=>{ if(d.data().ts<cutoff6h) d.ref.delete().catch(()=>{}); });
+  });
+  if(_profPresListener) _profPresListener();
+  _profPresListener=COL.presence().onSnapshot(snap=>{
+    const online=snap.docs.map(d=>d.data()).filter(p=>p.ts>Date.now()-65000);
+    const el=document.getElementById('p-online-list');
+    const cnt=document.getElementById('p-online-count');
+    if(!el) return;
+    if(cnt) cnt.textContent=`🟢 ${online.length} online`;
+    el.innerHTML=online.map(p=>{
+      const av=p.foto&&(p.foto.startsWith('data:image/')||sanitizeUrl(p.foto))
+        ?`<img src="${escapeHtml(p.foto)}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;">`
+        :`<span>${escapeHtml(p.avatar||'👾')}</span>`;
+      return `<div class="online-item"><div class="online-dot"></div>${av} ${escapeHtml((p.nome||'').split(' ')[0])}</div>`;
+    }).join('');
+  });
+}
+
+function renderProfChatMsgs(msgs){
+  const el=document.getElementById('p-chat-msgs'); if(!el) return;
+  el.innerHTML=msgs.map(m=>{
+    const own=m.autorId==='professor';
+    const time=new Date(m.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const avatarHtml=m.foto&&(m.foto.startsWith('data:image/')||sanitizeUrl(m.foto))
+      ?`<div class="chat-avatar-sm"><img src="${escapeHtml(m.foto)}" alt=""></div>`
+      :`<div class="chat-avatar-sm">${escapeHtml(m.avatar||'👾')}</div>`;
+    const safeGifUrl=sanitizeUrl(m.gifUrl||'');
+    const bubble=m.tipo==='gif'&&safeGifUrl
+      ?`<img src="${escapeHtml(safeGifUrl)}" class="chat-gif" alt="GIF">`
+      :`<div class="chat-bubble">${escapeHtml(m.texto||'')}</div>`;
+    const authorLabel=own
+      ?`<span style="color:var(--accent);font-weight:700;">🧑‍🏫 Você (Professor)</span> · ${time}`
+      :`${escapeHtml(m.autorNome||'')} · ${time}`;
+    return `<div class="chat-msg ${own?'own':''}"><div>${avatarHtml}</div><div><div class="chat-author">${authorLabel}</div>${bubble}</div></div>`;
+  }).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+async function enviarChatProf(){
+  const input=document.getElementById('p-chat-input');
+  const texto=input?.value.trim(); if(!texto) return;
+  input.value='';
+  try { await COL.chat().add({autorId:'professor',autorNome:'Professor',avatar:'🧑‍🏫',foto:null,turma:'all',tipo:'texto',texto,ts:Date.now()}); }
+  catch(e){ toast('❌ Erro ao enviar.'); }
+}
+
+function profChatToggleEmoji(){
+  const ep=document.getElementById('p-chat-emoji-panel');
+  const gp=document.getElementById('p-chat-gif-panel');
+  if(!ep) return;
+  const showing=ep.style.display==='flex';
+  gp.style.display='none';
+  ep.style.display=showing?'none':'flex';
+  if(!showing&&!_profChatEmojiBuilt){
+    _profChatEmojiBuilt=true;
+    document.getElementById('p-chat-ep-cats').innerHTML=EMOJI_CATS.map((c,i)=>
+      `<button class="ep-cat ${i===0?'active':''}" title="${c.label}" onclick="profChatMudarCat(${i},this)">${c.icon}</button>`
+    ).join('');
+    profChatRenderCat(0);
+  }
+}
+function profChatMudarCat(idx,btn){
+  document.querySelectorAll('#p-chat-ep-cats .ep-cat').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); profChatRenderCat(idx);
+}
+function profChatRenderCat(idx){
+  const grid=document.getElementById('p-chat-ep-grid'); if(!grid) return;
+  grid.innerHTML=EMOJI_CATS[idx].emojis.map(e=>`<button class="emoji-btn" onclick="profChatInsertEmoji('${e}')">${e}</button>`).join('');
+}
+function profChatInsertEmoji(e){
+  const inp=document.getElementById('p-chat-input'); if(!inp) return;
+  const pos=inp.selectionStart!=null?inp.selectionStart:inp.value.length;
+  inp.value=inp.value.slice(0,pos)+e+inp.value.slice(pos);
+  inp.focus(); try{ inp.setSelectionRange(pos+2,pos+2); }catch(_){}
+}
+function profChatToggleGif(){
+  const gp=document.getElementById('p-chat-gif-panel');
+  const ep=document.getElementById('p-chat-emoji-panel');
+  if(!gp) return;
+  const showing=gp.style.display==='flex';
+  ep.style.display='none';
+  gp.style.display=showing?'none':'flex';
+  if(!showing){ document.getElementById('p-chat-gif-search').value=''; profChatBuscarGifs('funny'); }
+}
+function profChatBuscarGifs(query){
+  clearTimeout(_profChatGifDebounce);
+  _profChatGifDebounce=setTimeout(async()=>{
+    const el=document.getElementById('p-chat-gif-results');
+    if(!el||!query.trim()){ if(el) el.innerHTML=''; return; }
+    el.innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:.75rem;text-align:center;padding:14px;">🔍 Buscando GIFs...</div>';
+    let gifs=[];
+    const q=encodeURIComponent(query);
+    try{ const d=await _gifFetch(`https://tenor.googleapis.com/v2/search?q=${q}&key=AIzaSyAyimkuYQYF_FXVALexPzfiyvL7X-doABc&limit=12&media_filter=tinygif&client_key=warpcode_edu`); gifs=(d.results||[]).map(g=>g.media_formats?.tinygif?.url||'').filter(Boolean); }catch(e){}
+    if(!gifs.length) try{ const d=await _gifFetch(`https://g.tenor.com/v1/search?q=${q}&key=LIVDSRZULELA&limit=12&contentfilter=low`); gifs=(d.results||[]).flatMap(g=>g.media||[]).map(m=>m.tinygif?.url||'').filter(Boolean); }catch(e){}
+    if(!gifs.length) try{ const d=await _gifFetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${q}&limit=12&rating=g&lang=pt`); gifs=(d.data||[]).map(g=>g.images?.fixed_height_small?.url||g.images?.downsized?.url||'').filter(Boolean); }catch(e){}
+    if(!gifs.length){ el.innerHTML='<div style="grid-column:1/-1;color:var(--orange);font-size:.75rem;text-align:center;padding:14px;">⚠️ GIFs indisponíveis.</div>'; return; }
+    el.innerHTML=gifs.map(src=>{ const s=sanitizeUrl(src); return s?`<img src="${escapeHtml(s)}" loading="lazy" style="width:100%;border-radius:6px;cursor:pointer;aspect-ratio:1;object-fit:cover;display:block;" data-gif-url="${escapeHtml(s)}" onerror="this.style.display='none'">`:''; }).join('');
+    el.querySelectorAll('[data-gif-url]').forEach(img=>img.addEventListener('click',()=>profChatEnviarGif(img.dataset.gifUrl)));
+  },500);
+}
+async function profChatEnviarGif(url){
+  const gp=document.getElementById('p-chat-gif-panel'); if(gp) gp.style.display='none';
+  try { await COL.chat().add({autorId:'professor',autorNome:'Professor',avatar:'🧑‍🏫',foto:null,turma:'all',tipo:'gif',gifUrl:url,ts:Date.now()}); }
+  catch(e){ toast('❌ Erro ao enviar GIF.'); }
 }
 
 // ══════════════════════════════════════
@@ -4177,15 +4950,23 @@ async function wcComprar(itemId){
 }
 async function wcEquipar(itemId,cat){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
-  try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});if(cat==='theme')applyTheme(itemId);if(['border','avatar','banner','title'].includes(cat))await COL.perfis().doc(a.id).update({['wc_eq_'+cat]:itemId}).catch(()=>{});toast('✅ Equipado!');}catch(e){toast('❌ Erro!');}
+  try{
+    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});
+    if(cat==='theme')applyTheme(itemId);
+    if(['border','avatar','banner','title'].includes(cat))
+      await COL.perfis().doc(a.id).set({['wc_eq_'+cat]:itemId},{merge:true}).catch(e=>console.error('[WC] espelhar equip no perfil:',e.code||e.message));
+    toast('✅ Equipado!');
+  }catch(e){console.error('[WC] equipar:',e.code||e.message);toast('❌ Erro ao equipar: '+(e.code||e.message));}
 }
 async function wcDesequipar(cat){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
   try{
-    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:null});if(['border','avatar','banner','title'].includes(cat))await COL.perfis().doc(a.id).update({['wc_eq_'+cat]:null}).catch(()=>{});
+    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:null});
+    if(['border','avatar','banner','title'].includes(cat))
+      await COL.perfis().doc(a.id).set({['wc_eq_'+cat]:null},{merge:true}).catch(e=>console.error('[WC] espelhar remoção no perfil:',e.code||e.message));
     if(cat==='theme'){const def=WC_ITEMS.find(i=>i.id==='theme_default');if(def&&def.vars)Object.entries(def.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}
     toast('Removido.');
-  }catch(e){toast('❌ Erro!');}
+  }catch(e){console.error('[WC] remover:',e.code||e.message);toast('❌ Erro ao remover: '+(e.code||e.message));}
 }
 
 // ── TROCAR XP → WC ──
@@ -4313,7 +5094,12 @@ async function aplicarCustom(itemId,cat,el){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
   el.closest('.custom-section')?.querySelectorAll('.border-opt-prev,.custom-opt,.banner-opt').forEach(e=>e.classList.remove('selected'));
   el.classList.add('selected');
-  try{await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});if(['border','avatar','banner','title'].includes(cat))await COL.perfis().doc(a.id).update({['wc_eq_'+cat]:itemId}).catch(()=>{});toast('✅ Aplicado!');}catch(e){toast('❌ Erro!');}
+  try{
+    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});
+    if(['border','avatar','banner','title'].includes(cat))
+      await COL.perfis().doc(a.id).set({['wc_eq_'+cat]:itemId},{merge:true}).catch(e=>console.error('[WC] espelhar custom no perfil:',e.code||e.message));
+    toast('✅ Aplicado!');
+  }catch(e){console.error('[WC] aplicarCustom:',e.code||e.message);toast('❌ Erro ao aplicar: '+(e.code||e.message));}
 }
 
 // ── LOOT BOX ──
@@ -4649,7 +5435,7 @@ function mostrarPopupCorreios(){
   const a = S.alunos.find(x=>x.id===alunoAtual); if(!a) return;
   const naoLidas = (a.correios||[]).filter(n=>!n.lido);
   if(!naoLidas.length) return;
-  const icones={aprovado:'✅',rejeitado:'❌',reacao:'😊',guilda:'⚔️',vitrine:'🌟',ranking:'🏆',professor:'✉️',streak:'🔥'};
+  const icones={aprovado:'✅',rejeitado:'❌',reacao:'😊',guilda:'⚔️',vitrine:'🌟',ranking:'🏆',professor:'✉️',streak:'🔥',update:'🛠️'};
   const preview = naoLidas.slice(0,4).map(n=>`<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(0,212,255,.08);">
     <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,212,255,.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">${icones[n.tipo]||'📬'}</div>
     <div style="flex:1;min-width:0;">
@@ -4713,24 +5499,42 @@ const LOG_WARPCODE = [
   },
 ];
 
+// Envia uma notificação ao Correios de QUALQUER aluno. Lê o doc na hora porque
+// no modo aluno S.alunos só contém o próprio aluno logado.
+async function notificarAluno(alunoId, notif){
+  if(!alunoId) return;
+  try{
+    const ref = COL.alunos().doc(alunoId);
+    const snap = await ref.get();
+    if(!snap.exists) return;
+    const atuais = snap.data().correios || [];
+    const correios = [notif, ...atuais].slice(0,50);
+    await ref.update({correios});
+  }catch(e){ console.error('[WC] notificarAluno:', e.code||e.message); }
+}
+
 async function injetarLogAtualizacoes(alunoId){
   try {
     const a = S.alunos.find(x=>x.id===alunoId); if(!a) return;
-    const correiosAtuais = a.correios||[];
-    const idsExistentes = new Set(correiosAtuais.map(n=>n.id));
-    const novos = LOG_WARPCODE.filter(u=>!idsExistentes.has(u.id)).map(u=>({
-      id: u.id,
-      tipo: 'update',
-      titulo: u.titulo,
-      desc: u.desc,
-      itens: u.itens,
-      ts: Date.now(),
-      lido: false
-    }));
+    // updatesVistos guarda os ids já entregues de forma permanente, então cada
+    // nota de versão aparece exatamente uma vez — mesmo que os correios sejam
+    // truncados depois. Para enviar uma nova nota, basta adicionar um item novo
+    // (com id único) ao array LOG_WARPCODE abaixo.
+    const vistos = new Set(a.updatesVistos || []);
+    const novos = LOG_WARPCODE.filter(u=>!vistos.has(u.id));
     if(!novos.length) return;
-    const correiosUpd = [...novos, ...correiosAtuais].slice(0,60);
-    await COL.alunos().doc(alunoId).update({correios: correiosUpd});
-  } catch(e){}
+    const correiosAtuais = a.correios||[];
+    const notifs = novos.map(u=>({
+      id: u.id, tipo: 'update', titulo: u.titulo, desc: u.desc,
+      itens: u.itens, ts: Date.now(), lido: false
+    }));
+    const correiosUpd = [...notifs, ...correiosAtuais].slice(0,60);
+    const updatesVistos = [...(a.updatesVistos||[]), ...novos.map(u=>u.id)];
+    await COL.alunos().doc(alunoId).update({correios: correiosUpd, updatesVistos});
+    // Atualiza cache local para o popup já enxergar as novas notas neste login.
+    const idx = S.alunos.findIndex(x=>x.id===alunoId);
+    if(idx>=0){ S.alunos[idx].correios = correiosUpd; S.alunos[idx].updatesVistos = updatesVistos; }
+  } catch(e){ console.error('[WC] injetarLog:', e.code||e.message); }
 }
 
 function atualizarBadgeCorreios(){
@@ -4757,6 +5561,8 @@ function renderGuilda(){
     const guildas = gSnap.docs.map(d=>({id:d.id,...d.data()}));
     const convites = cSnap.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.status==='pendente');
     const minhaGuilda = guildas.find(g=>g.membros && g.membros.includes(alunoAtual));
+    // Enriquece cada guilda com XP calculado dinamicamente dos membros atuais
+    guildas.forEach(g => { g._xpComp = calcGuildaXP(g); });
 
     let html = '<div class="page-hdr"><div><div class="page-title">⚔️ Guildas</div><div class="page-sub">Forme uma equipe e conquiste desafios juntos!</div></div>';
     if(!minhaGuilda) html += '<button class="btn btn-primary btn-sm" onclick="document.getElementById(&quot;modal-criar-guilda&quot;).classList.add(&quot;active&quot;)">⚔️ Criar Guilda</button>';
@@ -4782,7 +5588,8 @@ function renderGuilda(){
     html += '<div class="sec-title" style="margin-top:8px;">🏰 Todas as Guildas</div>';
     if(guildas.length){
       html += '<div class="guilda-grid">';
-      guildas.forEach(g => {
+      // Ordena por XP calculado dinamicamente
+      [...guildas].sort((a,b)=>(b._xpComp||0)-(a._xpComp||0)).forEach(g => {
         const isMinha = minhaGuilda && g.id === minhaGuilda.id;
         const membrosHtml = (g.membros||[]).slice(0,5).map(mid => {
           const m = S.alunos.find(x=>x.id===mid) || S.perfis.find(x=>x.id===mid);
@@ -4791,17 +5598,11 @@ function renderGuilda(){
             ? `<div class="ggc-membro"><img src="${m.profilePhoto}"></div>`
             : `<div class="ggc-membro">${m.avatar||'👾'}</div>`;
         }).join('');
-        const bannerStyle = g.bannerUrl
-          ? `background:url('${g.bannerUrl}') center/cover no-repeat`
-          : g.brasaoColor||'background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(0,212,255,.15))';
-        const fotoHtml = g.fotoUrl
-          ? `<img src="${g.fotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-          : `<span style="font-size:1.8rem;">${g.brasao||'⚔️'}</span>`;
         html += `<div class="guilda-grid-card ${isMinha?'minha':''}" onclick="abrirModalGuilda('${g.id}')">
           <div class="ggc-body">
             <div class="ggc-brasao">${g.brasao||'⚔️'}</div>
             <div class="ggc-nome">${g.nome}</div>
-            <div class="ggc-xp">⚡ ${g.xpTotal||0} XP</div>
+            <div class="ggc-xp">⚡ ${g._xpComp} XP</div>
             <div class="ggc-membros">${membrosHtml}${(g.membros||[]).length>5?`<div class="ggc-membro" style="font-size:.55rem;color:var(--muted);">+${(g.membros||[]).length-5}</div>`:''}</div>
           </div>
         </div>`;
@@ -4862,6 +5663,7 @@ function abrirModalGuilda(guildaId){
     const a = S.alunos.find(x=>x.id===alunoAtual);
     const isMinha = a && (g.membros||[]).includes(alunoAtual);
     const isLider = a && g.liderId === alunoAtual;
+    const gXpComp = calcGuildaXP(g);
     const membrosHtml = (g.membros||[]).map(mid=>{
       const m = S.alunos.find(x=>x.id===mid) || S.perfis.find(x=>x.id===mid);
       if(!m) return '';
@@ -4909,7 +5711,7 @@ function abrirModalGuilda(guildaId){
         <div style="flex:1;min-width:0;">
           <div class="guilda-nome" style="font-size:1rem;">${g.nome}</div>
           ${g.slogan?`<div class="guilda-slogan">"${g.slogan}"</div>`:''}
-          <div class="guilda-xp" style="margin-top:4px;">⚡ ${g.xpTotal||0} XP da Guilda</div>
+          <div class="guilda-xp" style="margin-top:4px;">⚡ ${gXpComp} XP da Guilda</div>
         </div>
       </div>
       <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
@@ -4918,7 +5720,7 @@ function abrirModalGuilda(guildaId){
           <div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Membros</div>
         </div>
         <div style="flex:1;background:var(--s2);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border);">
-          <div style="font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:var(--gold)">${g.xpTotal||0}</div>
+          <div style="font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:var(--gold)">${gXpComp}</div>
           <div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">XP Total</div>
         </div>
         <div style="flex:1;background:var(--s2);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border);">
@@ -5247,6 +6049,257 @@ async function dissolvGuilda(guildaId){
     setSyncing('ok');
     renderGuilda();
   } catch(e){ toast('❌ Erro.'); setSyncing('error'); }
+}
+
+// ══════════════════════════════════════
+//  GUILDAS — FUNÇÕES DO PROFESSOR
+// ══════════════════════════════════════
+
+// Calcula XP total da guilda dinamicamente somando XP real dos membros atuais
+function calcGuildaXP(g){
+  return (g.membros||[]).reduce((sum, mid) => {
+    const m = S.alunos.find(x=>x.id===mid) || S.perfis.find(x=>x.id===mid);
+    return sum + (m?.xp||0);
+  }, 0);
+}
+
+// Renderiza a aba Guildas no painel do professor
+async function renderPGuildas(){
+  const el = document.getElementById('ppage-guildas-lista');
+  if(!el) return;
+  el.innerHTML = '<div class="loading-spin" style="margin:40px auto;"></div>';
+  try {
+    const snap = await COL.guildas().get();
+    const guildas = snap.docs.map(d=>({id:d.id,...d.data()}));
+
+    // Atualiza o select de bônus
+    const bonusSel = document.getElementById('pg-bonus-guilda');
+    if(bonusSel){
+      bonusSel.innerHTML = guildas.length
+        ? guildas.map(g=>`<option value="${g.id}">${g.brasao||'⚔️'} ${g.nome}</option>`).join('')
+        : '<option value="">Nenhuma guilda</option>';
+    }
+
+    if(!guildas.length){
+      el.innerHTML='<div class="empty"><div class="empty-icon">⚔️</div><div class="empty-text">Nenhuma guilda criada ainda.<br>Use o formulário acima para criar a primeira!</div></div>';
+      return;
+    }
+
+    // Ordena por XP calculado dinamicamente
+    const sorted = guildas.map(g=>({...g, _xpComp:calcGuildaXP(g)})).sort((a,b)=>b._xpComp-a._xpComp);
+
+    el.innerHTML = sorted.map((g, idx) => {
+      const rankEmoji = ['🥇','🥈','🥉'][idx] || `<span style="font-family:'Orbitron',monospace;font-size:.75rem;">#${idx+1}</span>`;
+      const membrosHtml = (g.membros||[]).map(mid => {
+        const m = S.alunos.find(x=>x.id===mid);
+        if(!m) return '';
+        const foto = m.profilePhoto
+          ? `<img src="${m.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+          : `<span style="font-size:1rem;">${m.avatar||'👾'}</span>`;
+        const isLider = mid === g.liderId;
+        return `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--s2);border:1px solid ${isLider?'var(--gold)':'var(--border)'};border-radius:10px;margin-bottom:5px;">
+          <div style="width:30px;height:30px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">${foto}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:.8rem;font-weight:800;${isLider?'color:var(--gold);':''}">${isLider?'👑 ':''}${m.nome}</div>
+            <div style="font-size:.62rem;color:var(--muted);">${m.turma} · ⚡ ${m.xp||0} XP</div>
+          </div>
+          ${!isLider?`<button class="btn btn-outline btn-sm" style="font-size:.6rem;padding:2px 7px;" title="Tornar líder" onclick="profTrocarLider('${g.id}','${mid}')">👑</button>`:''}
+          <button class="btn btn-danger btn-sm" style="font-size:.6rem;padding:2px 7px;" title="Remover membro" onclick="profRemoverMembro('${g.id}','${mid}')">✕</button>
+        </div>`;
+      }).join('');
+
+      const naoMembros = S.alunos.filter(a=>!(g.membros||[]).includes(a.id));
+      const addSelOpts = naoMembros.length
+        ? naoMembros.map(a=>`<option value="${a.id}">${a.avatar||'👾'} ${a.nome} (${a.turma})</option>`).join('')
+        : '<option value="">Todos os alunos já estão em alguma guilda</option>';
+
+      return `<div class="card" style="margin-bottom:14px;border-color:rgba(124,58,237,.3);">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+          <div style="font-size:2.4rem;filter:drop-shadow(0 0 8px rgba(124,58,237,.5));flex-shrink:0;">${g.brasao||'⚔️'}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="font-family:'Orbitron',monospace;font-size:.95rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${g.nome}</span>
+              <span>${rankEmoji}</span>
+            </div>
+            ${g.slogan?`<div style="font-size:.7rem;color:var(--muted2);font-style:italic;margin-top:2px;">"${g.slogan}"</div>`:''}
+            <div style="display:flex;gap:14px;margin-top:5px;flex-wrap:wrap;">
+              <span style="font-family:'Orbitron',monospace;font-size:.68rem;color:var(--gold);">⚡ ${g._xpComp} XP</span>
+              <span style="font-size:.7rem;color:var(--muted2);">👥 ${(g.membros||[]).length} membros</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" style="font-size:.72rem;" onclick="profAbrirEditarGuilda('${g.id}','${encodeURIComponent(g.nome)}','${encodeURIComponent(g.brasao||'⚔️')}','${encodeURIComponent(g.slogan||'')}')">✏️ Editar</button>
+            <button class="btn btn-danger btn-sm" style="font-size:.72rem;" onclick="profDissolvGuilda('${g.id}','${encodeURIComponent(g.nome)}')">💣 Dissolver</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div>
+            <div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:700;">👥 Membros</div>
+            ${membrosHtml||'<div style="font-size:.75rem;color:var(--muted);padding:8px;">Sem membros</div>'}
+          </div>
+          <div>
+            <div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:700;">➕ Adicionar Membro</div>
+            <div style="display:flex;gap:6px;">
+              <select id="pg-add-sel-${g.id}" style="flex:1;min-width:0;font-size:.75rem;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 7px;color:var(--text);">${addSelOpts}</select>
+              <button class="btn btn-success btn-sm" onclick="profAdicionarMembro('${g.id}')" ${!naoMembros.length?'disabled':''}>➕</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e){
+    el.innerHTML='<div class="empty"><div class="empty-text">Erro ao carregar guildas.</div></div>';
+    console.error(e);
+  }
+}
+
+// Cria uma guilda como professor (sem líder vinculado)
+async function profCriarGuilda(){
+  const nome = document.getElementById('pg-nome').value.trim();
+  const brasao = document.getElementById('pg-brasao').value || '⚔️';
+  const slogan = document.getElementById('pg-slogan').value.trim();
+  if(!nome){ toast('❌ Digite um nome para a guilda.'); return; }
+  setSyncing('syncing');
+  try {
+    await COL.guildas().add({nome, brasao, slogan, liderId:'', membros:[], xpTotal:0, criadoEm:Date.now(), criadoPorProf:true});
+    document.getElementById('pg-nome').value='';
+    document.getElementById('pg-slogan').value='';
+    document.getElementById('pg-brasao').value='⚔️';
+    document.getElementById('pg-brasao-btn').textContent='⚔️';
+    toast('⚔️ Guilda criada com sucesso!');
+    setSyncing('ok');
+    renderPGuildas();
+  } catch(e){ toast('❌ Erro ao criar guilda.'); setSyncing('error'); console.error(e); }
+}
+
+// Abre modal de edição de guilda (professor)
+function profAbrirEditarGuilda(guildaId, nomeEnc, brasaoEnc, sloganEnc){
+  const nome   = decodeURIComponent(nomeEnc);
+  const brasao = decodeURIComponent(brasaoEnc);
+  const slogan = decodeURIComponent(sloganEnc);
+  const el = document.getElementById('modal-prof-edit-guilda-content');
+  el.innerHTML = `
+    <div class="form-group" style="margin-bottom:10px;"><label>Brasão</label>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button id="pge-brasao-btn" onclick="abrirEmojiPicker(this,'pge-brasao')" style="font-size:2rem;width:56px;height:52px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;">${brasao}</button>
+        <input id="pge-brasao" type="hidden" value="${brasao}">
+        <span style="font-size:.72rem;color:var(--muted2);">Clique para escolher</span>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:10px;"><label>Nome da Guilda</label><input id="pge-nome" value="${nome}" maxlength="30"></div>
+    <div class="form-group" style="margin-bottom:18px;"><label>Grito de guerra</label><input id="pge-slogan" value="${slogan}" maxlength="50" placeholder="Ex: Código acima de tudo!"></div>
+    <button class="btn btn-primary btn-block" onclick="profSalvarGuilda('${guildaId}')">💾 Salvar Alterações</button>
+  `;
+  document.getElementById('modal-prof-edit-guilda').classList.add('active');
+}
+
+// Salva edição de guilda (professor)
+async function profSalvarGuilda(guildaId){
+  const nome   = document.getElementById('pge-nome').value.trim();
+  const brasao = document.getElementById('pge-brasao').value || '⚔️';
+  const slogan = document.getElementById('pge-slogan').value.trim();
+  if(!nome){ toast('❌ Nome não pode estar vazio.'); return; }
+  setSyncing('syncing');
+  try {
+    await COL.guildas().doc(guildaId).update({nome, brasao, slogan});
+    toast('✅ Guilda atualizada!');
+    setSyncing('ok');
+    closeModal('modal-prof-edit-guilda');
+    renderPGuildas();
+  } catch(e){ toast('❌ Erro ao salvar.'); setSyncing('error'); console.error(e); }
+}
+
+// Remove membro da guilda (professor)
+async function profRemoverMembro(guildaId, membroId){
+  if(!confirm('Remover este membro da guilda?')) return;
+  setSyncing('syncing');
+  try {
+    const gSnap = await COL.guildas().doc(guildaId).get();
+    const g = gSnap.data();
+    const atualizacao = { membros: firebase.firestore.FieldValue.arrayRemove(membroId) };
+    // Se era o líder, limpa liderId
+    if(g.liderId === membroId) atualizacao.liderId = '';
+    await COL.guildas().doc(guildaId).update(atualizacao);
+    toast('✅ Membro removido.');
+    setSyncing('ok');
+    renderPGuildas();
+  } catch(e){ toast('❌ Erro.'); setSyncing('error'); console.error(e); }
+}
+
+// Adiciona membro à guilda (professor)
+async function profAdicionarMembro(guildaId){
+  const sel = document.getElementById('pg-add-sel-'+guildaId);
+  const membroId = sel?.value;
+  if(!membroId){ toast('⚠️ Selecione um aluno.'); return; }
+  setSyncing('syncing');
+  try {
+    // Remove de guilda anterior se houver
+    const outrasSnap = await COL.guildas().where('membros','array-contains',membroId).get();
+    for(const d of outrasSnap.docs){
+      if(d.id !== guildaId) await d.ref.update({membros: firebase.firestore.FieldValue.arrayRemove(membroId)});
+    }
+    await COL.guildas().doc(guildaId).update({ membros: firebase.firestore.FieldValue.arrayUnion(membroId) });
+    toast('✅ Membro adicionado!');
+    setSyncing('ok');
+    renderPGuildas();
+  } catch(e){ toast('❌ Erro.'); setSyncing('error'); console.error(e); }
+}
+
+// Troca o líder da guilda (professor)
+async function profTrocarLider(guildaId, novoLiderId){
+  const m = S.alunos.find(x=>x.id===novoLiderId);
+  if(!confirm(`Tornar ${m?.nome||'este aluno'} o novo líder desta guilda?`)) return;
+  setSyncing('syncing');
+  try {
+    await COL.guildas().doc(guildaId).update({ liderId: novoLiderId });
+    toast(`👑 ${m?.nome||'Aluno'} é o novo líder!`);
+    setSyncing('ok');
+    renderPGuildas();
+  } catch(e){ toast('❌ Erro.'); setSyncing('error'); console.error(e); }
+}
+
+// Dissolve guilda (professor)
+async function profDissolvGuilda(guildaId, nomeEnc){
+  const nome = decodeURIComponent(nomeEnc);
+  if(!confirm(`Dissolver a guilda "${nome}"? Esta ação é irreversível.`)) return;
+  setSyncing('syncing');
+  try {
+    await COL.guildas().doc(guildaId).delete();
+    toast('💣 Guilda dissolvida.');
+    setSyncing('ok');
+    renderPGuildas();
+  } catch(e){ toast('❌ Erro.'); setSyncing('error'); console.error(e); }
+}
+
+// Dá bônus de XP para todos os membros de uma guilda (professor)
+async function profBonusXPGuilda(){
+  const guildaId = document.getElementById('pg-bonus-guilda').value;
+  const xpVal = parseInt(document.getElementById('pg-bonus-xp').value)||0;
+  const motivo = document.getElementById('pg-bonus-motivo').value.trim()||'⚡ Bônus de guilda pelo professor';
+  if(!guildaId){ toast('⚠️ Selecione uma guilda.'); return; }
+  if(xpVal < 1){ toast('⚠️ XP deve ser maior que zero.'); return; }
+  setSyncing('syncing');
+  try {
+    const gSnap = await COL.guildas().doc(guildaId).get();
+    if(!gSnap.exists){ toast('❌ Guilda não encontrada.'); setSyncing('error'); return; }
+    const g = gSnap.data();
+    const membros = g.membros||[];
+    if(!membros.length){ toast('⚠️ Guilda sem membros.'); setSyncing('idle'); return; }
+    const batch = db.batch();
+    for(const mid of membros){
+      const m = S.alunos.find(x=>x.id===mid);
+      if(!m) continue;
+      const hist = [{desc:`${motivo} (+${xpVal} XP)`, xp:xpVal, ts:Date.now()}, ...(m.historico||[])].slice(0,30);
+      const notif = {id:'n'+Date.now()+'_'+mid, tipo:'guilda', titulo:`⚔️ Bônus de Guilda!`, desc:`${motivo} · +${xpVal} XP`, xp:xpVal, ts:Date.now(), lido:false};
+      const correios = [notif, ...(m.correios||[])].slice(0,50);
+      batch.update(COL.alunos().doc(mid), {xp: firebase.firestore.FieldValue.increment(xpVal), historico:hist, correios});
+    }
+    await batch.commit();
+    toast(`⚡ +${xpVal} XP dado a ${membros.length} membro(s) da guilda!`);
+    setSyncing('ok');
+    document.getElementById('pg-bonus-xp').value='';
+    document.getElementById('pg-bonus-motivo').value='';
+  } catch(e){ toast('❌ Erro ao dar bônus.'); setSyncing('error'); console.error(e); }
 }
 
 // ══════════════════════════════════════
@@ -5645,6 +6698,7 @@ function renderChatMsgs(msgs){
   if(!el) return;
   el.innerHTML = msgs.map(m=>{
     const own = m.autorId === alunoAtual;
+    const isProf = m.autorId === 'professor';
     const time = new Date(m.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     const safeAutorId = escapeHtml(m.autorId||'');
     const safeAutorNome = escapeHtml(m.autorNome||'');
@@ -5654,17 +6708,16 @@ function renderChatMsgs(msgs){
     const safeGifUrl = sanitizeUrl(m.gifUrl||'');
     const bubble = m.tipo==='gif' && safeGifUrl
       ? `<img src="${escapeHtml(safeGifUrl)}" class="chat-gif" alt="GIF">`
-      : `<div class="chat-bubble">${escapeHtml(m.texto||'')}</div>`;
-    const clickAttr = !own && safeAutorId ? `data-aluno-id="${safeAutorId}"` : '';
-    const clickStyle = !own ? 'cursor:pointer;' : '';
+      : `<div class="chat-bubble"${isProf&&!own?' style="border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.07);"':''}>${escapeHtml(m.texto||'')}</div>`;
+    const clickAttr = !own && safeAutorId && !isProf ? `data-aluno-id="${safeAutorId}"` : '';
+    const clickStyle = !own && !isProf ? 'cursor:pointer;' : '';
+    const authorLabel = isProf
+      ? `<span style="color:var(--accent);font-weight:700;">🧑‍🏫 Professor</span> · ${time}`
+      : `${own?'Você':safeAutorNome} · ${time}`;
     return `<div class="chat-msg ${own?'own':''}">
-      <div ${clickAttr} class="${!own?'chat-avatar-click':''}" style="${clickStyle}">
-        ${avatarHtml}
-      </div>
+      <div ${clickAttr} class="${!own&&!isProf?'chat-avatar-click':''}" style="${clickStyle}">${avatarHtml}</div>
       <div>
-        <div class="chat-author ${!own?'chat-author-click':''}" ${clickAttr} style="${clickStyle}">
-          ${own?'Você':safeAutorNome} · ${time}
-        </div>
+        <div class="chat-author ${!own&&!isProf?'chat-author-click':''}" ${clickAttr} style="${clickStyle}">${authorLabel}</div>
         ${bubble}
       </div>
     </div>`;
@@ -5764,7 +6817,9 @@ function renderVitrine(){
       const allVitrine = snap.docs.map(d=>({id:d.id,...d.data()})).filter(v=>v.ativo).sort((a,b)=>(b.destaqueEm||0)-(a.destaqueEm||0)).slice(0,30);
       if(!allVitrine.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌟</div><div class="empty-text">Nenhum projeto em destaque ainda. Envie suas missões e conquiste um lugar aqui!</div></div>';return;}
       el.innerHTML = allVitrine.map(v=>{
-        const a2 = S.alunos.find(x=>x.id===v.alunoId);
+        // No modo aluno, S.alunos só tem o próprio aluno. Nome/avatar/turma dos
+        // autores vêm de alunos_perfil (S.perfis), que contém todos os alunos.
+        const a2 = S.perfis.find(x=>x.id===v.alunoId) || S.alunos.find(x=>x.id===v.alunoId);
         const EMOJIS = ['❤️','🔥','⭐','🚀','💡'];
         const safeVId = escapeHtml(v.id);
         const reactions = EMOJIS.map(e=>{
@@ -5829,14 +6884,9 @@ async function reagir(vitrineId, emoji){
       });
       // Notificar dono do projeto
       if(v.alunoId && v.alunoId !== alunoAtual){
-        const donoVitrine = S.alunos.find(x=>x.id===v.alunoId);
-        if(donoVitrine){
-          const meuAvatar2 = (S.alunos.find(x=>x.id===alunoAtual)||{}).avatar||'👾';
-          const meuNome2 = (S.alunos.find(x=>x.id===alunoAtual)||{}).nome||'Alguém';
-          const notifVitrine={id:'n'+Date.now(),tipo:'vitrine',titulo:`${emoji} Reação na sua vitrine!`,desc:`${meuAvatar2} ${meuNome2} reagiu com ${emoji} no seu projeto "${v.titulo||'seu projeto'}"!`,ts:Date.now(),lido:false};
-          const correiosVitrine=[notifVitrine,...(donoVitrine.correios||[])].slice(0,50);
-          await COL.alunos().doc(v.alunoId).update({correios:correiosVitrine});
-        }
+        const eu = S.alunos.find(x=>x.id===alunoAtual) || S.perfis.find(x=>x.id===alunoAtual) || {};
+        const notifVitrine={id:'n'+Date.now()+Math.random().toString(36).slice(2,6),tipo:'vitrine',titulo:`${emoji} Reação na sua vitrine!`,desc:`${eu.avatar||'👾'} ${eu.nome||'Alguém'} reagiu com ${emoji} no seu projeto "${v.titulo||'seu projeto'}"!`,ts:Date.now(),lido:false};
+        await notificarAluno(v.alunoId, notifVitrine);
       }
     }
     await batch.commit();
@@ -5861,12 +6911,8 @@ async function comentarVitrine(vitrineId){
     if(vitrineSnap.exists){
       const vData = vitrineSnap.data();
       if(vData.alunoId && vData.alunoId !== alunoAtual){
-        const donoVitrine = S.alunos.find(x=>x.id===vData.alunoId);
-        if(donoVitrine){
-          const notifCmt={id:'n'+Date.now(),tipo:'vitrine',titulo:`💬 Comentário no seu projeto!`,desc:`${a.avatar||'👾'} ${a.nome} comentou: "${texto.slice(0,60)}${texto.length>60?'...':''}"`,ts:Date.now(),lido:false};
-          const correiosCmt=[notifCmt,...(donoVitrine.correios||[])].slice(0,50);
-          await COL.alunos().doc(vData.alunoId).update({correios:correiosCmt});
-        }
+        const notifCmt={id:'n'+Date.now()+Math.random().toString(36).slice(2,6),tipo:'vitrine',titulo:`💬 Comentário no seu projeto!`,desc:`${a.avatar||'👾'} ${a.nome} comentou: "${texto.slice(0,60)}${texto.length>60?'...':''}"`,ts:Date.now(),lido:false};
+        await notificarAluno(vData.alunoId, notifCmt);
       }
     }
     toast('💬 Comentário enviado!');
