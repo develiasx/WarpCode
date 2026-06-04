@@ -1151,6 +1151,7 @@ select option{background:var(--s1);}
       <div class="sidebar-user"><div class="sb-av">🛸</div><div><div class="sb-name">Professor</div><div class="sb-role">Administrador</div></div></div>
       <nav class="sidebar-nav">
         <button class="snav active" id="snav-alunos" onclick="profTab('alunos','snav-alunos')"><span class="snav-ic">👥</span>Alunos</button>
+        <button class="snav" id="snav-aprovar" onclick="profTab('aprovar','snav-aprovar')"><span class="snav-ic">✅</span>Aprovar Missões<span id="snav-badge" class="snav-badge" style="display:none;background:var(--red);color:#fff;"></span></button>
         <button class="snav" id="snav-desafio" onclick="profTab('desafio','snav-desafio')"><span class="snav-ic">🔥</span>Desafio da Semana</button>
         <button class="snav" id="snav-loja" onclick="profTab('loja','snav-loja')"><span class="snav-ic">🛒</span>Loja de Recompensas</button>
         <button class="snav" id="snav-ranking" onclick="profTab('ranking','snav-ranking')"><span class="snav-ic">🏆</span>Ranking</button>
@@ -1235,7 +1236,7 @@ select option{background:var(--s1);}
         </div>
       </div>
 
-      <!-- APROVAR (oculto do menu, mantido para lógica de aprovação) -->
+      <!-- APROVAR MISSÕES -->
       <div id="ppage-aprovar" class="page">
         <div class="page-hdr"><div><div class="page-title">✅ Aprovar Missões</div><div class="page-sub">Valide os projetos e dê feedback</div></div></div>
         <div class="sec-title">⏳ Aguardando Aprovação</div>
@@ -1549,6 +1550,7 @@ select option{background:var(--s1);}
     <div class="mobile-bottomnav">
       <div class="mobile-nav-inner">
         <button class="mnav active" id="mnav-alunos" onclick="profTab('alunos','mnav-alunos',true)"><span class="mnav-ic">👥</span>Alunos</button>
+        <button class="mnav" id="mnav-aprovar" onclick="profTab('aprovar','mnav-aprovar',true)"><span class="mnav-ic">✅</span>Aprovar<span id="mnav-badge" class="mnav-badge" style="display:none;background:var(--red);color:#fff;"></span></button>
         <button class="mnav" id="mnav-desafio" onclick="profTab('desafio','mnav-desafio',true)"><span class="mnav-ic">🔥</span>Desafio</button>
         <button class="mnav" id="mnav-loja" onclick="profTab('loja','mnav-loja',true)"><span class="mnav-ic">🛒</span>Loja</button>
         <button class="mnav" id="mnav-pin" onclick="profTab('pin','mnav-pin',true)"><span class="mnav-ic">📊</span>Analytics</button>
@@ -2953,6 +2955,7 @@ function profTab(tab,navId,isMobile=false){
   else if(tab==='chat') initProfChat();
   else if(tab==='guildas') renderPGuildas();
   else if(tab==='ranking') renderPRanking();
+  else if(tab==='aprovar') renderPAprovacoes();
   else renderProf();
 }
 let _missTabAtual = 'abertas';
