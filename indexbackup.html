@@ -21,8 +21,6 @@
   --sidebar:250px;--radius:14px;--radius-sm:10px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-/* Evita estouro horizontal no mobile com nomes/slogans longos sem espaço */
-.guilda-nome,.guilda-slogan,.steam-pname,.av-name,.welcome-text,.mtitle,.badge-name,.chat-bubble{overflow-wrap:anywhere;word-break:break-word;}
 html,body{height:100%;}
 body{background:var(--bg);color:var(--text);font-family:'Chakra Petch',sans-serif;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -2138,8 +2136,7 @@ function ligarListeners(){
 // Liga listener de alunos completos — chamado SÓ após login real
 let _unsubAlunos = null;
 function ligarListenerAlunos(modo='professor', alunoId=null){
-  // Sempre desliga o listener anterior antes de reanexar (evita listener preso de sessão antiga)
-  if(typeof _unsubAlunos==='function'){ try{ _unsubAlunos(); }catch(e){} _unsubAlunos=null; }
+  if(_unsubAlunos) return; // já ligado
   if(modo === 'professor'){
     _unsubAlunos = COL.alunos().onSnapshot(snap => {
       S.alunos = snap.docs.map(d => ({id:d.id,...d.data()}));
@@ -2218,16 +2215,7 @@ function showScreen(id){
     }
   }
 }
-function goLogin(){
-  // Teardown completo — essencial para PCs compartilhados (alunos rotativos)
-  alunoAtual=null;
-  if(typeof _unsubAlunos==='function'){ try{ _unsubAlunos(); }catch(e){} }
-  _unsubAlunos=null;
-  // Encerra a sessão Auth do aluno/professor anterior para não vazar identidade
-  try{ if(firebase.auth().currentUser) firebase.auth().signOut().catch(()=>{}); }catch(e){}
-  showScreen('screen-login');
-  setTimeout(initLoginGalaxy,60);
-}
+function goLogin(){alunoAtual=null;showScreen('screen-login');setTimeout(initLoginGalaxy,60);}
 function goProfLogin(){
   document.getElementById('prof-senha-input').value='';
   document.getElementById('prof-senha-erro').textContent='';
@@ -3128,7 +3116,7 @@ function abrirEditarAluno(id){
 }
 
 async function salvarEdicaoAluno(id){
-  const nome=sanitizeInput(document.getElementById('edit-nome')?.value, 50);
+  const nome=document.getElementById('edit-nome')?.value.trim();
   const turma=document.getElementById('edit-turma')?.value;
   const senha=document.getElementById('edit-senha')?.value.trim();
   if(!nome)return toast('⚠️ Digite o nome!');
@@ -3922,7 +3910,7 @@ function renderAluno(){
 //  AÇÕES PROFESSOR — FIREBASE
 // ══════════════════════════════════════
 async function cadastrarAluno(){
-  const nome=sanitizeInput(document.getElementById('p-nome').value, 50);
+  const nome=document.getElementById('p-nome').value.trim();
   if(!nome) return toast('⚠️ Digite o nome!');
   setSyncing('syncing');
   try {
@@ -4168,7 +4156,7 @@ async function ajustarXP(id,sinal){
 
 async function addRecompensa(){
   const emoji=document.getElementById('r-emoji').value.trim()||'🎁';
-  const nome=sanitizeInput(document.getElementById('r-nome').value, 50);
+  const nome=document.getElementById('r-nome').value.trim();
   const custo=parseInt(document.getElementById('r-custo').value);
   if(!nome) return toast('⚠️ Digite o nome!');
   if(!custo||custo<1) return toast('⚠️ Digite o custo em XP!');
@@ -6093,9 +6081,9 @@ async function reagirPerfil(alunoId, emoji){
 }
 
 async function criarGuilda(){
-  const nome = sanitizeInput(document.getElementById('gn-nome')?.value, 40);
+  const nome = document.getElementById('gn-nome')?.value.trim();
   const brasao = document.getElementById('gn-brasao')?.value.trim()||'⚔️';
-  const slogan = sanitizeInput(document.getElementById('gn-slogan')?.value, 80);
+  const slogan = document.getElementById('gn-slogan')?.value.trim();
   if(!nome) return toast('⚠️ Dê um nome para a guilda!');
   const a = S.alunos.find(x=>x.id===alunoAtual);
   if(!a) return;
@@ -6333,9 +6321,9 @@ function profAbrirEditarGuilda(guildaId, nomeEnc, brasaoEnc, sloganEnc){
 
 // Salva edição de guilda (professor)
 async function profSalvarGuilda(guildaId){
-  const nome   = sanitizeInput(document.getElementById('pge-nome').value, 40);
+  const nome   = document.getElementById('pge-nome').value.trim();
   const brasao = document.getElementById('pge-brasao').value || '⚔️';
-  const slogan = sanitizeInput(document.getElementById('pge-slogan').value, 80);
+  const slogan = document.getElementById('pge-slogan').value.trim();
   if(!nome){ toast('❌ Nome não pode estar vazio.'); return; }
   setSyncing('syncing');
   try {
@@ -6926,11 +6914,6 @@ async function enviarAprovacaoGuilda(missaoId, guildaId){
 }
 
 function escapeHtml(t){ const d=document.createElement('div');d.textContent=String(t==null?'':t);return d.innerHTML; }
-// Sanitiza texto livre na ESCRITA (nome de aluno, nome/slogan de guilda).
-// Remove < e > (neutraliza injeção de tags HTML) e limita o tamanho.
-function sanitizeInput(t, max=60){
-  return String(t==null?'':t).replace(/[<>]/g,'').replace(/\s+/g,' ').trim().slice(0, max);
-}
 
 // Valida e sanitiza URLs — bloqueia javascript:, data:, etc.
 function sanitizeUrl(url){
