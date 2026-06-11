@@ -21,6 +21,8 @@
   --sidebar:250px;--radius:14px;--radius-sm:10px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+/* Evita estouro horizontal no mobile com nomes/slogans longos sem espaço */
+.guilda-nome,.guilda-slogan,.steam-pname,.av-name,.welcome-text,.mtitle,.badge-name,.chat-bubble{overflow-wrap:anywhere;word-break:break-word;}
 html,body{height:100%;}
 body{background:var(--bg);color:var(--text);font-family:'Chakra Petch',sans-serif;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -1477,7 +1479,7 @@ select option{background:var(--s1);}
 
       <!-- CHAT PROFESSOR -->
       <div id="ppage-chat" class="page">
-        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com os alunos em tempo real</div></div><div id="p-online-count" style="font-size:.75rem;color:var(--green);font-weight:700;"></div></div>
+        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com os alunos em tempo real</div></div></div>
         <div style="display:flex;gap:14px;flex:1;min-height:0;overflow:hidden;">
           <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
             <div id="p-chat-msgs" style="flex:1;overflow-y:auto;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:14px;display:flex;flex-direction:column;gap:8px;"></div>
@@ -1499,7 +1501,7 @@ select option{background:var(--s1);}
             </div>
           </div>
           <div class="chat-online-panel">
-            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online</div>
+            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online <span id="p-online-count" style="color:var(--green);"></span></div>
             <div id="p-online-list" style="display:flex;flex-direction:column;gap:6px;"></div>
           </div>
         </div>
@@ -1746,7 +1748,7 @@ select option{background:var(--s1);}
 
       <!-- CHAT -->
       <div id="apage-chat" class="page">
-        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com seus colegas em tempo real</div></div><div id="online-count" style="font-size:.75rem;color:var(--green);font-weight:700;"></div></div>
+        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com seus colegas em tempo real</div></div></div>
         <div style="display:flex;gap:14px;flex:1;min-height:0;overflow:hidden;">
           <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
             <div id="chat-msgs" style="flex:1;overflow-y:auto;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:14px;display:flex;flex-direction:column;gap:8px;"></div>
@@ -1770,7 +1772,7 @@ select option{background:var(--s1);}
             </div>
           </div>
           <div class="chat-online-panel">
-            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online</div>
+            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online <span id="online-count" style="color:var(--green);"></span></div>
             <div id="online-list" style="display:flex;flex-direction:column;gap:6px;"></div>
           </div>
         </div>
@@ -2136,7 +2138,8 @@ function ligarListeners(){
 // Liga listener de alunos completos — chamado SÓ após login real
 let _unsubAlunos = null;
 function ligarListenerAlunos(modo='professor', alunoId=null){
-  if(_unsubAlunos) return; // já ligado
+  // Sempre desliga o listener anterior antes de reanexar (evita listener preso de sessão antiga)
+  if(typeof _unsubAlunos==='function'){ try{ _unsubAlunos(); }catch(e){} _unsubAlunos=null; }
   if(modo === 'professor'){
     _unsubAlunos = COL.alunos().onSnapshot(snap => {
       S.alunos = snap.docs.map(d => ({id:d.id,...d.data()}));
@@ -2215,7 +2218,16 @@ function showScreen(id){
     }
   }
 }
-function goLogin(){alunoAtual=null;showScreen('screen-login');setTimeout(initLoginGalaxy,60);}
+function goLogin(){
+  // Teardown completo — essencial para PCs compartilhados (alunos rotativos)
+  alunoAtual=null;
+  if(typeof _unsubAlunos==='function'){ try{ _unsubAlunos(); }catch(e){} }
+  _unsubAlunos=null;
+  // Encerra a sessão Auth do aluno/professor anterior para não vazar identidade
+  try{ if(firebase.auth().currentUser) firebase.auth().signOut().catch(()=>{}); }catch(e){}
+  showScreen('screen-login');
+  setTimeout(initLoginGalaxy,60);
+}
 function goProfLogin(){
   document.getElementById('prof-senha-input').value='';
   document.getElementById('prof-senha-erro').textContent='';
@@ -3116,7 +3128,7 @@ function abrirEditarAluno(id){
 }
 
 async function salvarEdicaoAluno(id){
-  const nome=document.getElementById('edit-nome')?.value.trim();
+  const nome=sanitizeInput(document.getElementById('edit-nome')?.value, 50);
   const turma=document.getElementById('edit-turma')?.value;
   const senha=document.getElementById('edit-senha')?.value.trim();
   if(!nome)return toast('⚠️ Digite o nome!');
@@ -3910,7 +3922,7 @@ function renderAluno(){
 //  AÇÕES PROFESSOR — FIREBASE
 // ══════════════════════════════════════
 async function cadastrarAluno(){
-  const nome=document.getElementById('p-nome').value.trim();
+  const nome=sanitizeInput(document.getElementById('p-nome').value, 50);
   if(!nome) return toast('⚠️ Digite o nome!');
   setSyncing('syncing');
   try {
@@ -4024,17 +4036,36 @@ async function aprovar(pid){
   const antes=nivel(aluno.xp||0).idx;
   setSyncing('syncing');
   try {
-    const novoXP=(aluno.xp||0)+missao.xp;
+    // ── Booster de XP (Hack Power): aplica multiplicador e consome 1 uso ──
+    const xpBase = missao.xp;
+    let xpGanho = xpBase;
+    let boosterMsg = '';      // sufixo para histórico/notificação
+    let boosterToast = '';    // sufixo para o toast do professor
+    const boosterUpdate = {}; // campos a decrementar no aluno
+    const usosMega = aluno.hack_uses_hack_xpboost2 || 0; // Mega Turbo XP: +100%
+    const usosTurbo = aluno.hack_uses_hack_xpboost || 0; // Turbo XP: +50%
+    if(usosMega > 0){
+      xpGanho = Math.round(xpBase * 2);
+      boosterUpdate.hack_uses_hack_xpboost2 = usosMega - 1;
+      boosterMsg = ' 💥 (Mega Turbo XP ativo: XP dobrado!)';
+      boosterToast = ' 💥 Mega Turbo XP (x2)';
+    } else if(usosTurbo > 0){
+      xpGanho = Math.round(xpBase * 1.5);
+      boosterUpdate.hack_uses_hack_xpboost = usosTurbo - 1;
+      boosterMsg = ' 🚀 (Turbo XP ativo: +50% de XP!)';
+      boosterToast = ' 🚀 Turbo XP (+50%)';
+    }
+    const novoXP=(aluno.xp||0)+xpGanho;
     const wcPorDif2={easy:15,medium:25,hard:40};
     const wcGanho=(S.desafio&&pend.isDesafio)?30:(missao.wc||wcPorDif2[missao.dif]||20);
     const novoWCBonus=(aluno.wc_bonus||0)+wcGanho;
-    const hist=[{desc:`✅ Missão aprovada: ${missao.titulo}${fb?` · "${fb}"`:''} +${wcGanho}🪙`,xp:missao.xp,ts:Date.now()},...(aluno.historico||[])].slice(0,30);
+    const hist=[{desc:`✅ Missão aprovada: ${missao.titulo}${fb?` · "${fb}"`:''} +${wcGanho}🪙${boosterMsg}`,xp:xpGanho,ts:Date.now()},...(aluno.historico||[])].slice(0,30);
     // Notificação Correios
-    const notifAprovado={id:'n'+Date.now(),tipo:'aprovado',titulo:`✅ Missão aprovada!`,desc:`Sua missão "${missao.titulo}" foi aprovada!`,feedback:fb||null,xp:missao.xp,ts:Date.now(),lido:false};
+    const notifAprovado={id:'n'+Date.now(),tipo:'aprovado',titulo:`✅ Missão aprovada!`,desc:`Sua missão "${missao.titulo}" foi aprovada!${boosterMsg}`,feedback:fb||null,xp:xpGanho,ts:Date.now(),lido:false};
     const correiosUpd=[notifAprovado,...(aluno.correios||[])].slice(0,50);
     // Atualiza aluno
     const xpAntes = aluno.xp||0;
-    await COL.alunos().doc(aluno.id).update({xp:novoXP,wc_bonus:novoWCBonus,historico:hist,correios:correiosUpd});
+    await COL.alunos().doc(aluno.id).update({xp:novoXP,wc_bonus:novoWCBonus,historico:hist,correios:correiosUpd,...boosterUpdate});
     await COL.perfis().doc(aluno.id).update({xp:novoXP});
     setTimeout(()=>verificarNotifRanking(aluno.id, xpAntes), 1500);
     // Marca missão como done (se não for desafio)
@@ -4069,8 +4100,8 @@ async function aprovar(pid){
       await COL.pendentes().doc(pid).delete();
     }
     const depois=nivel(novoXP);
-    if(depois.idx>antes) toast(`🎉 ${aluno.nome} subiu para ${depois.e} ${depois.n}!`);
-    else toast(`✅ Aprovado! +${missao.xp} XP para ${aluno.nome}`);
+    if(depois.idx>antes) toast(`🎉 ${aluno.nome} subiu para ${depois.e} ${depois.n}!${boosterToast}`);
+    else toast(`✅ Aprovado! +${xpGanho} XP para ${aluno.nome}${boosterToast}`);
     setSyncing('ok');
   } catch(e){ toast('❌ Erro ao aprovar!'); setSyncing('error'); }
 }
@@ -4156,7 +4187,7 @@ async function ajustarXP(id,sinal){
 
 async function addRecompensa(){
   const emoji=document.getElementById('r-emoji').value.trim()||'🎁';
-  const nome=document.getElementById('r-nome').value.trim();
+  const nome=sanitizeInput(document.getElementById('r-nome').value, 50);
   const custo=parseInt(document.getElementById('r-custo').value);
   if(!nome) return toast('⚠️ Digite o nome!');
   if(!custo||custo<1) return toast('⚠️ Digite o custo em XP!');
@@ -4583,7 +4614,7 @@ function initProfChat(){
     const el=document.getElementById('p-online-list');
     const cnt=document.getElementById('p-online-count');
     if(!el) return;
-    if(cnt) cnt.textContent=`🟢 ${online.length} online`;
+    if(cnt) cnt.textContent=online.length?`(${online.length})`:'';
     el.innerHTML=online.map(p=>{
       const av=p.foto&&(p.foto.startsWith('data:image/')||sanitizeUrl(p.foto))
         ?`<img src="${escapeHtml(p.foto)}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;">`
@@ -6081,9 +6112,9 @@ async function reagirPerfil(alunoId, emoji){
 }
 
 async function criarGuilda(){
-  const nome = document.getElementById('gn-nome')?.value.trim();
+  const nome = sanitizeInput(document.getElementById('gn-nome')?.value, 40);
   const brasao = document.getElementById('gn-brasao')?.value.trim()||'⚔️';
-  const slogan = document.getElementById('gn-slogan')?.value.trim();
+  const slogan = sanitizeInput(document.getElementById('gn-slogan')?.value, 80);
   if(!nome) return toast('⚠️ Dê um nome para a guilda!');
   const a = S.alunos.find(x=>x.id===alunoAtual);
   if(!a) return;
@@ -6321,9 +6352,9 @@ function profAbrirEditarGuilda(guildaId, nomeEnc, brasaoEnc, sloganEnc){
 
 // Salva edição de guilda (professor)
 async function profSalvarGuilda(guildaId){
-  const nome   = document.getElementById('pge-nome').value.trim();
+  const nome   = sanitizeInput(document.getElementById('pge-nome').value, 40);
   const brasao = document.getElementById('pge-brasao').value || '⚔️';
-  const slogan = document.getElementById('pge-slogan').value.trim();
+  const slogan = sanitizeInput(document.getElementById('pge-slogan').value, 80);
   if(!nome){ toast('❌ Nome não pode estar vazio.'); return; }
   setSyncing('syncing');
   try {
@@ -6809,7 +6840,7 @@ function listenPresence(){
     const el = document.getElementById('online-list');
     const cnt = document.getElementById('online-count');
     if(!el) return;
-    if(cnt) cnt.textContent = `🟢 ${online.length} online`;
+    if(cnt) cnt.textContent = online.length?`(${online.length})`:'';
     el.innerHTML = online.map(p=>{
       const av = p.foto && (p.foto.startsWith('data:image/') || sanitizeUrl(p.foto))
         ? `<img src="${escapeHtml(p.foto)}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;">`
@@ -6914,6 +6945,11 @@ async function enviarAprovacaoGuilda(missaoId, guildaId){
 }
 
 function escapeHtml(t){ const d=document.createElement('div');d.textContent=String(t==null?'':t);return d.innerHTML; }
+// Sanitiza texto livre na ESCRITA (nome de aluno, nome/slogan de guilda).
+// Remove < e > (neutraliza injeção de tags HTML) e limita o tamanho.
+function sanitizeInput(t, max=60){
+  return String(t==null?'':t).replace(/[<>]/g,'').replace(/\s+/g,' ').trim().slice(0, max);
+}
 
 // Valida e sanitiza URLs — bloqueia javascript:, data:, etc.
 function sanitizeUrl(url){
