@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>WarpCode — ScratchQuest Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Chakra+Petch:wght@400;600;700&family=Audiowide&family=Press+Start+2P&family=Bungee&family=Russo+One&family=Monoton&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Chakra+Petch:wght@400;600;700&display=swap" rel="stylesheet">
 
 <!-- Firebase SDK v10 (módulos via CDN compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -18,7 +18,6 @@
   --accent:#00d4ff;--purple:#7c3aed;--gold:#ffd700;
   --green:#10b981;--red:#ef4444;--orange:#f97316;--yellow:#fbbf24;--pink:#ec4899;
   --text:#e2e8f0;--muted:#64748b;--muted2:#94a3b8;
-  --glow1:rgba(0,212,255,.05);--glow2:rgba(124,58,237,.05);--grid-c:rgba(0,212,255,.018);
   --sidebar:250px;--radius:14px;--radius-sm:10px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -26,11 +25,11 @@
 .guilda-nome,.guilda-slogan,.steam-pname,.av-name,.welcome-text,.mtitle,.badge-name,.chat-bubble{overflow-wrap:anywhere;word-break:break-word;}
 html,body{height:100%;}
 body{background:var(--bg);color:var(--text);font-family:'Chakra Petch',sans-serif;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;transition:background .6s ease;
-  background:radial-gradient(ellipse at 10% 10%,var(--glow1) 0%,transparent 45%),
-             radial-gradient(ellipse at 90% 90%,var(--glow2) 0%,transparent 45%),
-             repeating-linear-gradient(0deg,transparent,transparent 39px,var(--grid-c) 40px),
-             repeating-linear-gradient(90deg,transparent,transparent 39px,var(--grid-c) 40px);}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 10% 10%,rgba(0,212,255,.05) 0%,transparent 45%),
+             radial-gradient(ellipse at 90% 90%,rgba(124,58,237,.05) 0%,transparent 45%),
+             repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,212,255,.018) 40px),
+             repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(0,212,255,.018) 40px);}
 
 /* ══ GUILDA ══ */
 .guilda-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
@@ -601,226 +600,20 @@ select option{background:var(--s1);}
 .hack-name{font-weight:900;font-size:.88rem;margin-bottom:3px;}
 .hack-desc{font-size:.73rem;color:var(--muted2);line-height:1.5;}
 
-/* ══ COSMETIC BORDERS v2 ══ */
-/* — FIXAS / NEON COLORIDAS (brilho constante e forte) — */
-.hero-card.b-neon{box-shadow:0 0 0 2px #00d4ff,0 0 26px rgba(0,212,255,.8),0 0 60px rgba(0,212,255,.4)!important;}
-.hero-card.b-gold{box-shadow:0 0 0 2px #ffd700,0 0 26px rgba(255,215,0,.8),0 0 60px rgba(255,215,0,.4)!important;}
-.hero-card.b-purple{box-shadow:0 0 0 2px #a855f7,0 0 26px rgba(168,85,247,.8),0 0 60px rgba(168,85,247,.4)!important;}
-.hero-card.b-cosmic{box-shadow:0 0 0 2px #ec4899,0 0 30px rgba(236,72,153,.7),0 0 64px rgba(236,72,153,.35)!important;}
-.hero-card.b-emerald{box-shadow:0 0 0 2px #10ffa0,0 0 26px rgba(16,255,160,.8),0 0 60px rgba(16,255,160,.4)!important;}
-.hero-card.b-crimson{box-shadow:0 0 0 2px #ff2d55,0 0 26px rgba(255,45,85,.8),0 0 60px rgba(255,45,85,.4)!important;}
-.hero-card.b-azure{box-shadow:0 0 0 2px #3b82f6,0 0 26px rgba(59,130,246,.8),0 0 60px rgba(59,130,246,.4)!important;}
-.hero-card.b-magenta{box-shadow:0 0 0 2px #ff00e6,0 0 26px rgba(255,0,230,.85),0 0 60px rgba(255,0,230,.4)!important;}
-/* — PISCAR (blink on/off) — usa --bc para a cor — */
-.hero-card.b-blink{--bc:0,212,255;animation:brdBlink 1s steps(1) infinite;}
-.hero-card.b-blink-pink{--bc:236,72,153;}
-.hero-card.b-blink-gold{--bc:255,215,0;}
-.hero-card.b-blink-green{--bc:16,255,160;}
-@keyframes brdBlink{0%,49%{box-shadow:0 0 0 2px rgba(var(--bc),1),0 0 28px rgba(var(--bc),.9),0 0 60px rgba(var(--bc),.45)}50%,100%{box-shadow:0 0 0 2px rgba(var(--bc),.15)}}
-/* — PULSE (respiração de brilho) — */
-.hero-card.b-pulse{--bc:0,212,255;animation:brdPulse 1.8s ease-in-out infinite;}
-.hero-card.b-pulse-purple{--bc:168,85,247;}
-.hero-card.b-pulse-gold{--bc:255,215,0;}
-@keyframes brdPulse{0%,100%{box-shadow:0 0 0 2px rgba(var(--bc),.55),0 0 14px rgba(var(--bc),.4)}50%{box-shadow:0 0 0 3px rgba(var(--bc),1),0 0 40px rgba(var(--bc),.85),0 0 72px rgba(var(--bc),.4)}}
-/* — RAINBOW (rotação de cores) — */
-.hero-card.b-rainbow{animation:rainbowBrd 2.6s linear infinite;}
-@keyframes rainbowBrd{0%{box-shadow:0 0 0 2px #ff2d55,0 0 30px rgba(255,45,85,.6)}20%{box-shadow:0 0 0 2px #ffb800,0 0 30px rgba(255,184,0,.6)}40%{box-shadow:0 0 0 2px #10ffa0,0 0 30px rgba(16,255,160,.6)}60%{box-shadow:0 0 0 2px #00d4ff,0 0 30px rgba(0,212,255,.6)}80%{box-shadow:0 0 0 2px #a855f7,0 0 30px rgba(168,85,247,.6)}100%{box-shadow:0 0 0 2px #ff2d55,0 0 30px rgba(255,45,85,.6)}}
-/* — FLOW (anel de gradiente girando) — */
-.hero-card.b-flow{position:relative;}
-.hero-card.b-flow::after{content:'';position:absolute;inset:-3px;border-radius:inherit;padding:3px;background:conic-gradient(from 0deg,#00d4ff,#a855f7,#ec4899,#ffd700,#10ffa0,#00d4ff);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:brdSpin 4s linear infinite;z-index:3;pointer-events:none;filter:drop-shadow(0 0 8px rgba(0,212,255,.5));}
-@keyframes brdSpin{to{transform:rotate(360deg)}}
-/* — PLASMA (cyan+magenta pulsando) — */
-.hero-card.b-plasma{animation:brdPlasma 2.2s ease-in-out infinite;}
-@keyframes brdPlasma{0%,100%{box-shadow:0 0 0 2px #00d4ff,0 0 26px rgba(0,212,255,.7),0 0 50px rgba(255,0,230,.3)}50%{box-shadow:0 0 0 2px #ff00e6,0 0 26px rgba(255,0,230,.7),0 0 50px rgba(0,212,255,.3)}}
-/* — ELÉTRICA (flicker tipo neon defeituoso) — */
-.hero-card.b-electric{animation:brdElectric 3s linear infinite;}
-@keyframes brdElectric{0%,7%,9%,40%,100%{box-shadow:0 0 0 2px #7df9ff,0 0 28px rgba(125,249,255,.85),0 0 56px rgba(125,249,255,.4)}8%,42%,44%{box-shadow:0 0 0 1px rgba(125,249,255,.2)}}
-/* — DOURADA REAL (anel duplo) — */
-.hero-card.b-royal{box-shadow:0 0 0 2px #fff3b0,0 0 0 5px rgba(255,215,0,.55),0 0 32px rgba(255,215,0,.6),0 0 64px rgba(255,184,0,.3)!important;}
-/* — v3 EXTRAS (animadas) — */
-.hero-card.b-fire{animation:brdFire 1.6s ease-in-out infinite;}
-@keyframes brdFire{0%,100%{box-shadow:0 0 0 2px #ff7a00,0 0 22px rgba(255,90,0,.8),0 0 46px rgba(255,45,45,.4)}50%{box-shadow:0 0 0 2px #ffb000,0 0 34px rgba(255,140,0,1),0 0 70px rgba(255,60,0,.6)}}
-.hero-card.b-ice{animation:brdIce 2.4s ease-in-out infinite;}
-@keyframes brdIce{0%,100%{box-shadow:0 0 0 2px #bfefff,0 0 22px rgba(140,220,255,.7),0 0 46px rgba(47,155,255,.35)}50%{box-shadow:0 0 0 2px #ffffff,0 0 36px rgba(190,240,255,1),0 0 64px rgba(80,180,255,.55)}}
-.hero-card.b-toxic{animation:brdToxic 1.8s ease-in-out infinite;}
-@keyframes brdToxic{0%,100%{box-shadow:0 0 0 2px #10ffa0,0 0 20px rgba(16,255,160,.7),0 0 44px rgba(0,179,107,.4)}50%{box-shadow:0 0 0 3px #aaff00,0 0 38px rgba(120,255,0,1),0 0 70px rgba(16,255,120,.6)}}
-.hero-card.b-aurora{animation:brdAuroraB 4.2s linear infinite;}
-@keyframes brdAuroraB{0%{box-shadow:0 0 0 2px #10ffa0,0 0 30px rgba(16,255,160,.75)}33%{box-shadow:0 0 0 2px #00d4ff,0 0 30px rgba(0,212,255,.75)}66%{box-shadow:0 0 0 2px #a855f7,0 0 30px rgba(168,85,247,.75)}100%{box-shadow:0 0 0 2px #10ffa0,0 0 30px rgba(16,255,160,.75)}}
-.hero-card.b-glitch{animation:brdGlitch 1.4s steps(1) infinite;}
-@keyframes brdGlitch{0%{box-shadow:0 0 0 2px #00d4ff,2px 0 0 #ff0050,-2px 0 0 #00ffe0,0 0 26px rgba(0,212,255,.6)}25%{box-shadow:0 0 0 2px #ff00e6,-3px 0 0 #00d4ff,3px 0 0 #ff0050,0 0 26px rgba(255,0,230,.6)}50%{box-shadow:0 0 0 2px #00ffe0,2px 0 0 #ff00e6,-2px 0 0 #00d4ff,0 0 26px rgba(0,255,224,.6)}75%{box-shadow:0 0 0 2px #00d4ff,0 0 26px rgba(0,212,255,.6)}100%{box-shadow:0 0 0 2px #ff0050,3px 0 0 #00d4ff,-3px 0 0 #ff00e6,0 0 26px rgba(255,0,80,.6)}}
-.hero-card.b-galaxy::after{content:'';position:absolute;inset:-3px;border-radius:inherit;padding:3px;background:conic-gradient(from 0deg,#3b0a55,#a855f7,#00d4ff,#ec4899,#3b0a55);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:brdSpin 5s linear infinite;z-index:3;pointer-events:none;filter:drop-shadow(0 0 10px rgba(168,85,247,.6));}
-.hero-card.b-sunset::after{content:'';position:absolute;inset:-3px;border-radius:inherit;padding:3px;background:conic-gradient(from 0deg,#ffd86b,#ff6ec7,#a855f7,#ff7a00,#ffd86b);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:brdSpin 6s linear infinite;z-index:3;pointer-events:none;filter:drop-shadow(0 0 10px rgba(255,110,199,.6));}
-
-/* ══ COSMETIC EFFECTS v3 — overlays sci-fi puro-CSS (estilo do scanner) ══ */
-/* — SCANNER NEON (clássico mantido): linha horizontal varrendo — */
-.hero-card.e-scan::before{content:'';position:absolute;left:0;right:0;height:3px;top:0;background:linear-gradient(90deg,transparent,rgba(0,212,255,.9),transparent);box-shadow:0 0 12px rgba(0,212,255,.8);animation:scanMove 2.6s linear infinite;z-index:4;pointer-events:none;}
-@keyframes scanMove{0%{top:0}100%{top:100%}}
-/* — SCANNER VERTICAL: feixe magenta cruzando — */
-.hero-card.e-scanx::before{content:'';position:absolute;top:0;bottom:0;left:0;width:3px;background:linear-gradient(180deg,transparent,rgba(255,0,230,.9),transparent);box-shadow:0 0 12px rgba(255,0,230,.85);animation:scanMoveX 3s linear infinite;z-index:4;pointer-events:none;}
-@keyframes scanMoveX{0%{left:0}100%{left:100%}}
-/* — GRADE CIBERNÉTICA: malha rolando com fade — */
-.hero-card.e-grid::before{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent 0 21px,rgba(0,212,255,.16) 21px 22px),repeating-linear-gradient(90deg,transparent 0 21px,rgba(0,212,255,.16) 21px 22px);
-  -webkit-mask:linear-gradient(180deg,transparent,#000 50%,transparent);mask:linear-gradient(180deg,transparent,#000 50%,transparent);
-  animation:eGrid 5s linear infinite;}
-@keyframes eGrid{from{background-position:0 0,0 0}to{background-position:0 -22px,22px 0}}
-/* — HOLOGRÁFICO: banda iridescente diagonal varrendo — */
-.hero-card.e-holo::before{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;mix-blend-mode:screen;
-  background:linear-gradient(115deg,transparent 32%,rgba(125,249,255,.20) 44%,rgba(168,85,247,.28) 50%,rgba(236,72,153,.20) 56%,transparent 68%);
-  background-size:280% 280%;animation:eHolo 4.5s ease-in-out infinite;}
-@keyframes eHolo{0%{background-position:0% 0%}100%{background-position:200% 200%}}
-/* — RADAR: varredura cônica giratória — */
-.hero-card.e-radar::before{content:'';position:absolute;inset:-30%;z-index:3;pointer-events:none;
-  background:conic-gradient(from 0deg,rgba(16,255,160,.45),rgba(16,255,160,.05) 30%,transparent 42%);
-  -webkit-mask:radial-gradient(circle at 50% 50%,#000 30%,transparent 70%);mask:radial-gradient(circle at 50% 50%,#000 30%,transparent 70%);
-  animation:eRadar 3.4s linear infinite;}
-@keyframes eRadar{to{transform:rotate(360deg)}}
-/* — PULSO: anel de energia expandindo do centro — */
-.hero-card.e-pulse::before{content:'';position:absolute;left:50%;top:50%;width:20px;height:20px;border-radius:50%;z-index:3;pointer-events:none;border:2px solid rgba(0,212,255,.8);box-shadow:0 0 16px rgba(0,212,255,.6),inset 0 0 12px rgba(0,212,255,.4);transform:translate(-50%,-50%);animation:ePulse 2.4s ease-out infinite;}
-@keyframes ePulse{0%{width:20px;height:20px;opacity:1}100%{width:360px;height:360px;opacity:0}}
-/* — AURORA: brilho boreal flutuando no topo — */
-.hero-card.e-aurora::before{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;filter:blur(7px);
-  background:linear-gradient(90deg,rgba(16,255,160,0),rgba(16,255,160,.30),rgba(0,212,255,.26),rgba(168,85,247,.30),rgba(16,255,160,0));
-  background-size:200% 100%;
-  -webkit-mask:linear-gradient(180deg,#000,transparent 55%);mask:linear-gradient(180deg,#000,transparent 55%);
-  animation:eAurora 6s ease-in-out infinite;}
-@keyframes eAurora{0%,100%{background-position:0% 0}50%{background-position:100% 0}}
-/* — CAMPO ESTELAR: estrelas piscando — */
-.hero-card.e-stars::before{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
-  background-image:radial-gradient(1.6px 1.6px at 20% 30%,#fff,transparent),radial-gradient(1.6px 1.6px at 70% 62%,#9fe6ff,transparent),radial-gradient(2.2px 2.2px at 42% 82%,#fff,transparent),radial-gradient(1.2px 1.2px at 85% 22%,#fff,transparent),radial-gradient(1.6px 1.6px at 56% 14%,#cdb4ff,transparent),radial-gradient(1.2px 1.2px at 12% 72%,#fff,transparent),radial-gradient(1.4px 1.4px at 92% 78%,#bfe9ff,transparent);
-  animation:eStarsTw 2.2s ease-in-out infinite alternate;}
-@keyframes eStarsTw{from{opacity:.25}to{opacity:1}}
-/* — FLUXO DE DADOS: linhas de circuito correndo — */
-.hero-card.e-circuit::before{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
-  background:repeating-linear-gradient(90deg,transparent 0 58px,rgba(16,255,160,0) 58px,rgba(16,255,160,.55) 61px,transparent 63px 120px);
-  background-size:200% 100%;
-  -webkit-mask:linear-gradient(180deg,transparent,#000,transparent);mask:linear-gradient(180deg,transparent,#000,transparent);
-  animation:eCircuit 2.8s linear infinite;}
-@keyframes eCircuit{from{background-position:0 0}to{background-position:200% 0}}
-
-/* ══ NICK CUSTOMIZATION (cor/textura · efeito · fundo) ══ */
-.nick-wrap{display:inline-flex;align-items:center;border-radius:8px;line-height:1.15;max-width:100%;}
-.nick{display:inline-block;font-weight:900;}
-/* cores/texturas (gradiente no texto) */
-.nk-cyan{color:#3fe0ff;text-shadow:0 0 10px rgba(0,212,255,.55);}
-.nk-gold{background:linear-gradient(90deg,#fff3b0,#ffd700,#ff9d00);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 6px rgba(255,215,0,.45));}
-.nk-fire{background:linear-gradient(90deg,#ffd86b,#ff7a00,#ff2d2d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 7px rgba(255,90,0,.5));}
-.nk-ice{background:linear-gradient(90deg,#dffaff,#8fe3ff,#2f9bff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 7px rgba(120,200,255,.55));}
-.nk-toxic{background:linear-gradient(90deg,#eaff8f,#10ffa0,#00b36b);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 7px rgba(16,255,160,.55));}
-.nk-sunset{background:linear-gradient(90deg,#ffd86b,#ff6ec7,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 7px rgba(255,110,199,.5));}
-.nk-galaxy{background:linear-gradient(90deg,#7df9ff,#a855f7,#ec4899,#7df9ff);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 4s linear infinite;filter:drop-shadow(0 0 7px rgba(168,85,247,.5));}
-.nk-rainbow{background:linear-gradient(90deg,#ff2d55,#ffb800,#10ffa0,#00d4ff,#a855f7,#ff2d55);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 4s linear infinite;}
-.nk-chrome{background:linear-gradient(180deg,#ffffff,#bcd0e0,#8a97a6,#e8f0f7);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 1px rgba(0,0,0,.6));}
-@keyframes nkShift{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-/* efeitos (animação) */
-.nf-glow{animation:nkGlow 1.8s ease-in-out infinite;}
-@keyframes nkGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(0,212,255,.5))}50%{filter:drop-shadow(0 0 12px rgba(0,212,255,1))}}
-.nf-blink{animation:nkBlink 1.1s steps(1) infinite;}
-@keyframes nkBlink{0%,60%{opacity:1}61%,100%{opacity:.25}}
-.nf-shake{animation:nkShake .4s ease-in-out infinite;}
-@keyframes nkShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-1.5px)}75%{transform:translateX(1.5px)}}
-.nf-wave{animation:nkWave 2s ease-in-out infinite;}
-@keyframes nkWave{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.nf-flicker{animation:nkFlicker 3s linear infinite;}
-@keyframes nkFlicker{0%,5%,7%,100%{opacity:1}6%,8%,9%{opacity:.4}}
-/* fundos (pill atrás do nick) */
-.nb-pill{padding:2px 12px;background:var(--s2);border:1px solid var(--border);}
-.nb-neon{padding:2px 12px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.5);box-shadow:0 0 14px rgba(0,212,255,.35);}
-.nb-glass{padding:2px 12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px);}
-.nb-cyber{padding:2px 12px;background:linear-gradient(90deg,rgba(168,85,247,.18),rgba(0,212,255,.18));border:1px solid rgba(168,85,247,.5);box-shadow:0 0 16px rgba(168,85,247,.3);}
-.nb-flame{padding:2px 12px;background:linear-gradient(90deg,rgba(255,90,0,.2),rgba(255,45,45,.18));border:1px solid rgba(255,90,0,.55);box-shadow:0 0 16px rgba(255,90,0,.3);}
-.nb-holo{padding:2px 12px;background:linear-gradient(90deg,rgba(125,249,255,.18),rgba(168,85,247,.2),rgba(236,72,153,.18));background-size:200% 100%;border:1px solid rgba(168,85,247,.5);box-shadow:0 0 16px rgba(168,85,247,.3);animation:nkShift 5s linear infinite;}
-.nb-gold{padding:2px 12px;background:linear-gradient(90deg,rgba(255,215,0,.16),rgba(255,184,0,.16));border:1px solid rgba(255,215,0,.6);box-shadow:0 0 16px rgba(255,215,0,.35);}
-.nb-toxic{padding:2px 12px;background:linear-gradient(90deg,rgba(16,255,160,.18),rgba(120,255,0,.16));border:1px solid rgba(16,255,160,.6);box-shadow:0 0 16px rgba(16,255,160,.35);}
-/* — NOVAS CORES/TEXTURAS DE NICK — */
-.nk-neonpink{background:linear-gradient(90deg,#ff9ae6,#ff2d9e,#c026d3);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 7px rgba(255,45,158,.55));}
-.nk-lava{background:linear-gradient(90deg,#fff1a8,#ff8a00,#ff2d2d,#7a0000);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 7px rgba(255,90,0,.6));}
-.nk-aqua{background:linear-gradient(90deg,#caffea,#10ffd0,#00b3ff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 7px rgba(16,255,200,.55));}
-.nk-candy{background:linear-gradient(90deg,#ff9ae6,#a18cff,#7df9ff,#ff9ae6);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 5s linear infinite;}
-.nk-matrix{color:#39ff14;text-shadow:0 0 8px rgba(57,255,20,.8),0 0 2px rgba(57,255,20,1);}
-.nk-void{background:linear-gradient(90deg,#b388ff,#7c3aed,#3b0a55,#7c3aed,#b388ff);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 4s linear infinite;filter:drop-shadow(0 0 8px rgba(124,58,237,.6));}
-/* — NOVOS EFEITOS DE NICK (grátis) — */
-.nf-hue{animation:nkHue 4s linear infinite;}
-@keyframes nkHue{to{filter:hue-rotate(360deg)}}
-.nf-bounce{display:inline-block;animation:nkBounce 1.2s ease-in-out infinite;}
-@keyframes nkBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.nf-breathe{display:inline-block;animation:nkBreathe 2.4s ease-in-out infinite;}
-@keyframes nkBreathe{0%,100%{transform:scale(1);filter:drop-shadow(0 0 3px rgba(255,255,255,.3))}50%{transform:scale(1.08);filter:drop-shadow(0 0 12px rgba(255,255,255,.7))}}
-.nf-glitch{animation:nkGlitchT .9s steps(2) infinite;}
-@keyframes nkGlitchT{0%,100%{text-shadow:1.5px 0 #ff0050,-1.5px 0 #00ffe0}50%{text-shadow:-1.5px 0 #ff0050,1.5px 0 #00ffe0}}
-.nf-shine{position:relative;}
-.nf-shine::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 42%,rgba(255,255,255,.75) 50%,transparent 58%);background-size:260% 100%;animation:nkShine 2.6s linear infinite;pointer-events:none;}
-@keyframes nkShine{0%{background-position:200% 0}100%{background-position:-120% 0}}
-/* — FONTES DE NICK (grátis) — */
-.nfont-orbitron{font-family:'Orbitron',sans-serif;}
-.nfont-audiowide{font-family:'Audiowide',sans-serif;}
-.nfont-press{font-family:'Press Start 2P',monospace;font-size:.6em;letter-spacing:0;}
-.nfont-bungee{font-family:'Bungee',sans-serif;font-size:.9em;}
-.nfont-russo{font-family:'Russo One',sans-serif;}
-.nfont-monoton{font-family:'Monoton',cursive;font-weight:400!important;}
-/* — ITÁLICO / SUBLINHADO (grátis) — */
-.nick-italic{font-style:italic;}
-.nick-underline{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:rgba(255,255,255,.88);}
-
-/* ══ MOLDURAS DE BANNER (overlay no banner do perfil) ══ */
-.banner-frame{position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;overflow:hidden;}
-.bframe-neon{box-shadow:inset 0 0 0 2px rgba(0,212,255,.9),inset 0 0 22px rgba(0,212,255,.5);}
-.bframe-gold{box-shadow:inset 0 0 0 2px #ffd700,inset 0 0 18px rgba(255,215,0,.5);}
-.bframe-pulse{animation:bfPulse 2s ease-in-out infinite;}
-@keyframes bfPulse{0%,100%{box-shadow:inset 0 0 0 2px rgba(0,212,255,.5),inset 0 0 14px rgba(0,212,255,.3)}50%{box-shadow:inset 0 0 0 3px rgba(0,212,255,1),inset 0 0 30px rgba(0,212,255,.7)}}
-.bframe-rainbow{box-shadow:inset 0 0 0 2px #00d4ff,inset 0 0 18px rgba(0,212,255,.55);animation:bfHue 4s linear infinite;}
-@keyframes bfHue{to{filter:hue-rotate(360deg)}}
-.bframe-dash{--dc:rgba(125,249,255,.92);background:
-  linear-gradient(90deg,var(--dc) 50%,transparent 0) top/16px 2px repeat-x,
-  linear-gradient(90deg,var(--dc) 50%,transparent 0) bottom/16px 2px repeat-x,
-  linear-gradient(0deg,var(--dc) 50%,transparent 0) left/2px 16px repeat-y,
-  linear-gradient(0deg,var(--dc) 50%,transparent 0) right/2px 16px repeat-y;
-  animation:bfMarch 1s linear infinite;filter:drop-shadow(0 0 4px rgba(125,249,255,.6));}
-@keyframes bfMarch{to{background-position:top 0 left 16px,bottom 0 left 16px,left 0 top 16px,right 0 top 16px}}
-.bframe-scan{box-shadow:inset 0 0 0 1px rgba(0,212,255,.55);}
-.bframe-scan::before{content:'';position:absolute;left:0;right:0;height:2px;top:0;background:linear-gradient(90deg,transparent,rgba(0,212,255,.95),transparent);box-shadow:0 0 10px rgba(0,212,255,.85);animation:scanMove 3s linear infinite;}
-.bframe-corners::before,.bframe-corners::after{content:'';position:absolute;width:28px;height:28px;border:2px solid rgba(0,212,255,.95);filter:drop-shadow(0 0 6px rgba(0,212,255,.8));}
-.bframe-corners::before{top:6px;left:6px;border-right:none;border-bottom:none;border-radius:8px 0 0 0;}
-.bframe-corners::after{bottom:6px;right:6px;border-left:none;border-top:none;border-radius:0 0 8px 0;}
-.bframe-circuit{box-shadow:inset 0 0 0 1px rgba(16,255,160,.4);}
-.bframe-circuit::before,.bframe-circuit::after{content:'';position:absolute;width:34px;height:34px;border:2px solid rgba(16,255,160,.9);filter:drop-shadow(0 0 6px rgba(16,255,160,.7));}
-.bframe-circuit::before{top:5px;left:5px;border-right:none;border-bottom:none;}
-.bframe-circuit::after{bottom:5px;right:5px;border-left:none;border-top:none;}
-
-/* ══ BANNER ANIMATIONS ══ */
-.ban-anim-flow{background-size:300% 300%!important;animation:banFlow 9s ease infinite;}
-@keyframes banFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.ban-anim-aurora{background-size:200% 200%!important;animation:banFlow 7s ease-in-out infinite;}
-.ban-anim-pulse{animation:banPulse 4s ease-in-out infinite;}
-@keyframes banPulse{0%,100%{filter:brightness(1) saturate(1)}50%{filter:brightness(1.25) saturate(1.4)}}
-
-/* ══ SELO DE RARIDADE (modal) ══ */
-.rar-pip{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle;margin-right:5px;flex-shrink:0;}
-.rar-legenda{display:flex;flex-wrap:wrap;gap:10px;font-size:.6rem;color:var(--muted2);margin-bottom:10px;align-items:center;}
-.rar-legenda span{display:inline-flex;align-items:center;}
-.custom-opt .rar-pip,.border-opt-prev .rar-pip{margin-right:4px;}
-.border-opt-prev{position:relative;}
-.border-opt-prev .rar-corner{position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;}
-
-/* ══ MINI CARD DE PRÉVIA DE BORDA ══ */
-.border-preview-card{min-height:auto!important;padding:14px!important;display:flex;align-items:center;gap:12px;margin-bottom:14px;background:var(--s2)!important;border-radius:14px;transition:box-shadow .25s;}
-.border-preview-card .bp-av{width:46px;height:46px;border-radius:50%;background:var(--s1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.6rem;overflow:hidden;flex-shrink:0;}
-.border-preview-card .bp-av img{width:100%;height:100%;object-fit:cover;}
-
-/* ══ COMBOS DE NICK · BÔNUS VISUAL ══ */
-.nick-wrap.combo-inferno{animation:cbInferno 1.4s ease-in-out infinite;}
-@keyframes cbInferno{0%,100%{box-shadow:0 0 10px rgba(255,90,0,.55),0 0 20px rgba(255,45,45,.35)}50%{box-shadow:0 0 18px rgba(255,90,0,.95),0 0 36px rgba(255,45,45,.6)}}
-.nick-wrap.combo-cosmico{animation:cbCosmico 2.4s ease-in-out infinite;}
-@keyframes cbCosmico{0%,100%{box-shadow:0 0 12px rgba(168,85,247,.6),0 0 22px rgba(0,212,255,.3)}50%{box-shadow:0 0 22px rgba(168,85,247,.95),0 0 40px rgba(0,212,255,.55)}}
-.nick-wrap.combo-prisma{animation:cbPrisma 2.5s linear infinite;}
-@keyframes cbPrisma{0%{box-shadow:0 0 14px rgba(255,45,85,.6)}25%{box-shadow:0 0 14px rgba(16,255,160,.6)}50%{box-shadow:0 0 14px rgba(0,212,255,.6)}75%{box-shadow:0 0 14px rgba(168,85,247,.6)}100%{box-shadow:0 0 14px rgba(255,45,85,.6)}}
-.nick-wrap.combo-glacial{animation:cbGlacial 2.2s ease-in-out infinite;}
-@keyframes cbGlacial{0%,100%{box-shadow:0 0 10px rgba(143,227,255,.55),0 0 20px rgba(47,155,255,.3)}50%{box-shadow:0 0 20px rgba(143,227,255,.95),0 0 36px rgba(47,155,255,.55)}}
-.nick-wrap.combo-imperial{animation:cbImperial 1.8s ease-in-out infinite;}
-@keyframes cbImperial{0%,100%{box-shadow:0 0 12px rgba(255,215,0,.6),0 0 22px rgba(255,184,0,.3)}50%{box-shadow:0 0 22px rgba(255,215,0,1),0 0 40px rgba(255,184,0,.6)}}
-.nick-wrap.combo-reator{animation:cbReator 1.6s ease-in-out infinite;}
-@keyframes cbReator{0%,100%{box-shadow:0 0 10px rgba(16,255,160,.55),0 0 20px rgba(0,179,107,.35)}50%{box-shadow:0 0 20px rgba(16,255,160,.95),0 0 36px rgba(0,179,107,.6)}}
-.combo-flag{display:inline-flex;align-items:center;gap:5px;font-family:'Orbitron',monospace;font-size:.56rem;letter-spacing:1.5px;font-weight:900;padding:3px 10px;border-radius:20px;margin-top:8px;background:linear-gradient(90deg,rgba(168,85,247,.2),rgba(0,212,255,.2));border:1px solid rgba(168,85,247,.5);color:#fff;}
+/* ══ COSMETIC BORDERS ══ */
+.hero-card.b-neon{box-shadow:0 0 0 2px var(--accent),0 0 32px rgba(0,212,255,.65),0 0 60px rgba(0,212,255,.25)!important;}
+.hero-card.b-gold{box-shadow:0 0 0 2px var(--gold),0 0 32px rgba(255,215,0,.65),0 0 60px rgba(255,215,0,.25)!important;}
+.hero-card.b-purple{box-shadow:0 0 0 2px #a855f7,0 0 32px rgba(168,85,247,.65),0 0 60px rgba(168,85,247,.25)!important;}
+.hero-card.b-cosmic{box-shadow:0 0 0 2px var(--pink),0 0 40px rgba(236,72,153,.5),0 0 70px rgba(236,72,153,.2)!important;}
+.hero-card.b-rainbow{animation:rainbowBrd 2s linear infinite;}
+@keyframes rainbowBrd{0%{box-shadow:0 0 0 2px #f00,0 0 30px rgba(255,0,0,.5)}25%{box-shadow:0 0 0 2px #ff0,0 0 30px rgba(255,255,0,.5)}50%{box-shadow:0 0 0 2px #0ff,0 0 30px rgba(0,255,255,.5)}75%{box-shadow:0 0 0 2px #f0f,0 0 30px rgba(255,0,255,.5)}100%{box-shadow:0 0 0 2px #f00,0 0 30px rgba(255,0,0,.5)}}
+.hero-card.e-sparkle::before{content:'✨✨';position:absolute;top:8px;right:8px;font-size:.9rem;animation:sparkleF 1.5s ease-in-out infinite alternate;z-index:1;}
+@keyframes sparkleF{from{opacity:.4;transform:translateY(0)}to{opacity:1;transform:translateY(-4px)}}
+.hero-card.e-fire::before{content:'🔥';position:absolute;bottom:8px;right:8px;font-size:1.5rem;animation:firePulse 1.1s ease infinite;z-index:1;}
+.hero-card.e-stars::before{content:'⭐🌟';position:absolute;top:8px;right:8px;font-size:.9rem;animation:firePulse 1.5s ease-in-out infinite;z-index:1;}
+.hero-card.e-lightning::before{content:'⚡';position:absolute;top:8px;right:10px;font-size:1.5rem;animation:boltFloat 1.5s ease-in-out infinite;z-index:1;}
+@keyframes boltFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.05)}}
+@keyframes firePulse{0%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(249,115,22,.6))}50%{transform:scale(1.22);filter:drop-shadow(0 0 12px rgba(249,115,22,1))}100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(249,115,22,.6))}}
 
 /* ══ PATENTE ══ */
 .patente{font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:1px;font-weight:900;display:inline-block;padding:3px 9px;border-radius:6px;margin-top:4px;}
@@ -1686,7 +1479,7 @@ select option{background:var(--s1);}
 
       <!-- CHAT PROFESSOR -->
       <div id="ppage-chat" class="page">
-        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com os alunos em tempo real</div></div></div>
+        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com os alunos em tempo real</div></div><div id="p-online-count" style="font-size:.75rem;color:var(--green);font-weight:700;"></div></div>
         <div style="display:flex;gap:14px;flex:1;min-height:0;overflow:hidden;">
           <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
             <div id="p-chat-msgs" style="flex:1;overflow-y:auto;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:14px;display:flex;flex-direction:column;gap:8px;"></div>
@@ -1708,7 +1501,7 @@ select option{background:var(--s1);}
             </div>
           </div>
           <div class="chat-online-panel">
-            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online <span id="p-online-count" style="color:var(--green);"></span></div>
+            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online</div>
             <div id="p-online-list" style="display:flex;flex-direction:column;gap:6px;"></div>
           </div>
         </div>
@@ -1955,7 +1748,7 @@ select option{background:var(--s1);}
 
       <!-- CHAT -->
       <div id="apage-chat" class="page">
-        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com seus colegas em tempo real</div></div></div>
+        <div class="page-hdr"><div><div class="page-title">💬 Chat da Turma</div><div class="page-sub">Converse com seus colegas em tempo real</div></div><div id="online-count" style="font-size:.75rem;color:var(--green);font-weight:700;"></div></div>
         <div style="display:flex;gap:14px;flex:1;min-height:0;overflow:hidden;">
           <div style="flex:1;display:flex;flex-direction:column;min-height:0;">
             <div id="chat-msgs" style="flex:1;overflow-y:auto;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:14px;display:flex;flex-direction:column;gap:8px;"></div>
@@ -1979,7 +1772,7 @@ select option{background:var(--s1);}
             </div>
           </div>
           <div class="chat-online-panel">
-            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online <span id="online-count" style="color:var(--green);"></span></div>
+            <div style="font-size:.7rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🟢 Online</div>
             <div id="online-list" style="display:flex;flex-direction:column;gap:6px;"></div>
           </div>
         </div>
@@ -2013,9 +1806,7 @@ select option{background:var(--s1);}
           <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('banner',this)">🎖️ Banners</button>
           <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('avatar',this)">👾 Avatares</button>
           <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('pet',this)">🐾 Pets</button>
-          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('nickcolor',this)">🎨 Cor de Nick</button>
-          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('nickfx',this)">💫 Efeito de Nick</button>
-          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('nickbg',this)">🏷️ Fundo de Nick</button>
+          <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('theme',this)">🎨 Temas</button>
           <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('title',this)">🏷️ Títulos</button>
           <button class="btn btn-outline btn-sm wc-filter" onclick="filtrarWC('hackpower',this)" style="border-color:rgba(16,185,129,.4);color:var(--green);">⚡ Hack Powers</button>
         </div>
@@ -2430,8 +2221,6 @@ function showScreen(id){
 function goLogin(){
   // Teardown completo — essencial para PCs compartilhados (alunos rotativos)
   alunoAtual=null;
-  // Reseta o tema para o padrão (não vaza o tema do aluno anterior na tela de login)
-  try{ applyTheme('theme_default'); localStorage.removeItem('wc_theme'); }catch(e){}
   if(typeof _unsubAlunos==='function'){ try{ _unsubAlunos(); }catch(e){} }
   _unsubAlunos=null;
   // Encerra a sessão Auth do aluno/professor anterior para não vazar identidade
@@ -3091,10 +2880,6 @@ async function sincronizarPerfisVisuais(){
       if(d.wc_eq_border!==undefined) upd.wc_eq_border=d.wc_eq_border||null;
       if(d.wc_eq_avatar!==undefined) upd.wc_eq_avatar=d.wc_eq_avatar||null;
       if(d.wc_eq_banner!==undefined) upd.wc_eq_banner=d.wc_eq_banner||null;
-      if(d.wc_banner_frame!==undefined) upd.wc_banner_frame=d.wc_banner_frame||null;
-      if(d.wc_nick_font!==undefined) upd.wc_nick_font=d.wc_nick_font||null;
-      if(d.wc_nick_italic!==undefined) upd.wc_nick_italic=d.wc_nick_italic||false;
-      if(d.wc_nick_underline!==undefined) upd.wc_nick_underline=d.wc_nick_underline||false;
       if(d.wc_eq_title!==undefined) upd.wc_eq_title=d.wc_eq_title||null;
       if(d.streak!==undefined) upd.streak=d.streak||0;
       if(d.desafiosConcluidos!==undefined) upd.desafiosConcluidos=d.desafiosConcluidos||0;
@@ -3918,8 +3703,6 @@ function renderAluno(){
     :banItem?.imgUrl&&banItem.imgUrl.trim().length>0
     ?`url('${banItem.imgUrl}') center/cover no-repeat`
     :banItem?.bg||'linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12))';
-  const usandoImg=(a.profileBanner&&a.profileBanner.trim().length>0)||(banItem?.imgUrl&&banItem.imgUrl.trim().length>0);
-  const banAnim=(!usandoImg&&banItem?.animCls)?banItem.animCls:'';
   const heroEl=document.getElementById('a-hero');
   heroEl.className=`hero-card${bItem?' '+bItem.cls:''}${eItem?' '+eItem.cls:''}`;
   heroEl.style.background='';heroEl.style.border='';heroEl.style.padding='';heroEl.style.overflow='hidden';
@@ -3935,9 +3718,8 @@ function renderAluno(){
     :`<span style="font-size:2.4rem;line-height:1;">${a.avatar||'👾'}</span>`;
   heroEl.innerHTML=`
     <div class="steam-banner-bg">
-      <div class="${banAnim}" style="position:absolute;inset:0;background:${bannerBg};background-size:cover;background-position:center;"></div>
+      <div style="position:absolute;inset:0;background:${bannerBg};background-size:cover;background-position:center;"></div>
       <div class="steam-banner-overlay"></div>
-      ${bannerFrameCls(a)?`<div class="banner-frame ${bannerFrameCls(a)}"></div>`:''}
     </div>
     <div class="steam-profile-lower">
       ${petItem?`<div class="pet-wrap" title="${petItem.name}">${petItem.petEmoji}</div>`:''}
@@ -3948,7 +3730,7 @@ function renderAluno(){
       </div>
       <div class="steam-name-row">
         <div>
-          <div class="steam-pname">${nickHtml(a,a.nome)}</div>
+          <div class="steam-pname">${a.nome}</div>
           <div class="steam-sub">${a.turma} · ${displayTitle}</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
             <span class="hero-level" style="font-size:.65rem;padding:3px 10px;">${n.e} ${n.n}</span>
@@ -4111,7 +3893,7 @@ function renderAluno(){
     return `<div class="rank-item ${isMe?'me':''}" data-aluno-id="${escapeHtml(al.id)}" style="cursor:pointer;">
       <div class="rnum ${rc}">${ri}</div>
       ${rankAvatarHtml}
-      <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.9rem;">${nickHtml(al,escapeHtml(al.nome))}${isMe?' 👈':''}</div><div style="font-size:.68rem;color:var(--muted2)">${nv.e} ${nv.n}${(al.streak||0)>=3?` · 🔥${al.streak}`:''}</div></div>
+      <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.9rem;">${escapeHtml(al.nome)}${isMe?' 👈':''}</div><div style="font-size:.68rem;color:var(--muted2)">${nv.e} ${nv.n}${(al.streak||0)>=3?` · 🔥${al.streak}`:''}</div></div>
       <div style="font-family:'Orbitron',monospace;font-size:.88rem;color:var(--gold);font-weight:700;flex-shrink:0">${Number(al.xp)||0} XP</div>
     </div>`;
   }).join('');
@@ -4254,36 +4036,17 @@ async function aprovar(pid){
   const antes=nivel(aluno.xp||0).idx;
   setSyncing('syncing');
   try {
-    // ── Booster de XP (Hack Power): aplica multiplicador e consome 1 uso ──
-    const xpBase = missao.xp;
-    let xpGanho = xpBase;
-    let boosterMsg = '';      // sufixo para histórico/notificação
-    let boosterToast = '';    // sufixo para o toast do professor
-    const boosterUpdate = {}; // campos a decrementar no aluno
-    const usosMega = aluno.hack_uses_hack_xpboost2 || 0; // Mega Turbo XP: +100%
-    const usosTurbo = aluno.hack_uses_hack_xpboost || 0; // Turbo XP: +50%
-    if(usosMega > 0){
-      xpGanho = Math.round(xpBase * 2);
-      boosterUpdate.hack_uses_hack_xpboost2 = usosMega - 1;
-      boosterMsg = ' 💥 (Mega Turbo XP ativo: XP dobrado!)';
-      boosterToast = ' 💥 Mega Turbo XP (x2)';
-    } else if(usosTurbo > 0){
-      xpGanho = Math.round(xpBase * 1.5);
-      boosterUpdate.hack_uses_hack_xpboost = usosTurbo - 1;
-      boosterMsg = ' 🚀 (Turbo XP ativo: +50% de XP!)';
-      boosterToast = ' 🚀 Turbo XP (+50%)';
-    }
-    const novoXP=(aluno.xp||0)+xpGanho;
+    const novoXP=(aluno.xp||0)+missao.xp;
     const wcPorDif2={easy:15,medium:25,hard:40};
     const wcGanho=(S.desafio&&pend.isDesafio)?30:(missao.wc||wcPorDif2[missao.dif]||20);
     const novoWCBonus=(aluno.wc_bonus||0)+wcGanho;
-    const hist=[{desc:`✅ Missão aprovada: ${missao.titulo}${fb?` · "${fb}"`:''} +${wcGanho}🪙${boosterMsg}`,xp:xpGanho,ts:Date.now()},...(aluno.historico||[])].slice(0,30);
+    const hist=[{desc:`✅ Missão aprovada: ${missao.titulo}${fb?` · "${fb}"`:''} +${wcGanho}🪙`,xp:missao.xp,ts:Date.now()},...(aluno.historico||[])].slice(0,30);
     // Notificação Correios
-    const notifAprovado={id:'n'+Date.now(),tipo:'aprovado',titulo:`✅ Missão aprovada!`,desc:`Sua missão "${missao.titulo}" foi aprovada!${boosterMsg}`,feedback:fb||null,xp:xpGanho,ts:Date.now(),lido:false};
+    const notifAprovado={id:'n'+Date.now(),tipo:'aprovado',titulo:`✅ Missão aprovada!`,desc:`Sua missão "${missao.titulo}" foi aprovada!`,feedback:fb||null,xp:missao.xp,ts:Date.now(),lido:false};
     const correiosUpd=[notifAprovado,...(aluno.correios||[])].slice(0,50);
     // Atualiza aluno
     const xpAntes = aluno.xp||0;
-    await COL.alunos().doc(aluno.id).update({xp:novoXP,wc_bonus:novoWCBonus,historico:hist,correios:correiosUpd,...boosterUpdate});
+    await COL.alunos().doc(aluno.id).update({xp:novoXP,wc_bonus:novoWCBonus,historico:hist,correios:correiosUpd});
     await COL.perfis().doc(aluno.id).update({xp:novoXP});
     setTimeout(()=>verificarNotifRanking(aluno.id, xpAntes), 1500);
     // Marca missão como done (se não for desafio)
@@ -4318,8 +4081,8 @@ async function aprovar(pid){
       await COL.pendentes().doc(pid).delete();
     }
     const depois=nivel(novoXP);
-    if(depois.idx>antes) toast(`🎉 ${aluno.nome} subiu para ${depois.e} ${depois.n}!${boosterToast}`);
-    else toast(`✅ Aprovado! +${xpGanho} XP para ${aluno.nome}${boosterToast}`);
+    if(depois.idx>antes) toast(`🎉 ${aluno.nome} subiu para ${depois.e} ${depois.n}!`);
+    else toast(`✅ Aprovado! +${missao.xp} XP para ${aluno.nome}`);
     setSyncing('ok');
   } catch(e){ toast('❌ Erro ao aprovar!'); setSyncing('error'); }
 }
@@ -4832,7 +4595,7 @@ function initProfChat(){
     const el=document.getElementById('p-online-list');
     const cnt=document.getElementById('p-online-count');
     if(!el) return;
-    if(cnt) cnt.textContent=online.length?`(${online.length})`:'';
+    if(cnt) cnt.textContent=`🟢 ${online.length} online`;
     el.innerHTML=online.map(p=>{
       const av=p.foto&&(p.foto.startsWith('data:image/')||sanitizeUrl(p.foto))
         ?`<img src="${escapeHtml(p.foto)}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;">`
@@ -5053,53 +4816,20 @@ async function resgatar(itemId){
 //  WARPCOINS SYSTEM
 // ══════════════════════════════════════
 const WC_ITEMS=[
-  // ── BORDAS · GRÁTIS (neon fixas) ──
-  {id:'border_neon',cat:'border',name:'Neon Cyan',desc:'Contorno ciano com brilho constante.',cost:0,cls:'b-neon',col:'#00d4ff',icon:'💙',free:true},
-  {id:'border_gold',cat:'border',name:'Neon Dourado',desc:'Moldura de ouro luminosa.',cost:0,cls:'b-gold',col:'#ffd700',icon:'🏅',free:true},
-  {id:'border_purple',cat:'border',name:'Neon Roxo',desc:'Aura mística em roxo.',cost:0,cls:'b-purple',col:'#a855f7',icon:'💜',free:true},
-  {id:'border_emerald',cat:'border',name:'Neon Esmeralda',desc:'Verde radioativo intenso.',cost:0,cls:'b-emerald',col:'#10ffa0',icon:'💚',free:true},
-  // ── BORDAS · NEON COLORIDAS (pagas) ──
-  {id:'border_crimson',cat:'border',name:'Neon Carmesim',desc:'Vermelho elétrico agressivo.',cost:90,cls:'b-crimson',col:'#ff2d55',icon:'❤️',free:false},
-  {id:'border_azure',cat:'border',name:'Neon Azul',desc:'Azul profundo brilhante.',cost:90,cls:'b-azure',col:'#3b82f6',icon:'🔵',free:false},
-  {id:'border_magenta',cat:'border',name:'Neon Magenta',desc:'Rosa-choque cyberpunk.',cost:110,cls:'b-magenta',col:'#ff00e6',icon:'💗',free:false},
-  // ── BORDAS · PISCAR (blink) ──
-  {id:'border_cosmic',cat:'border',name:'Piscar Rosa',desc:'Pisca em rosa cósmico.',cost:0,cls:'b-blink b-blink-pink',col:'#ec4899',icon:'🌸',free:true},
-  {id:'border_blink_cyan',cat:'border',name:'Piscar Cyan',desc:'Sinal neon piscando.',cost:120,cls:'b-blink',col:'#00d4ff',icon:'📡',free:false},
-  {id:'border_blink_gold',cat:'border',name:'Piscar Ouro',desc:'Pisca dourado de campeão.',cost:140,cls:'b-blink b-blink-gold',col:'#ffd700',icon:'⚜️',free:false},
-  // ── BORDAS · ANIMADAS PREMIUM ──
-  {id:'border_pulse',cat:'border',name:'Pulso Vital',desc:'Brilho que respira suave.',cost:160,cls:'b-pulse',col:'#00d4ff',icon:'🫧',free:false},
-  {id:'border_rainbow',cat:'border',name:'Arco-Íris',desc:'Todas as cores em rotação!',cost:180,cls:'b-rainbow',col:'#ff66cc',icon:'🌈',free:false},
-  {id:'border_flow',cat:'border',name:'Anel de Fluxo',desc:'Gradiente girando em órbita.',cost:260,cls:'b-flow',col:'#a855f7',icon:'🌀',free:false},
-  {id:'border_plasma',cat:'border',name:'Plasma',desc:'Cyan e magenta pulsando.',cost:300,cls:'b-plasma',col:'#ff00e6',icon:'⚛️',free:false},
-  {id:'border_electric',cat:'border',name:'Elétrica',desc:'Neon defeituoso piscando elétrico.',cost:280,cls:'b-electric',col:'#7df9ff',icon:'⚡',free:false},
-  {id:'border_royal',cat:'border',name:'Anel Real',desc:'Anel duplo dourado de elite.',cost:350,cls:'b-royal',col:'#fff3b0',icon:'👑',free:false},
-  {id:'border_fire',cat:'border',name:'Brasa Ardente',desc:'Brilho de fogo pulsando.',cost:200,cls:'b-fire',col:'#ff7a00',icon:'🔥',free:false},
-  {id:'border_ice',cat:'border',name:'Gelo Cristalino',desc:'Reflexo congelante cintilante.',cost:200,cls:'b-ice',col:'#bfefff',icon:'🧊',free:false},
-  {id:'border_toxic',cat:'border',name:'Reator Tóxico',desc:'Verde radioativo respirando.',cost:220,cls:'b-toxic',col:'#aaff00',icon:'☢️',free:false},
-  {id:'border_aurora',cat:'border',name:'Aurora Boreal',desc:'Cores boreais transicionando.',cost:300,cls:'b-aurora',col:'#10ffa0',icon:'🌠',free:false},
-  {id:'border_glitch',cat:'border',name:'Glitch RGB',desc:'Distorção digital cyberpunk.',cost:320,cls:'b-glitch',col:'#00ffe0',icon:'📺',free:false},
-  {id:'border_galaxy',cat:'border',name:'Anel Galáctico',desc:'Vórtice cósmico girando.',cost:360,cls:'b-galaxy',col:'#a855f7',icon:'🌌',free:false},
-  {id:'border_sunset',cat:'border',name:'Anel Synthwave',desc:'Pôr do sol retrô girando.',cost:340,cls:'b-sunset',col:'#ff6ec7',icon:'🌇',free:false},
-  // ── EFEITOS ──
-  {id:'effect_scan',cat:'effect',name:'Scanner Neon',desc:'Linha de varredura sci-fi.',cost:200,cls:'e-scan',icon:'📡',free:false},
-  {id:'effect_scanx',cat:'effect',name:'Scanner Vertical',desc:'Feixe magenta cruzando o perfil.',cost:200,cls:'e-scanx',icon:'📶',free:false},
-  {id:'effect_grid',cat:'effect',name:'Grade Cyber',desc:'Malha cibernética rolando.',cost:220,cls:'e-grid',icon:'🔲',free:false},
-  {id:'effect_holo',cat:'effect',name:'Holograma',desc:'Banda iridescente varrendo.',cost:260,cls:'e-holo',icon:'🪩',free:false},
-  {id:'effect_radar',cat:'effect',name:'Radar',desc:'Varredura cônica giratória.',cost:240,cls:'e-radar',icon:'🛰️',free:false},
-  {id:'effect_pulse',cat:'effect',name:'Pulso de Energia',desc:'Anéis de energia expandindo.',cost:230,cls:'e-pulse',icon:'💥',free:false},
-  {id:'effect_aurora',cat:'effect',name:'Aurora',desc:'Brilho boreal flutuando.',cost:280,cls:'e-aurora',icon:'🌌',free:false},
-  {id:'effect_stars',cat:'effect',name:'Campo Estelar',desc:'Estrelas cintilando.',cost:240,cls:'e-stars',icon:'✨',free:false},
-  {id:'effect_circuit',cat:'effect',name:'Fluxo de Dados',desc:'Linhas de circuito correndo.',cost:250,cls:'e-circuit',icon:'🟢',free:false},
-  // ── BANNERS · GRÁTIS ──
-  {id:'banner_default',cat:'banner',name:'Banner Padrão',desc:'Nebulosa azul e roxa.',cost:0,bg:'linear-gradient(135deg,#0a1330,#1a1147,#0a1330)',icon:'🌌',free:true},
-  {id:'banner_galaxy',cat:'banner',name:'Galáxia Viva',desc:'Galáxia roxa em movimento.',cost:0,bg:'linear-gradient(135deg,#0f0c29,#302b63,#24243e,#0f0c29)',animCls:'ban-anim-flow',icon:'🔮',free:true},
-  // ── BANNERS · PREMIUM ──
-  {id:'banner_fire',cat:'banner',name:'Inferno',desc:'Lava fluindo ardente.',cost:200,bg:'linear-gradient(135deg,#3a0000,#ff416c,#ff4b2b,#3a0000)',animCls:'ban-anim-flow',icon:'🔥',free:false},
-  {id:'banner_ocean',cat:'banner',name:'Oceano Profundo',desc:'Ondas azuis hipnóticas.',cost:180,bg:'linear-gradient(135deg,#012a4a,#1a6091,#2c7da0,#012a4a)',animCls:'ban-anim-flow',icon:'🌊',free:false},
-  {id:'banner_cyber',cat:'banner',name:'Cyber Matrix',desc:'Verde neon cyberpunk pulsante.',cost:240,bg:'linear-gradient(135deg,#001a00,#003b00,#00ff41,#001a00)',animCls:'ban-anim-pulse',icon:'💚',free:false},
-  {id:'banner_aurora',cat:'banner',name:'Aurora Boreal',desc:'Luzes do norte dançando.',cost:280,bg:'linear-gradient(120deg,#00c6ff,#7c3aed,#10ffa0,#ec4899)',animCls:'ban-anim-aurora',icon:'🌠',free:false},
-  {id:'banner_sunset',cat:'banner',name:'Pôr do Sol Synthwave',desc:'Laranja, rosa e roxo retrô.',cost:240,bg:'linear-gradient(135deg,#ffd86b,#ff6ec7,#a855f7,#3b0a55)',animCls:'ban-anim-flow',icon:'🌅',free:false},
-  {id:'banner_holo',cat:'banner',name:'Holográfico',desc:'Reflexo holográfico iridescente.',cost:320,bg:'linear-gradient(120deg,#7df9ff,#a855f7,#ffd700,#10ffa0,#ff00e6,#7df9ff)',animCls:'ban-anim-aurora',icon:'🪩',free:false},
+  {id:'border_neon',cat:'border',name:'Borda Neon Cyan',desc:'Contorno ciano pulsante.',cost:0,cls:'b-neon',icon:'💙',free:true},
+  {id:'border_gold',cat:'border',name:'Borda Dourada',desc:'Moldura de ouro.',cost:0,cls:'b-gold',icon:'🏅',free:true},
+  {id:'border_purple',cat:'border',name:'Borda Roxa',desc:'Aura mística em roxo.',cost:0,cls:'b-purple',icon:'💜',free:true},
+  {id:'border_rainbow',cat:'border',name:'Borda Arco-Íris',desc:'Cores em rotação!',cost:0,cls:'b-rainbow',icon:'🌈',free:true},
+  {id:'border_cosmic',cat:'border',name:'Borda Cósmica',desc:'Rosa e roxo nebular.',cost:0,cls:'b-cosmic',icon:'🌸',free:true},
+  {id:'effect_sparkle',cat:'effect',name:'Brilho Mágico',desc:'Estrelinhas.',cost:120,cls:'e-sparkle',icon:'✨',free:false},
+  {id:'effect_fire',cat:'effect',name:'Chamas',desc:'Chamas animadas.',cost:150,cls:'e-fire',icon:'🔥',free:false},
+  {id:'effect_stars',cat:'effect',name:'Estrelas',desc:'Estrelas orbitando.',cost:130,cls:'e-stars',icon:'⭐',free:false},
+  {id:'effect_lightning',cat:'effect',name:'Raio',desc:'Raio elétrico!',cost:140,cls:'e-lightning',icon:'⚡',free:false},
+  {id:'banner_default',cat:'banner',name:'Banner Padrão',desc:'Desbloqueado grátis!',cost:0,bg:'linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12))',icon:'🌌',free:true},
+  {id:'banner_galaxy',cat:'banner',name:'Banner Galáxia',desc:'Galáxia roxa.',cost:0,bg:'linear-gradient(135deg,#0f0c29,#302b63)',icon:'🔮',free:true},
+  {id:'banner_fire',cat:'banner',name:'Banner Chamas',desc:'Fogo ardente.',cost:220,bg:'linear-gradient(135deg,#ff416c,#ff4b2b)',icon:'🔥',free:false},
+  {id:'banner_ocean',cat:'banner',name:'Banner Oceano',desc:'Azul profundo.',cost:200,bg:'linear-gradient(135deg,#1a6091,#2c7da0)',icon:'🌊',free:false},
+  {id:'banner_cyber',cat:'banner',name:'Banner Cyber',desc:'Neon cyberpunk.',cost:280,bg:'linear-gradient(135deg,#0a2e0a,#00ff41)',icon:'💚',free:false},
   {id:'av_dragon',cat:'avatar',name:'Dragão Místico',desc:'Avatar épico.',cost:300,emoji:'🐲',icon:'🐲',free:false},
   {id:'av_alien',cat:'avatar',name:'Alienígena',desc:'De outro planeta!',cost:180,emoji:'👽',icon:'👽',free:false},
   {id:'av_ninja',cat:'avatar',name:'Ninja Hacker',desc:'Mestre das sombras.',cost:350,emoji:'🥷',icon:'🥷',free:false},
@@ -5113,42 +4843,11 @@ const WC_ITEMS=[
   {id:'pet_fox',cat:'pet',name:'Raposa Ninja',desc:'Ágil e misteriosa.',cost:200,petEmoji:'🦊',icon:'🦊',free:false},
   {id:'pet_alien',cat:'pet',name:'Alienígena',desc:'Veio de outra galáxia.',cost:250,petEmoji:'👽',icon:'👽',free:false},
   {id:'pet_ghost',cat:'pet',name:'Fantasminha',desc:'Assombra seus inimigos.',cost:180,petEmoji:'👻',icon:'👻',free:false},
-  // ── NICK · CORES/TEXTURAS (cor do texto) ──
-  {id:'nk_cyan',cat:'nickcolor',name:'Nick Cyan',desc:'Brilho ciano clássico.',cost:0,cls:'nk-cyan',icon:'🩵',free:true},
-  {id:'nk_chrome',cat:'nickcolor',name:'Nick Cromado',desc:'Metal polido prateado.',cost:0,cls:'nk-chrome',icon:'🪙',free:true},
-  {id:'nk_gold',cat:'nickcolor',name:'Nick Ouro',desc:'Letras douradas de elite.',cost:120,cls:'nk-gold',icon:'🏆',free:false},
-  {id:'nk_fire',cat:'nickcolor',name:'Nick Fogo',desc:'Gradiente de chamas.',cost:140,cls:'nk-fire',icon:'🔥',free:false},
-  {id:'nk_ice',cat:'nickcolor',name:'Nick Gelo',desc:'Azul congelante.',cost:130,cls:'nk-ice',icon:'🧊',free:false},
-  {id:'nk_toxic',cat:'nickcolor',name:'Nick Tóxico',desc:'Verde radioativo.',cost:130,cls:'nk-toxic',icon:'☣️',free:false},
-  {id:'nk_sunset',cat:'nickcolor',name:'Nick Sunset',desc:'Dourado, rosa e roxo.',cost:160,cls:'nk-sunset',icon:'🌇',free:false},
-  {id:'nk_galaxy',cat:'nickcolor',name:'Nick Galáxia',desc:'Cores cósmicas em movimento.',cost:220,cls:'nk-galaxy',icon:'🌌',free:false},
-  {id:'nk_rainbow',cat:'nickcolor',name:'Nick Arco-Íris',desc:'Todas as cores fluindo!',cost:260,cls:'nk-rainbow',icon:'🌈',free:false},
-  {id:'nk_neonpink',cat:'nickcolor',name:'Nick Neon Pink',desc:'Rosa-choque elétrico.',cost:150,cls:'nk-neonpink',icon:'💗',free:false},
-  {id:'nk_lava',cat:'nickcolor',name:'Nick Lava',desc:'Magma incandescente.',cost:160,cls:'nk-lava',icon:'🌋',free:false},
-  {id:'nk_aqua',cat:'nickcolor',name:'Nick Aqua',desc:'Água-marinha brilhante.',cost:140,cls:'nk-aqua',icon:'💧',free:false},
-  {id:'nk_candy',cat:'nickcolor',name:'Nick Candy',desc:'Pastel animado fofíssimo.',cost:200,cls:'nk-candy',icon:'🍬',free:false},
-  {id:'nk_matrix',cat:'nickcolor',name:'Nick Matrix',desc:'Verde terminal hacker.',cost:180,cls:'nk-matrix',icon:'🟩',free:false},
-  {id:'nk_void',cat:'nickcolor',name:'Nick Abismo',desc:'Roxo cósmico em movimento.',cost:240,cls:'nk-void',icon:'🔮',free:false},
-  // ── NICK · EFEITOS (animação) ──
-  {id:'nf_glow',cat:'nickfx',name:'Efeito Glow',desc:'Brilho que pulsa suave.',cost:0,cls:'nf-glow',icon:'💡',free:true},
-  {id:'nf_wave',cat:'nickfx',name:'Efeito Flutuar',desc:'Sobe e desce suavemente.',cost:90,cls:'nf-wave',icon:'🌊',free:false},
-  {id:'nf_blink',cat:'nickfx',name:'Efeito Piscar',desc:'Pisca como neon.',cost:110,cls:'nf-blink',icon:'⚡',free:false},
-  {id:'nf_shake',cat:'nickfx',name:'Efeito Tremor',desc:'Vibração energética.',cost:120,cls:'nf-shake',icon:'📳',free:false},
-  {id:'nf_flicker',cat:'nickfx',name:'Efeito Falha',desc:'Glitch de neon defeituoso.',cost:150,cls:'nf-flicker',icon:'📺',free:false},
-  {id:'nf_hue',cat:'nickfx',name:'Efeito Espectro',desc:'Cores girando o arco-íris.',cost:0,cls:'nf-hue',icon:'🌈',free:true},
-  {id:'nf_bounce',cat:'nickfx',name:'Efeito Pulo',desc:'Salta animado sem parar.',cost:0,cls:'nf-bounce',icon:'🦘',free:true},
-  {id:'nf_breathe',cat:'nickfx',name:'Efeito Respirar',desc:'Cresce e brilha suave.',cost:0,cls:'nf-breathe',icon:'🫧',free:true},
-  {id:'nf_glitch',cat:'nickfx',name:'Efeito Glitch RGB',desc:'Distorção digital colorida.',cost:0,cls:'nf-glitch',icon:'👾',free:true},
-  {id:'nf_shine',cat:'nickfx',name:'Efeito Brilho',desc:'Reflexo de luz passando.',cost:0,cls:'nf-shine',icon:'✨',free:true},
-  // ── NICK · FUNDOS (caixa atrás) ──
-  {id:'nb_pill',cat:'nickbg',name:'Fundo Pílula',desc:'Caixa discreta atrás do nick.',cost:0,cls:'nb-pill',icon:'⬛',free:true},
-  {id:'nb_glass',cat:'nickbg',name:'Fundo Vidro',desc:'Vidro fosco translúcido.',cost:100,cls:'nb-glass',icon:'🔲',free:false},
-  {id:'nb_neon',cat:'nickbg',name:'Fundo Neon',desc:'Caixa com brilho ciano.',cost:140,cls:'nb-neon',icon:'🟦',free:false},
-  {id:'nb_cyber',cat:'nickbg',name:'Fundo Cyber',desc:'Roxo e ciano cyberpunk.',cost:170,cls:'nb-cyber',icon:'🟪',free:false},
-  {id:'nb_flame',cat:'nickbg',name:'Fundo Chama',desc:'Brilho laranja ardente.',cost:170,cls:'nb-flame',icon:'🟧',free:false},
-  {id:'nb_holo',cat:'nickbg',name:'Fundo Holo',desc:'Vidro iridescente animado.',cost:190,cls:'nb-holo',icon:'🪩',free:false},
-  {id:'nb_gold',cat:'nickbg',name:'Fundo Ouro',desc:'Caixa dourada de elite.',cost:180,cls:'nb-gold',icon:'🟨',free:false},
-  {id:'nb_toxic',cat:'nickbg',name:'Fundo Tóxico',desc:'Verde radioativo brilhante.',cost:170,cls:'nb-toxic',icon:'🟩',free:false},
+  {id:'theme_default',cat:'theme',name:'WarpCode Clássico',desc:'O visual padrão.',cost:0,icon:'🌌',free:true,vars:{'--bg':'#07090f','--s1':'#0f1623','--s2':'#162033','--accent':'#00d4ff','--purple':'#7c3aed'}},
+  {id:'theme_cyber',cat:'theme',name:'Cyber Verde',desc:'Tema hacker Matrix.',cost:200,icon:'💚',free:false,vars:{'--bg':'#020c02','--s1':'#051205','--s2':'#0a1f0a','--accent':'#00ff41','--purple':'#00cc33'}},
+  {id:'theme_sunset',cat:'theme',name:'Pôr do Sol',desc:'Laranja e rosa vibrante.',cost:220,icon:'🌅',free:false,vars:{'--bg':'#0f0608','--s1':'#1a0810','--s2':'#28101a','--accent':'#ff6b6b','--purple':'#c2185b'}},
+  {id:'theme_ocean',cat:'theme',name:'Oceano Profundo',desc:'Azul e verde das profundezas.',cost:200,icon:'🌊',free:false,vars:{'--bg':'#020810','--s1':'#031020','--s2':'#041530','--accent':'#06b6d4','--purple':'#0891b2'}},
+  {id:'theme_gold',cat:'theme',name:'Ouro e Preto',desc:'Elegância de campeão.',cost:350,icon:'🏆',free:false,vars:{'--bg':'#0a0800','--s1':'#140f00','--s2':'#1f1800','--accent':'#ffd700','--purple':'#f59e0b'}},
   {id:'title_rookie',cat:'title',name:'Calouro do Código',desc:'Título iniciante.',cost:0,icon:'🌱',free:true,titleTxt:'Calouro do Código',titleCls:'p-soldado'},
   {id:'title_hacker',cat:'title',name:'Hacker Lendário',desc:'Título épico.',cost:300,icon:'💀',free:false,titleTxt:'Hacker Lendário',titleCls:'p-lenda'},
   {id:'title_wizard',cat:'title',name:'Mago do Scratch',desc:'Feiticeiro do código.',cost:250,icon:'🧙',free:false,titleTxt:'Mago do Scratch',titleCls:'p-capitao'},
@@ -5208,11 +4907,6 @@ const WC_ITEMS=[
    aiPrompt:'A circular avatar frame with golden circuit board patterns glowing softly. Ornate tech aesthetic, transparent center. Isolated on transparent background. 512x512px.'},
 ];
 
-// 🔓 PERSONALIZAÇÕES LIBERADAS — todos os cosméticos visuais são gratuitos para todos os alunos.
-// (Hack Powers e Pets ficam fora: são poder de jogo / sistema de evolução próprio.)
-const FREE_CATS=['avatar','banner','border','effect','nickbg','nickcolor','nickfx','title'];
-WC_ITEMS.forEach(it=>{ if(FREE_CATS.includes(it.cat)){ it.free=true; it.cost=0; } });
-
 const LOOT_TABLE=[
   {r:'comum',w:35,type:'xp',v:50,label:'+50 XP',icon:'⚡'},
   {r:'comum',w:25,type:'xp',v:80,label:'+80 XP',icon:'⚡'},
@@ -5222,7 +4916,7 @@ const LOOT_TABLE=[
   {r:'raro',w:8,type:'item',v:'border_neon',label:'Borda Neon! 💙',icon:'💙'},
   {r:'épico',w:6,type:'xp',v:300,label:'+300 XP ÉPICO!',icon:'🚀'},
   {r:'épico',w:5,type:'wc',v:100,label:'+100 WarpCoins! 🪙',icon:'🪙'},
-  {r:'épico',w:4,type:'item',v:'effect_holo',label:'Efeito 🪩 Holograma!',icon:'🪩'},
+  {r:'épico',w:4,type:'item',v:'effect_sparkle',label:'Efeito ✨ Mágico!',icon:'✨'},
   {r:'lendário',w:2,type:'xp',v:500,label:'+500 XP LENDÁRIO!',icon:'🏆'},
   {r:'lendário',w:1,type:'item',v:'border_cosmic',label:'Borda Cósmica 🌸!',icon:'🌸'},
 ];
@@ -5243,87 +4937,15 @@ function patente(xp){
 }
 function rollLoot(){const tot=LOOT_TABLE.reduce((s,i)=>s+i.w,0);let r=Math.random()*tot;for(const it of LOOT_TABLE){r-=it.w;if(r<=0)return it;}return LOOT_TABLE[0];}
 
-// ══ TEMAS DA PÁGINA INTEIRA · GRÁTIS para todos ══
-// Cada tema define a mesma lista de variáveis (sem vazamento entre temas).
-const THEMES=[
-  {id:'theme_default',name:'WarpCode Clássico',icon:'🌌',vars:{'--bg':'#07090f','--s1':'#0f1623','--s2':'#162033','--s3':'#1c2a42','--border':'#1e3a5f','--border2':'rgba(0,212,255,.18)','--accent':'#00d4ff','--purple':'#7c3aed','--gold':'#ffd700','--pink':'#ec4899','--glow1':'rgba(0,212,255,.06)','--glow2':'rgba(124,58,237,.06)','--grid-c':'rgba(0,212,255,.02)'}},
-  {id:'theme_vapor',name:'Vaporwave',icon:'🌆',vars:{'--bg':'#0a0618','--s1':'#15102e','--s2':'#1e1640','--s3':'#2a1d55','--border':'#4a2f8a','--border2':'rgba(255,113,206,.25)','--accent':'#ff71ce','--purple':'#01cdfe','--gold':'#fffb96','--pink':'#b967ff','--glow1':'rgba(255,113,206,.09)','--glow2':'rgba(1,205,254,.08)','--grid-c':'rgba(185,103,255,.025)'}},
-  {id:'theme_sunset',name:'Synthwave',icon:'🌅',vars:{'--bg':'#150522','--s1':'#220a35','--s2':'#311050','--s3':'#431a6b','--border':'#6a2a9a','--border2':'rgba(255,110,199,.25)','--accent':'#ff6ec7','--purple':'#ff9d5c','--gold':'#ffd86b','--pink':'#a855f7','--glow1':'rgba(255,110,199,.09)','--glow2':'rgba(168,85,247,.08)','--grid-c':'rgba(255,157,92,.02)'}},
-  {id:'theme_galaxy',name:'Galáctico',icon:'🪐',vars:{'--bg':'#060418','--s1':'#0d0a2b','--s2':'#151140','--s3':'#1f1a5c','--border':'#3a2f8a','--border2':'rgba(124,92,255,.26)','--accent':'#7c5cff','--purple':'#ec4899','--gold':'#ffd700','--pink':'#22d3ee','--glow1':'rgba(124,92,255,.10)','--glow2':'rgba(236,72,153,.08)','--grid-c':'rgba(124,92,255,.022)'}},
-  {id:'theme_cyber',name:'Cyber Matrix',icon:'💚',vars:{'--bg':'#020c02','--s1':'#06140a','--s2':'#0a1f0f','--s3':'#0f2e16','--border':'#0f5a2a','--border2':'rgba(57,255,20,.22)','--accent':'#39ff14','--purple':'#00d4a0','--gold':'#d4ff00','--pink':'#00ffa3','--glow1':'rgba(57,255,20,.08)','--glow2':'rgba(0,212,160,.07)','--grid-c':'rgba(57,255,20,.025)'}},
-  {id:'theme_toxic',name:'Tóxico',icon:'☢️',vars:{'--bg':'#070d00','--s1':'#0e1700','--s2':'#162400','--s3':'#203400','--border':'#3f5a00','--border2':'rgba(170,255,0,.25)','--accent':'#aaff00','--purple':'#10ffa0','--gold':'#eaff00','--pink':'#7cfc00','--glow1':'rgba(170,255,0,.09)','--glow2':'rgba(16,255,160,.07)','--grid-c':'rgba(170,255,0,.025)'}},
-  {id:'theme_inferno',name:'Inferno',icon:'🌋',vars:{'--bg':'#0f0300','--s1':'#1c0700','--s2':'#2b0c02','--s3':'#3f1305','--border':'#7a2a0a','--border2':'rgba(255,90,0,.25)','--accent':'#ff8a00','--purple':'#ff2d2d','--gold':'#ffd34d','--pink':'#ff5e3a','--glow1':'rgba(255,90,0,.10)','--glow2':'rgba(255,45,45,.08)','--grid-c':'rgba(255,138,0,.022)'}},
-  {id:'theme_blood',name:'Carmesim',icon:'🩸',vars:{'--bg':'#100303','--s1':'#1c0606','--s2':'#2a0a0a','--s3':'#3d1010','--border':'#6b1a1a','--border2':'rgba(255,45,85,.24)','--accent':'#ff2d55','--purple':'#ff6b00','--gold':'#ffba3b','--pink':'#ff7597','--glow1':'rgba(255,45,85,.08)','--glow2':'rgba(255,107,0,.06)','--grid-c':'rgba(255,45,85,.022)'}},
-  {id:'theme_solar',name:'Solar',icon:'☀️',vars:{'--bg':'#0d0700','--s1':'#190f02','--s2':'#251705','--s3':'#352208','--border':'#6a4a12','--border2':'rgba(251,191,36,.25)','--accent':'#fbbf24','--purple':'#fb7185','--gold':'#fde68a','--pink':'#34d399','--glow1':'rgba(251,191,36,.09)','--glow2':'rgba(251,113,133,.07)','--grid-c':'rgba(251,191,36,.02)'}},
-  {id:'theme_gold',name:'Ouro & Preto',icon:'🏆',vars:{'--bg':'#0a0800','--s1':'#161000','--s2':'#221900','--s3':'#332600','--border':'#5a4500','--border2':'rgba(255,215,0,.24)','--accent':'#ffd700','--purple':'#f59e0b','--gold':'#fff3b0','--pink':'#00d4ff','--glow1':'rgba(255,215,0,.08)','--glow2':'rgba(245,158,11,.06)','--grid-c':'rgba(255,215,0,.02)'}},
-  {id:'theme_ocean',name:'Oceano Profundo',icon:'🌊',vars:{'--bg':'#020912','--s1':'#04121f','--s2':'#061f33','--s3':'#08304f','--border':'#0e5577','--border2':'rgba(34,211,238,.22)','--accent':'#22d3ee','--purple':'#3b82f6','--gold':'#7dd3fc','--pink':'#06b6d4','--glow1':'rgba(34,211,238,.08)','--glow2':'rgba(59,130,246,.07)','--grid-c':'rgba(34,211,238,.022)'}},
-  {id:'theme_ice',name:'Ártico',icon:'🧊',vars:{'--bg':'#040a12','--s1':'#08141f','--s2':'#0c1f30','--s3':'#123047','--border':'#1f5a7a','--border2':'rgba(147,224,255,.24)','--accent':'#9be0ff','--purple':'#a5b4fc','--gold':'#e0f2fe','--pink':'#67e8f9','--glow1':'rgba(147,224,255,.08)','--glow2':'rgba(165,180,252,.06)','--grid-c':'rgba(147,224,255,.022)'}},
-  {id:'theme_aqua',name:'Aqua Tropical',icon:'🐠',vars:{'--bg':'#021410','--s1':'#04211b','--s2':'#063028','--s3':'#0a473a','--border':'#0f6b54','--border2':'rgba(16,255,160,.22)','--accent':'#10ffa0','--purple':'#06b6d4','--gold':'#a7f3d0','--pink':'#34d399','--glow1':'rgba(16,255,160,.08)','--glow2':'rgba(6,182,212,.07)','--grid-c':'rgba(16,255,160,.022)'}},
-  {id:'theme_grape',name:'Uva Neon',icon:'🍇',vars:{'--bg':'#0c0518','--s1':'#160a28','--s2':'#20103a','--s3':'#2e1654','--border':'#4d2475','--border2':'rgba(192,132,252,.26)','--accent':'#c084fc','--purple':'#7c3aed','--gold':'#e9d5ff','--pink':'#e879f9','--glow1':'rgba(192,132,252,.08)','--glow2':'rgba(124,58,237,.07)','--grid-c':'rgba(192,132,252,.022)'}},
-  {id:'theme_candy',name:'Candy',icon:'🍬',vars:{'--bg':'#10081a','--s1':'#1c0f2e','--s2':'#281640','--s3':'#371f56','--border':'#5a3a8a','--border2':'rgba(255,154,230,.25)','--accent':'#ff9ae6','--purple':'#7df9ff','--gold':'#fff1a8','--pink':'#a18cff','--glow1':'rgba(255,154,230,.08)','--glow2':'rgba(125,249,255,.07)','--grid-c':'rgba(161,140,255,.02)'}},
-  {id:'theme_mono',name:'Mono Prata',icon:'🤍',vars:{'--bg':'#0a0a0c','--s1':'#141417','--s2':'#1d1d22','--s3':'#2a2a31','--border':'#3a3a44','--border2':'rgba(226,232,240,.18)','--accent':'#cbd5e1','--purple':'#94a3b8','--gold':'#e2e8f0','--pink':'#cbd5e1','--glow1':'rgba(226,232,240,.05)','--glow2':'rgba(148,163,184,.05)','--grid-c':'rgba(226,232,240,.015)'}},
-];
-function getTheme(id){return THEMES.find(t=>t.id===id)||THEMES[0];}
 function applyTheme(themeId){
-  const t=getTheme(themeId);
-  Object.entries(t.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+  const item=WC_ITEMS.find(i=>i.id===themeId);if(!item||!item.vars)return;
+  Object.entries(item.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
 }
 function loadSavedTheme(a){
-  const eq=(a&&a['wc_eq_theme'])||localStorage.getItem('wc_theme')||'theme_default';
-  applyTheme(eq);
+  const eq=a['wc_eq_theme'];
+  if(eq)applyTheme(eq);
+  else{const def=WC_ITEMS.find(i=>i.id==='theme_default');if(def&&def.vars)Object.entries(def.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}
 }
-async function escolherTema(themeId){
-  applyTheme(themeId);
-  localStorage.setItem('wc_theme',themeId);
-  const a=S.alunos.find(x=>x.id===alunoAtual);
-  document.querySelectorAll('[data-theme-opt]').forEach(el=>el.classList.toggle('selected',el.dataset.themeOpt===themeId));
-  if(a){try{await COL.alunos().doc(a.id).update({wc_eq_theme:themeId});}catch(e){console.warn('[tema]',e.code||e.message);}}
-  toast('🎨 Tema aplicado!');
-}
-
-// ══ NICK PERSONALIZADO (cor/textura · efeito · fundo · fonte · estilo) ══
-const NICK_FONTS=[
-  {id:'',name:'Padrão',cls:''},
-  {id:'orbitron',name:'Orbitron',cls:'nfont-orbitron'},
-  {id:'audiowide',name:'Audiowide',cls:'nfont-audiowide'},
-  {id:'press',name:'Pixel',cls:'nfont-press'},
-  {id:'bungee',name:'Bungee',cls:'nfont-bungee'},
-  {id:'russo',name:'Russo',cls:'nfont-russo'},
-  {id:'monoton',name:'Monoton',cls:'nfont-monoton'},
-];
-function nickFontCls(obj){const f=NICK_FONTS.find(x=>x.id===((obj&&obj.wc_nick_font)||''));return f?f.cls:'';}
-const BANNER_FRAMES=[
-  {id:'',name:'Nenhuma',cls:'',icon:'⬜'},
-  {id:'neon',name:'Neon',cls:'bframe-neon',icon:'🟦'},
-  {id:'pulse',name:'Pulso',cls:'bframe-pulse',icon:'🫧'},
-  {id:'rainbow',name:'Espectro',cls:'bframe-rainbow',icon:'🌈'},
-  {id:'dash',name:'Formigas',cls:'bframe-dash',icon:'➿'},
-  {id:'scan',name:'Scanner',cls:'bframe-scan',icon:'📡'},
-  {id:'corners',name:'HUD',cls:'bframe-corners',icon:'⌜'},
-  {id:'circuit',name:'Circuito',cls:'bframe-circuit',icon:'🟢'},
-  {id:'gold',name:'Ouro',cls:'bframe-gold',icon:'🟨'},
-];
-function bannerFrameCls(obj){const f=BANNER_FRAMES.find(x=>x.id===((obj&&obj.wc_banner_frame)||''));return f?f.cls:'';}
-function nickClasses(obj){
-  const find=(cat,id)=>id?WC_ITEMS.find(i=>i.id===id&&i.cat===cat):null;
-  const c=find('nickcolor',obj&&obj.wc_eq_nickcolor);
-  const f=find('nickfx',obj&&obj.wc_eq_nickfx);
-  const b=find('nickbg',obj&&obj.wc_eq_nickbg);
-  const combo=detectarCombo(obj);
-  const fontCls=nickFontCls(obj);
-  const ital=obj&&obj.wc_nick_italic?'nick-italic':'';
-  const undr=obj&&obj.wc_nick_underline?'nick-underline':'';
-  return{txt:[c&&c.cls,f&&f.cls,fontCls,ital,undr].filter(Boolean).join(' '),bg:[(b&&b.cls),(combo&&combo.cls)].filter(Boolean).join(' '),combo};
-}
-// Retorna o nome do aluno já estilizado (HTML seguro). 'name' deve vir escapado pelo chamador quando necessário.
-function nickHtml(obj,name,extraStyle){
-  const nc=nickClasses(obj);
-  const wrapCls='nick-wrap'+(nc.bg?' '+nc.bg:'');
-  const style=extraStyle?` style="${extraStyle}"`:'';
-  return `<span class="${wrapCls}"${style}><span class="nick ${nc.txt}">${name}</span></span>`;
-}
-// Aplica o tema salvo assim que a página carrega (antes do login)
-window.addEventListener('DOMContentLoaded',()=>{try{applyTheme(localStorage.getItem('wc_theme')||'theme_default');}catch(e){}});
 
 // ── WC LOJA ──
 function filtrarWC(cat,btn){
@@ -5333,62 +4955,13 @@ function filtrarWC(cat,btn){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(a)renderWCLoja(a);
 }
 function wcRarityBadge(item){
-  const auto=['border','effect','nickcolor','nickfx','nickbg','banner'].includes(item.cat);
-  if(!item.rarity&&!auto)return'';
-  const r=itemRarity(item);
-  const lbl={comum:'COMUM',raro:'RARO',epico:'ÉPICO',lendario:'LENDÁRIO'}[r]||'';
-  return`<span class="wc-rarity-badge rb-${r}">${lbl}</span>`;
+  if(!item.rarity)return'';
+  const lbl={comum:'COMUM',raro:'RARO',epico:'ÉPICO',lendario:'LENDÁRIO'}[item.rarity]||'';
+  return`<span class="wc-rarity-badge rb-${item.rarity}">${lbl}</span>`;
 }
 function wcRarityCls(item){
-  const auto=['border','effect','nickcolor','nickfx','nickbg','banner'].includes(item.cat);
-  if(!item.rarity&&!auto)return'';
-  return ' wc-rarity-'+itemRarity(item);
-}
-// ── Raridade automática (deriva do custo quando não vier explícita) ──
-function itemRarity(item){
-  if(!item)return'comum';
-  if(item.rarity)return item.rarity;
-  if(item.free||!item.cost)return'comum';
-  if(item.cost<=110)return'raro';
-  if(item.cost<=180)return'epico';
-  return'lendario';
-}
-const RARITY_COR={comum:'#94a3b8',raro:'#00d4ff',epico:'#a855f7',lendario:'#ffd700'};
-const RARITY_LBL={comum:'Comum',raro:'Raro',epico:'Épico',lendario:'Lendário'};
-// Selo compacto de raridade (dot luminoso) para usar no modal
-function rarPip(item){
-  const r=itemRarity(item);const c=RARITY_COR[r];
-  return `<span class="rar-pip" title="${RARITY_LBL[r]}" style="background:${c};box-shadow:0 0 6px ${c};"></span>`;
-}
-function rarLegenda(){
-  return `<div class="rar-legenda">${Object.keys(RARITY_LBL).map(r=>`<span><span class="rar-pip" style="background:${RARITY_COR[r]};box-shadow:0 0 5px ${RARITY_COR[r]};"></span>${RARITY_LBL[r]}</span>`).join('')}</div>`;
-}
-
-// ── COMBOS DE NICK (cor + fundo da mesma família = bônus visual) ──
-const NICK_COMBOS=[
-  {color:'nk_fire',  bg:'nb_flame', cls:'combo-inferno', label:'🔥 INFERNO'},
-  {color:'nk_galaxy',bg:'nb_cyber', cls:'combo-cosmico', label:'🌌 CÓSMICO'},
-  {color:'nk_rainbow',bg:'nb_neon', cls:'combo-prisma',  label:'🌈 PRISMA'},
-  {color:'nk_ice',   bg:'nb_glass', cls:'combo-glacial', label:'❄️ GLACIAL'},
-  {color:'nk_gold',  bg:'nb_neon',  cls:'combo-imperial',label:'👑 IMPERIAL'},
-  {color:'nk_toxic', bg:'nb_cyber', cls:'combo-reator',  label:'☣️ REATOR'},
-];
-function detectarCombo(obj){
-  if(!obj)return null;
-  return NICK_COMBOS.find(c=>obj.wc_eq_nickcolor===c.color&&obj.wc_eq_nickbg===c.bg)||null;
-}
-
-// ── PRÉVIA DE BORDA NO MINI-CARD DO MODAL (hover) ──
-function previewBorda(cls){
-  const el=document.getElementById('border-preview-card');if(!el)return;
-  const a=S.alunos.find(x=>x.id===alunoAtual);
-  const eff=a?WC_ITEMS.find(i=>i.id===eqItem(a,'effect')):null;
-  el.className='hero-card border-preview-card '+(cls||'')+(eff?' '+eff.cls:'');
-}
-function resetBorda(){
-  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
-  const b=WC_ITEMS.find(i=>i.id===eqItem(a,'border'));
-  previewBorda(b?b.cls:'');
+  if(!item.rarity)return'';
+  return ' wc-rarity-'+item.rarity;
 }
 function wcCopiarPrompt(itemId){
   const item=WC_ITEMS.find(i=>i.id===itemId);
@@ -5399,7 +4972,7 @@ function renderWCLoja(a){
   const el=document.getElementById('a-wc-items');if(!el)return;
   const saldo=wcSaldo(a);
   const items=wcFilterAtual==='todos'?WC_ITEMS:WC_ITEMS.filter(i=>i.cat===wcFilterAtual);
-  const catL={border:'🖼️ Borda',effect:'✨ Efeito',banner:'🎖️ Banner',avatar:'👾 Avatar',pet:'🐾 Pet',nickcolor:'🎨 Cor de Nick',nickfx:'💫 Efeito de Nick',nickbg:'🏷️ Fundo de Nick',title:'🏷️ Título',hackpower:'⚡ Hack'};
+  const catL={border:'🖼️ Borda',effect:'✨ Efeito',banner:'🎖️ Banner',avatar:'👾 Avatar',pet:'🐾 Pet',theme:'🎨 Tema',title:'🏷️ Título',hackpower:'⚡ Hack'};
   el.innerHTML=items.map(item=>{
     const owns=temItem(a,item.id);const eq=eqItem(a,item.cat)===item.id;
     const hackKey='hack_uses_'+item.id;
@@ -5435,21 +5008,15 @@ function renderWCLoja(a){
         visualHtml=`<img src="${item.imgUrl}" class="wc-img-banner" alt="${item.name}" onerror="this.style.display='none'">`;
       } else {
         const bg=item.bg||'linear-gradient(135deg,var(--accent),var(--purple))';
-        visualHtml=`<div class="${item.animCls||''}" style="width:100%;height:54px;border-radius:8px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:8px;border:1px solid var(--border);">${item.icon}</div>`;
+        visualHtml=`<div style="width:100%;height:54px;border-radius:8px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:8px;border:1px solid var(--border);">${item.icon}</div>`;
       }
     } else if(item.cat==='avatar'&&hasImg){
       visualHtml=`<img src="${item.imgUrl}" class="wc-img-avatar" alt="${item.name}" onerror="this.style.display='none'">`;
     } else if(item.cat==='border'&&hasImg){
       visualHtml=`<img src="${item.imgUrl}" class="wc-img-border" alt="${item.name}" onerror="this.style.display='none'">`;
-    } else if(item.cat==='border'){
-      const col=item.col||'#00d4ff';
-      visualHtml=`<div style="width:54px;height:54px;border-radius:50%;flex-shrink:0;background:var(--s1);display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 0 0 2px ${col},0 0 16px ${col}99;">${item.icon}</div>`;
-    } else if(item.cat==='nickcolor'){
-      visualHtml=`<div style="flex-shrink:0;min-width:54px;text-align:center;"><span class="nick ${item.cls}" style="font-size:1rem;">Nick</span></div>`;
-    } else if(item.cat==='nickfx'){
-      visualHtml=`<div style="flex-shrink:0;min-width:54px;text-align:center;"><span class="nick ${item.cls}" style="font-size:1rem;color:var(--accent);">Nick</span></div>`;
-    } else if(item.cat==='nickbg'){
-      visualHtml=`<div style="flex-shrink:0;min-width:54px;text-align:center;"><span class="nick-wrap ${item.cls}"><span class="nick" style="font-size:.92rem;color:var(--text);">Nick</span></span></div>`;
+    } else if(item.cat==='theme'&&item.vars){
+      const c1=item.vars['--accent']||'#00d4ff';const c2=item.vars['--purple']||'#7c3aed';const c3=item.vars['--bg']||'#07090f';
+      visualHtml=`<div style="font-size:2rem;flex-shrink:0;">${item.icon}<div class="theme-swatch"><span style="background:${c3};"></span><span style="background:${c1};"></span><span style="background:${c2};"></span></div></div>`;
     } else if(item.cat==='pet'){
       visualHtml=`<div style="font-size:2rem;flex-shrink:0;">${item.petEmoji||item.icon}</div>`;
     } else {
@@ -5524,7 +5091,7 @@ async function wcEquipar(itemId,cat){
   try{
     await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});
     if(cat==='theme')applyTheme(itemId);
-    if(['border','avatar','banner','title','nickcolor','nickfx','nickbg'].includes(cat))
+    if(['border','avatar','banner','title'].includes(cat))
       await COL.perfis().doc(a.id).set({['wc_eq_'+cat]:itemId},{merge:true}).catch(e=>console.error('[WC] espelhar equip no perfil:',e.code||e.message));
     toast('✅ Equipado!');
   }catch(e){console.error('[WC] equipar:',e.code||e.message);toast('❌ Erro ao equipar: '+(e.code||e.message));}
@@ -5533,7 +5100,7 @@ async function wcDesequipar(cat){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
   try{
     await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:null});
-    if(['border','avatar','banner','title','nickcolor','nickfx','nickbg'].includes(cat))
+    if(['border','avatar','banner','title'].includes(cat))
       await COL.perfis().doc(a.id).set({['wc_eq_'+cat]:null},{merge:true}).catch(e=>console.error('[WC] espelhar remoção no perfil:',e.code||e.message));
     if(cat==='theme'){const def=WC_ITEMS.find(i=>i.id==='theme_default');if(def&&def.vars)Object.entries(def.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}
     toast('Removido.');
@@ -5564,16 +5131,8 @@ function abrirCustomPerfil(){
   const borders=WC_ITEMS.filter(i=>i.cat==='border');
   const effects=WC_ITEMS.filter(i=>i.cat==='effect');
   const banners=WC_ITEMS.filter(i=>i.cat==='banner');
-  const nickcolors=WC_ITEMS.filter(i=>i.cat==='nickcolor');
-  const nickfx=WC_ITEMS.filter(i=>i.cat==='nickfx');
-  const nickbgs=WC_ITEMS.filter(i=>i.cat==='nickbg');
   const eqB=eqItem(a,'border');const eqE=eqItem(a,'effect');const eqBan=eqItem(a,'banner');
-  const eqNc=eqItem(a,'nickcolor');const eqNf=eqItem(a,'nickfx');const eqNb=eqItem(a,'nickbg');
-  const curTheme=(a.wc_eq_theme)||localStorage.getItem('wc_theme')||'theme_default';
-  const bCol=(it)=>it&&it.col?it.col:'#00d4ff';
-  const bItemEq=WC_ITEMS.find(i=>i.id===eqB);
-  const avMini=a.profilePhoto?`<img src="${a.profilePhoto}">`:(a.avatar||'👾');
-  const nickOpt=(it,eqId,cat,inner)=>{const owns=temItem(a,it.id);const sel=eqId===it.id?'selected':'';const lock=!owns?'locked-opt':'';return `<div class="custom-opt ${sel} ${lock}" onclick="${owns?`aplicarNick('${it.id}','${cat}',this)`:''}" title="${it.name} · ${RARITY_LBL[itemRarity(it)]}">${rarPip(it)}${inner}${!owns?` 🔒${it.cost}🪙`:''}</div>`;};
+  const bCol=(id)=>id.includes('neon')?'#00d4ff':id.includes('gold')?'#ffd700':id.includes('purple')?'#a855f7':id.includes('rainbow')?'#ff00ff':'#ec4899';
   document.getElementById('modal-custom-content').innerHTML=`
     <div class="custom-section">
       <div class="sec-title">📷 FOTO DE PERFIL</div>
@@ -5593,17 +5152,9 @@ function abrirCustomPerfil(){
     </div>
     <div class="custom-section">
       <div class="sec-title">🖼️ BORDAS DO PERFIL</div>
-      <div id="border-preview-card" class="hero-card border-preview-card ${bItemEq?bItemEq.cls:''}">
-        <div class="bp-av">${avMini}</div>
-        <div style="min-width:0;">
-          <div style="font-size:1.05rem;">${nickHtml(a,escapeHtml(a.nome))}</div>
-          <div style="font-size:.58rem;color:var(--muted2);margin-top:3px;letter-spacing:1px;">PASSE O MOUSE NAS BORDAS PARA TESTAR</div>
-        </div>
-      </div>
-      ${rarLegenda()}
       <div class="custom-options">
-        <div class="border-opt-prev ${!eqB?'selected':''}" onclick="aplicarCustom(null,'border',this)" onmouseenter="previewBorda('')" onmouseleave="resetBorda()" title="Padrão" style="border:3px solid var(--border);">⬜<div style="font-size:.5rem;margin-top:2px;">Padrão</div></div>
-        ${borders.map(b=>{const owns=temItem(a,b.id);const r=itemRarity(b);return`<div class="border-opt-prev ${eqB===b.id?'selected':''} ${!owns?'locked-opt':''}" onclick="${owns?`aplicarCustom('${b.id}','border',this)`:''}" onmouseenter="previewBorda('${b.cls}')" onmouseleave="resetBorda()" title="${b.name} · ${RARITY_LBL[r]}" style="box-shadow:0 0 0 3px ${bCol(b)},0 0 14px ${bCol(b)}88;"><span class="rar-corner" style="background:${RARITY_COR[r]};box-shadow:0 0 5px ${RARITY_COR[r]};"></span>${owns?b.icon:'🔒'}<div style="font-size:.46rem;margin-top:2px;line-height:1;">${b.name}</div></div>`;}).join('')}
+        <div class="border-opt-prev ${!eqB?'selected':''}" onclick="aplicarCustom(null,'border',this)" title="Padrão" style="border:3px solid var(--border);">⬜<div style="font-size:.5rem;margin-top:2px;">Padrão</div></div>
+        ${borders.map(b=>{const owns=temItem(a,b.id);return`<div class="border-opt-prev ${eqB===b.id?'selected':''} ${!owns?'locked-opt':''}" onclick="${owns?`aplicarCustom('${b.id}','border',this)`:''}" title="${b.name}" style="border:3px solid ${bCol(b.id)};">${owns?b.icon:'🔒'}<div style="font-size:.48rem;margin-top:2px;">${b.name.split(' ').pop()}</div></div>`;}).join('')}
       </div>
     </div>
     <div class="custom-section">
@@ -5632,55 +5183,6 @@ function abrirCustomPerfil(){
       <div style="font-size:.68rem;color:var(--muted);margin-bottom:8px;letter-spacing:1px;">OU escolha um banner WarpCoins:</div>
       <div class="custom-options" style="flex-direction:column;gap:8px;">
         ${banners.map(bn=>{const owns=temItem(a,bn.id)||bn.free;return`<div class="banner-opt ${eqBan===bn.id&&!a.profileBanner?'selected':''} ${!owns?'locked-opt':''}" onclick="${owns?`aplicarCustom('${bn.id}','banner',this)`:''}" style="background:${bn.bg};">${owns?bn.icon:'🔒'} ${bn.name}${bn.free?' · GRÁTIS':!owns?` · 🔒${bn.cost}🪙`:''}</div>`;}).join('')}
-      </div>
-      <div style="font-size:.68rem;color:var(--muted);margin:16px 0 8px;letter-spacing:1px;">✨ MOLDURA DO BANNER <span style="font-size:.58rem;color:var(--green);border:1px solid rgba(16,185,129,.4);padding:1px 7px;border-radius:4px;letter-spacing:1px;">GRÁTIS</span></div>
-      <div class="custom-options">
-        ${BANNER_FRAMES.map(fr=>{const sel=((a.wc_banner_frame||'')===fr.id)?'selected':'';return`<div class="custom-opt ${sel}" data-bframe="${fr.id}" onclick="aplicarBannerFrame('${fr.id}',this)">${fr.icon} ${fr.name}</div>`;}).join('')}
-      </div>
-    </div>
-    <div class="custom-section">
-      <div class="sec-title">🏷️ NICK PERSONALIZADO</div>
-      <div style="text-align:center;padding:14px 10px;background:var(--s1);border-radius:10px;border:1px solid var(--border);margin-bottom:14px;">
-        <div style="font-size:.56rem;color:var(--muted);letter-spacing:3px;margin-bottom:8px;">PRÉVIA AO VIVO</div>
-        <div id="nick-live-preview" style="font-size:1.5rem;">${nickHtml(a,escapeHtml(a.nome))}</div>
-        <div id="nick-combo-flag">${(()=>{const c=detectarCombo(a);return c?`<span class="combo-flag">✨ COMBO ${c.label}</span>`:'';})()}</div>
-        <div style="font-size:.56rem;color:var(--muted);margin-top:8px;line-height:1.3;">Combine cores e fundos da mesma família (ex: Fogo + Fundo Chama) para desbloquear um brilho especial!</div>
-      </div>
-      <div style="font-size:.72rem;color:var(--muted2);margin-bottom:7px;font-weight:800;">🔤 Fonte do Nome <span style="font-size:.56rem;color:var(--green);font-weight:600;border:1px solid rgba(16,185,129,.4);padding:1px 6px;border-radius:4px;">GRÁTIS</span></div>
-      <div class="custom-options" style="margin-bottom:14px;">
-        ${NICK_FONTS.map(ft=>{const sel=((a.wc_nick_font||'')===ft.id)?'selected':'';return`<div class="custom-opt ${sel}" data-nfont="${ft.id}" onclick="aplicarFonte('${ft.id}',this)"><span class="${ft.cls}" style="font-size:.95rem;">${ft.name}</span></div>`;}).join('')}
-      </div>
-      <div style="font-size:.72rem;color:var(--muted2);margin-bottom:7px;font-weight:800;">✒️ Estilo <span style="font-size:.56rem;color:var(--green);font-weight:600;border:1px solid rgba(16,185,129,.4);padding:1px 6px;border-radius:4px;">GRÁTIS</span></div>
-      <div class="custom-options" style="margin-bottom:14px;">
-        <div id="nick-italic-opt" class="custom-opt ${a.wc_nick_italic?'selected':''}" onclick="toggleNickStyle('italic',this)"><span style="font-style:italic;">𝘐 Itálico</span></div>
-        <div id="nick-underline-opt" class="custom-opt ${a.wc_nick_underline?'selected':''}" onclick="toggleNickStyle('underline',this)"><span style="text-decoration:underline;text-underline-offset:3px;">U̲ Sublinhado</span></div>
-      </div>
-      <div style="font-size:.72rem;color:var(--muted2);margin-bottom:7px;font-weight:800;">🎨 Cor / Textura</div>
-      <div class="custom-options" style="margin-bottom:14px;">
-        <div class="custom-opt ${!eqNc?'selected':''}" onclick="aplicarNick(null,'nickcolor',this)">Padrão</div>
-        ${nickcolors.map(it=>nickOpt(it,eqNc,'nickcolor',`<span class="nick ${it.cls}">${it.name.replace('Nick ','')}</span>`)).join('')}
-      </div>
-      <div style="font-size:.72rem;color:var(--muted2);margin-bottom:7px;font-weight:800;">💫 Efeito</div>
-      <div class="custom-options" style="margin-bottom:14px;">
-        <div class="custom-opt ${!eqNf?'selected':''}" onclick="aplicarNick(null,'nickfx',this)">Nenhum</div>
-        ${nickfx.map(it=>nickOpt(it,eqNf,'nickfx',`${it.icon} ${it.name.replace('Efeito ','')}`)).join('')}
-      </div>
-      <div style="font-size:.72rem;color:var(--muted2);margin-bottom:7px;font-weight:800;">🏷️ Fundo</div>
-      <div class="custom-options">
-        <div class="custom-opt ${!eqNb?'selected':''}" onclick="aplicarNick(null,'nickbg',this)">Nenhum</div>
-        ${nickbgs.map(it=>nickOpt(it,eqNb,'nickbg',`<span class="nick-wrap ${it.cls}"><span class="nick">${it.name.replace('Fundo ','')}</span></span>`)).join('')}
-      </div>
-    </div>
-    <div class="custom-section">
-      <div class="sec-title">🌌 TEMA DO WARPCODE <span style="font-size:.58rem;color:var(--green);border:1px solid rgba(16,185,129,.4);padding:1px 7px;border-radius:4px;letter-spacing:1px;">GRÁTIS</span></div>
-      <div style="font-size:.72rem;color:var(--muted2);margin-bottom:10px;">Muda o visual da página inteira. Troque quantas vezes quiser!</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;">
-        ${THEMES.map(t=>{const sel=curTheme===t.id?'selected':'';const c1=t.vars['--accent'];const c2=t.vars['--purple'];const c3=t.vars['--bg'];const c4=t.vars['--s2'];const c5=t.vars['--pink']||c1;const c6=t.vars['--gold']||c2;return`<div class="custom-opt ${sel}" data-theme-opt="${t.id}" onclick="escolherTema('${t.id}')" style="flex-direction:column;align-items:stretch;gap:6px;padding:8px;">
-          <div style="display:flex;height:26px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,.1);">
-            <span style="flex:2;background:${c3};"></span><span style="flex:2;background:${c4};"></span><span style="flex:1;background:${c1};"></span><span style="flex:1;background:${c2};"></span><span style="flex:1;background:${c5};"></span><span style="flex:1;background:${c6};"></span>
-          </div>
-          <div style="font-size:.62rem;text-align:center;line-height:1.1;">${t.icon} ${t.name}</div>
-        </div>`;}).join('')}
       </div>
     </div>
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-custom')" style="margin-top:12px;margin-bottom:0;">Fechar</button>`;
@@ -5730,71 +5232,12 @@ async function aplicarCustom(itemId,cat,el){
   const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
   el.closest('.custom-section')?.querySelectorAll('.border-opt-prev,.custom-opt,.banner-opt').forEach(e=>e.classList.remove('selected'));
   el.classList.add('selected');
-  // estado otimista para previews imediatas
-  a['wc_eq_'+cat]=itemId;
-  if(cat==='border'||cat==='effect')resetBorda();
   try{
     await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});
-    if(['border','avatar','banner','title','nickcolor','nickfx','nickbg'].includes(cat))
+    if(['border','avatar','banner','title'].includes(cat))
       await COL.perfis().doc(a.id).set({['wc_eq_'+cat]:itemId},{merge:true}).catch(e=>console.error('[WC] espelhar custom no perfil:',e.code||e.message));
     toast('✅ Aplicado!');
   }catch(e){console.error('[WC] aplicarCustom:',e.code||e.message);toast('❌ Erro ao aplicar: '+(e.code||e.message));}
-}
-async function aplicarNick(itemId,cat,el){
-  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
-  // seleção visual dentro da mesma linha (custom-options)
-  el.closest('.custom-options')?.querySelectorAll('.custom-opt').forEach(e=>e.classList.remove('selected'));
-  el.classList.add('selected');
-  // atualização otimista p/ prévia ao vivo
-  a['wc_eq_'+cat]=itemId;
-  const prev=document.getElementById('nick-live-preview');
-  if(prev)prev.innerHTML=nickHtml(a,escapeHtml(a.nome));
-  const flag=document.getElementById('nick-combo-flag');
-  if(flag){const c=detectarCombo(a);flag.innerHTML=c?`<span class="combo-flag">✨ COMBO ${c.label}</span>`:'';}
-  try{
-    await COL.alunos().doc(a.id).update({['wc_eq_'+cat]:itemId});
-    await COL.perfis().doc(a.id).set({['wc_eq_'+cat]:itemId},{merge:true}).catch(e=>console.error('[nick] espelhar perfil:',e.code||e.message));
-  }catch(e){console.error('[nick] aplicar:',e.code||e.message);toast('❌ Erro ao aplicar nick: '+(e.code||e.message));}
-}
-// Atualiza a prévia ao vivo do nick no modal de customização
-function atualizarPreviaNick(a){
-  const prev=document.getElementById('nick-live-preview');
-  if(prev)prev.innerHTML=nickHtml(a,escapeHtml(a.nome));
-}
-// ── MOLDURA DE BANNER (grátis) ──
-async function aplicarBannerFrame(frameId,el){
-  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
-  if(el){el.closest('.custom-options')?.querySelectorAll('.custom-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');}
-  a.wc_banner_frame=frameId||null;
-  try{ renderAluno(); }catch(e){}
-  try{
-    await COL.alunos().doc(a.id).update({wc_banner_frame:frameId||null});
-    await COL.perfis().doc(a.id).set({wc_banner_frame:frameId||null},{merge:true}).catch(()=>{});
-  }catch(e){console.error('[frame] aplicar:',e.code||e.message);toast('❌ Erro ao aplicar moldura.');}
-}
-// ── FONTE DO NICK (grátis) ──
-async function aplicarFonte(fontId,el){
-  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
-  if(el){el.closest('.custom-options')?.querySelectorAll('.custom-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');}
-  a.wc_nick_font=fontId||null;
-  atualizarPreviaNick(a);
-  try{
-    await COL.alunos().doc(a.id).update({wc_nick_font:fontId||null});
-    await COL.perfis().doc(a.id).set({wc_nick_font:fontId||null},{merge:true}).catch(()=>{});
-  }catch(e){console.error('[fonte] aplicar:',e.code||e.message);toast('❌ Erro ao aplicar fonte.');}
-}
-// ── ITÁLICO / SUBLINHADO (grátis) ──
-async function toggleNickStyle(tipo,el){
-  const a=S.alunos.find(x=>x.id===alunoAtual);if(!a)return;
-  const campo=tipo==='italic'?'wc_nick_italic':'wc_nick_underline';
-  const novo=!a[campo];
-  a[campo]=novo;
-  if(el)el.classList.toggle('selected',novo);
-  atualizarPreviaNick(a);
-  try{
-    await COL.alunos().doc(a.id).update({[campo]:novo});
-    await COL.perfis().doc(a.id).set({[campo]:novo},{merge:true}).catch(()=>{});
-  }catch(e){console.error('[estilo] aplicar:',e.code||e.message);toast('❌ Erro ao aplicar estilo.');}
 }
 
 // ── LOOT BOX ──
@@ -5984,11 +5427,7 @@ function closeLevelUp(){document.getElementById('levelup-overlay').classList.rem
 // ══════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════
-function restaurarMeuTema(){
-  const t=window._temaViewer||(S.alunos.find(x=>x.id===alunoAtual)||{}).wc_eq_theme||localStorage.getItem('wc_theme')||'theme_default';
-  applyTheme(t);window._temaViewer=null;
-}
-function closeModal(id){document.getElementById(id).classList.remove('active');if(id==='modal-perfil-aluno')restaurarMeuTema();}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
 async function gerarPin(){
   const novo=String(Math.floor(1000+Math.random()*9000));
   try { await COL.config().update({pin:novo}); toast(`🔑 Novo PIN: ${novo}`); } catch(e){ toast('❌ Erro!'); }
@@ -5996,7 +5435,7 @@ async function gerarPin(){
 function copiarLink(){navigator.clipboard?.writeText(window.location.href).then(()=>toast('📋 Link copiado!')).catch(()=>toast('📋 Copie o link da barra do navegador!'));}
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);}
 
-document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);}));
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('active');}));
 
 
 // ══════════════════════════════════════
@@ -6574,33 +6013,25 @@ async function abrirPerfilAluno(alunoId){
     reacoes = data.reacoesPerfil || {};
     Object.entries(reacoes).forEach(([emoji, ids])=>{ if((ids||[]).includes(alunoAtual)) minhaReacao=emoji; });
   }catch(e){}
-  // ── Tema do aluno visualizado (restaura o seu ao fechar) ──
-  const meuTema=(S.alunos.find(x=>x.id===alunoAtual)||{}).wc_eq_theme||localStorage.getItem('wc_theme')||'theme_default';
-  window._temaViewer=meuTema;
-  applyTheme(al.wc_eq_theme||'theme_default');
-  // ── Cosméticos equipados (espelha o hero card do aluno) ──
-  const pat = patente(al.xp||0);
-  const lvl = nivel(al.xp||0);
-  const bItem = al.wc_eq_border ? WC_ITEMS.find(i=>i.id===al.wc_eq_border) : null;
-  const eItem = al.wc_eq_effect ? WC_ITEMS.find(i=>i.id===al.wc_eq_effect) : null;
-  const banItem = WC_ITEMS.find(i=>i.id===al.wc_eq_banner) || WC_ITEMS.find(i=>i.id==='banner_default');
-  const titleItem = al.wc_eq_title ? WC_ITEMS.find(i=>i.id===al.wc_eq_title) : null;
-  const displayTitle = titleItem
-    ? `<span class="${titleItem.titleCls} patente">${titleItem.titleTxt}</span>`
-    : `<span class="${pat.cls} patente">${pat.nome}</span>`;
+  const pat = nivel(al.xp||0);
+  // Borda equipada pelo aluno
+  const eqBordaId = al.wc_eq_border || null;
+  const bordaItem = eqBordaId ? WC_ITEMS.find(i=>i.id===eqBordaId) : null;
+  const bordaCSS = bordaItem ? (() => {
+    if(bordaItem.cls==='b-neon') return 'box-shadow:0 0 0 3px var(--accent),0 0 18px rgba(0,212,255,.7);';
+    if(bordaItem.cls==='b-gold') return 'box-shadow:0 0 0 3px var(--gold),0 0 18px rgba(255,215,0,.7);';
+    if(bordaItem.cls==='b-purple') return 'box-shadow:0 0 0 3px #a855f7,0 0 18px rgba(168,85,247,.7);';
+    if(bordaItem.cls==='b-cosmic') return 'box-shadow:0 0 0 3px var(--pink),0 0 18px rgba(236,72,153,.7);';
+    return 'box-shadow:0 0 0 3px var(--accent),0 0 18px rgba(0,212,255,.5);';
+  })() : 'border:3px solid rgba(255,255,255,.15);';
   const fotoHtml = al.profilePhoto
     ? `<img src="${al.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-    : `<span style="font-size:2.4rem;">${al.avatar||'👾'}</span>`;
-  const usandoImg = (al.profileBanner&&al.profileBanner.trim().length>0)||(banItem?.imgUrl&&banItem.imgUrl.trim().length>0);
-  const bannerBg = al.profileBanner&&al.profileBanner.trim().length>0
-    ? `url('${al.profileBanner}') center/cover no-repeat`
-    : banItem?.imgUrl&&banItem.imgUrl.trim().length>0
-    ? `url('${banItem.imgUrl}') center/cover no-repeat`
-    : banItem?.bg || 'linear-gradient(135deg,rgba(124,58,237,.2),rgba(0,212,255,.15))';
-  const banAnim = (!usandoImg&&banItem?.animCls) ? banItem.animCls : '';
-  const heroCls = `hero-card${bItem?' '+bItem.cls:''}${eItem?' '+eItem.cls:''}`;
+    : `<span style="font-size:2.8rem;">${al.avatar||'👾'}</span>`;
+  const bannerStyle = al.profileBanner
+    ? `url('${al.profileBanner}') center/cover`
+    : 'linear-gradient(135deg,rgba(124,58,237,.2),rgba(0,212,255,.15))';
   const pos = [...S.perfis].sort((a,b)=>(b.xp||0)-(a.xp||0)).findIndex(x=>x.id===alunoId)+1;
-  // Conquistas
+  // Conquistas — corrigido: usar b.nome (não b.name)
   const badges = CONQ.filter(b=>b.check(al));
   const badgesHtml = badges.length
     ? badges.slice(0,6).map(b=>`<div class="badge-item" title="${b.req||''}"><div class="badge-icon">${b.icon}</div><div class="badge-name">${b.nome||''}</div></div>`).join('')
@@ -6613,21 +6044,15 @@ async function abrirPerfilAluno(alunoId){
     return `<button class="reaction-btn ${ativo?'active':''}" onclick="reagirPerfil('${alunoId}','${emoji}')" title="${qtd} reação${qtd!==1?'ões':''}" style="font-size:1rem;padding:5px 10px;gap:4px;">${emoji}${qtd>0?` <span style="font-size:.68rem;font-weight:800;">${qtd}</span>`:''}</button>`;
   }).join('');
   cont.innerHTML=`
-    <div class="${heroCls}" style="margin:-26px -26px 18px;border-radius:var(--radius);overflow:hidden;min-height:auto;padding:0;background:var(--s1);">
-      <div style="position:relative;height:96px;">
-        <div class="${banAnim}" style="position:absolute;inset:0;background:${bannerBg};background-size:cover;background-position:center;"></div>
-        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.35) 70%,var(--s1) 100%);"></div>
-        ${bannerFrameCls(al)?`<div class="banner-frame ${bannerFrameCls(al)}"></div>`:''}
-      </div>
-      <div style="padding:0 16px 16px;position:relative;">
-        <div style="width:78px;height:78px;border-radius:50%;background:var(--s2);border:3px solid var(--s1);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,.6);margin-top:-40px;">${fotoHtml}</div>
-        <div style="font-size:1.25rem;font-weight:900;line-height:1.2;margin-top:10px;word-break:break-word;">${nickHtml(al,escapeHtml(al.nome))}</div>
-        <div style="margin-top:6px;">${displayTitle}</div>
-        <div style="font-size:.68rem;color:var(--muted2);margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
-          <span>${escapeHtml(al.turma||'')} · #${pos} no ranking</span>
-          <span style="color:var(--muted);">·</span>
-          <span>${lvl.e} ${lvl.n}</span>
-          ${bItem?`<span style="font-size:.58rem;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);color:var(--accent);padding:2px 7px;border-radius:4px;">${bItem.icon} ${bItem.name}</span>`:''}
+    <div style="margin:-26px -26px 0;height:110px;background:${bannerStyle};background-size:cover;background-position:center;border-radius:var(--radius) var(--radius) 0 0;"></div>
+    <div style="display:flex;align-items:flex-end;gap:14px;margin-top:-44px;margin-bottom:14px;padding:0 2px;">
+      <div style="width:82px;height:82px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;${bordaCSS}">${fotoHtml}</div>
+      <div style="flex:1;min-width:0;padding-bottom:6px;">
+        <div style="font-size:1.05rem;font-weight:900;line-height:1.2;">${al.nome}</div>
+        <div style="font-size:.68rem;color:var(--muted2);margin-top:2px;">${al.turma} · #${pos} no ranking</div>
+        <div style="margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:.7rem;color:var(--muted2);">${pat.nome}</span>
+          ${bordaItem?`<span style="font-size:.58rem;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);color:var(--accent);padding:2px 7px;border-radius:4px;">${bordaItem.icon} ${bordaItem.name}</span>`:''}
         </div>
       </div>
     </div>
@@ -7396,7 +6821,7 @@ function listenPresence(){
     const el = document.getElementById('online-list');
     const cnt = document.getElementById('online-count');
     if(!el) return;
-    if(cnt) cnt.textContent = online.length?`(${online.length})`:'';
+    if(cnt) cnt.textContent = `🟢 ${online.length} online`;
     el.innerHTML = online.map(p=>{
       const av = p.foto && (p.foto.startsWith('data:image/') || sanitizeUrl(p.foto))
         ? `<img src="${escapeHtml(p.foto)}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;">`
@@ -7424,13 +6849,9 @@ function renderChatMsgs(msgs){
       : `<div class="chat-bubble"${isProf&&!own?' style="border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.07);"':''}>${escapeHtml(m.texto||'')}</div>`;
     const clickAttr = !own && safeAutorId && !isProf ? `data-aluno-id="${safeAutorId}"` : '';
     const clickStyle = !own && !isProf ? 'cursor:pointer;' : '';
-    const meObj=S.alunos.find(x=>x.id===alunoAtual);
-    const authorObj=S.alunos.find(x=>x.id===m.autorId)||(S.perfis&&S.perfis.find(x=>x.id===m.autorId));
     const authorLabel = isProf
       ? `<span style="color:var(--accent);font-weight:700;">Professor</span> · ${time}`
-      : own
-      ? `${meObj?nickHtml(meObj,'Você'):'Você'} · ${time}`
-      : `${authorObj?nickHtml(authorObj,safeAutorNome):safeAutorNome} · ${time}`;
+      : `${own?'Você':safeAutorNome} · ${time}`;
     return `<div class="chat-msg ${own?'own':''}">
       <div ${clickAttr} class="${!own&&!isProf?'chat-avatar-click':''}" style="${clickStyle}">${avatarHtml}</div>
       <div class="chat-content">
