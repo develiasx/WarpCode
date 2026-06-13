@@ -2524,19 +2524,32 @@ function auraCls(obj){
   return p ? (' champ-aura champ-aura-'+p) : '';
 }
 // ── Helpers globais para o Hall da Fama ──
+// Mescla dados de S.alunos (XP, cosméticos) + S.perfis (foto, banner de perfil)
+function mergeAluno(id){
+  const base=S.alunos.find(x=>x.id===id)||{};
+  const perf=S.perfis.find(x=>x.id===id)||{};
+  if(!base.id&&!perf.id) return null;
+  // perfis tem foto/banner; alunos tem wc_eq_* e XP — alunos prevalece em conflito
+  return {id, ...perf, ...base};
+}
 function hallAvatarHtml(al){
   if(!al) return '<span>👾</span>';
+  const perfil=S.perfis.find(x=>x.id===al.id)||{};
   const eqAv=al.wc_eq_avatar?WC_ITEMS.find(i=>i.id===al.wc_eq_avatar):null;
-  const photo=al.photo&&al.photo.trim().length>0&&sanitizeUrl(al.photo)?al.photo:null;
-  const aiUrl=al.aiUrl&&al.aiUrl.trim().length>0&&sanitizeUrl(al.aiUrl)?al.aiUrl:null;
+  // campo pode ser 'photo' ou 'profilePhoto' dependendo da coleção
+  const photo=((al.profilePhoto||al.photo||perfil.profilePhoto||perfil.photo)||'').trim();
+  const aiUrl=((al.aiUrl||perfil.aiUrl)||'').trim();
+  // aceita base64 (data:image/) OU URLs http/https
+  const isSafe=u=>u&&(u.startsWith('data:image/')||!!sanitizeUrl(u));
   if(eqAv?.imgUrl&&eqAv.imgUrl.trim().length>0) return `<img src="${escapeHtml(eqAv.imgUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-  if(photo) return `<img src="${escapeHtml(photo)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-  if(aiUrl) return `<img src="${escapeHtml(aiUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  if(isSafe(photo)) return `<img src="${escapeHtml(photo)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  if(isSafe(aiUrl)) return `<img src="${escapeHtml(aiUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
   return `<span>${escapeHtml(al.avatar||'👾')}</span>`;
 }
 function hallTitleHtml(al){
   if(!al) return '';
-  const eqTitle=al.wc_eq_title;
+  const perfil=S.perfis.find(x=>x.id===al.id)||{};
+  const eqTitle=al.wc_eq_title||perfil.wc_eq_title;
   const titleItem=eqTitle?WC_ITEMS.find(i=>i.id===eqTitle):null;
   if(titleItem) return `<span class="${titleItem.titleCls} patente" style="margin-top:4px;">${escapeHtml(titleItem.titleTxt)}</span>`;
   const pat=patente(al.xp||0);
@@ -2544,9 +2557,11 @@ function hallTitleHtml(al){
 }
 function hallBannerBg(al){
   if(!al) return null;
-  const eqB=eqItem(al,'banner');
+  const perfil=S.perfis.find(x=>x.id===al.id)||{};
+  const profileBanner=al.profileBanner||perfil.profileBanner||'';
+  const eqB=eqItem(al,'banner')||eqItem(perfil,'banner');
   const bIt=WC_ITEMS.find(i=>i.id===eqB)||WC_ITEMS.find(i=>i.id==='banner_default');
-  if(al.profileBanner&&al.profileBanner.trim().length>0) return {bg:`url('${escapeHtml(al.profileBanner)}') center/cover no-repeat`,cls:''};
+  if(profileBanner.trim().length>0) return {bg:`url('${escapeHtml(profileBanner)}') center/cover no-repeat`,cls:''};
   if(bIt?.imgUrl&&bIt.imgUrl.trim().length>0) return {bg:`url('${escapeHtml(bIt.imgUrl)}') center/cover no-repeat`,cls:''};
   return {bg:bIt?.bg||'linear-gradient(135deg,#0a1330,#1a1147)',cls:bIt?.animCls||''};
 }
@@ -2562,7 +2577,7 @@ function renderHallFama(){
   const clsDe={1:'p1',2:'p2',3:'p3'};
   const hallCardDe=t=>{
     const pos=t.pos;
-    const alData=S.alunos.find(x=>x.id===t.id)||S.perfis.find(x=>x.id===t.id);
+    const alData=mergeAluno(t.id);
     const bannerInfo=alData?hallBannerBg(alData):{bg:bannerGrad[pos]||bannerGrad[3],cls:''};
     const avHtml=hallAvatarHtml(alData);
     const auraCl=alData?auraCls(alData):'';
@@ -2672,7 +2687,7 @@ function renderProfHallFama(){
   const clsDe={1:'p1',2:'p2',3:'p3'};
   const hallCardDe=t=>{
     const pos=t.pos;
-    const alData=S.alunos.find(x=>x.id===t.id)||S.perfis.find(x=>x.id===t.id);
+    const alData=mergeAluno(t.id);
     const bannerInfo=alData?hallBannerBg(alData):{bg:bannerGrad[pos]||bannerGrad[3],cls:''};
     const avHtml=hallAvatarHtml(alData);
     const auraCl=alData?auraCls(alData):'';
@@ -5537,11 +5552,11 @@ function initProfChat(){
   if(gp) gp.style.display='none';
   _profChatEmojiBuilt=false;
   if(_profChatListener) _profChatListener();
-  const cutoff6h=Date.now()-6*60*60*1000;
-  _profChatListener=COL.chat().limit(100).onSnapshot(snap=>{
-    const msgs=snap.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.ts>cutoff6h).sort((a,b)=>a.ts-b.ts).slice(-60);
+  const cutoff24h=Date.now()-24*60*60*1000;
+  _profChatListener=COL.chat().limit(200).onSnapshot(snap=>{
+    const msgs=snap.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.ts>cutoff24h).sort((a,b)=>a.ts-b.ts).slice(-120);
     renderProfChatMsgs(msgs);
-    snap.docs.forEach(d=>{ if(d.data().ts<cutoff6h) d.ref.delete().catch(()=>{}); });
+    snap.docs.forEach(d=>{ if(d.data().ts<cutoff24h) d.ref.delete().catch(()=>{}); });
   });
   if(_profPresListener) _profPresListener();
   _profPresListener=COL.presence().onSnapshot(snap=>{
@@ -8197,13 +8212,13 @@ function initChat(){
   if(presenceInterval) clearInterval(presenceInterval);
   presenceInterval = setInterval(()=>updatePresence(a), 30000);
   if(chatListener) chatListener();
-  const cutoff6h = Date.now() - 6*60*60*1000;
-  chatListener = COL.chat().limit(100).onSnapshot(snap=>{
+  const cutoff24h = Date.now() - 24*60*60*1000;
+  chatListener = COL.chat().limit(200).onSnapshot(snap=>{
     const msgs = snap.docs.map(d=>({id:d.id,...d.data()}))
-      .filter(m=>m.ts > cutoff6h)
-      .sort((a,b)=>a.ts-b.ts).slice(-60);
+      .filter(m=>m.ts > cutoff24h)
+      .sort((a,b)=>a.ts-b.ts).slice(-120);
     renderChatMsgs(msgs);
-    snap.docs.forEach(d=>{ if(d.data().ts < cutoff6h) d.ref.delete().catch(()=>{}); });
+    snap.docs.forEach(d=>{ if(d.data().ts < cutoff24h) d.ref.delete().catch(()=>{}); });
   });
   listenPresence();
 }
