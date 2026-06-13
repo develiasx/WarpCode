@@ -354,6 +354,114 @@ select option{background:var(--s1);}
 .rnum{font-family:'Orbitron',monospace;font-size:1.05rem;font-weight:900;width:32px;text-align:center;flex-shrink:0;}
 .r1{color:var(--gold);}.r2{color:#c0c0c0;}.r3{color:#cd7f32;}.rx{color:var(--muted);}
 
+/* ── PÓDIO (TOP 3) ── */
+/* ══ PÓDIO — GALACTIC PORTALS ══ */
+.podium-wrap{display:grid;grid-template-columns:1fr 1.28fr 1fr;gap:10px;align-items:end;margin-bottom:22px;}
+.podium-card{position:relative;background:var(--s1);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .22s,box-shadow .22s;display:flex;flex-direction:column;}
+.podium-card:hover{transform:translateY(-5px);}
+.podium-card.p1{border:1px solid rgba(255,215,0,.55);box-shadow:0 0 28px rgba(255,215,0,.14),0 0 0 1px rgba(255,215,0,.2);transform:translateY(-8px);}
+.podium-card.p1:hover{transform:translateY(-14px);}
+.podium-card.p2{border:1px solid rgba(192,192,192,.45);box-shadow:0 4px 20px rgba(192,192,192,.08);}
+.podium-card.p3{border:1px solid rgba(205,127,50,.45);box-shadow:0 4px 20px rgba(205,127,50,.08);}
+/* Banner */
+.podium-banner{position:relative;height:68px;overflow:hidden;flex-shrink:0;}
+.podium-card.p1 .podium-banner{height:80px;}
+.podium-banner-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
+.podium-banner-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,22,35,.95) 0%,rgba(15,22,35,.2) 70%,transparent 100%);}
+.podium-pos-badge{position:absolute;top:8px;left:8px;font-size:.56rem;letter-spacing:.5px;font-weight:700;padding:3px 9px;border-radius:20px;font-family:'Orbitron',monospace;z-index:2;}
+.podium-card.p1 .podium-pos-badge{background:rgba(255,215,0,.2);color:#ffd700;border:1px solid rgba(255,215,0,.35);}
+.podium-card.p2 .podium-pos-badge{background:rgba(192,192,192,.15);color:#c0c0c0;border:1px solid rgba(192,192,192,.3);}
+.podium-card.p3 .podium-pos-badge{background:rgba(205,127,50,.15);color:#cd7f32;border:1px solid rgba(205,127,50,.3);}
+/* Avatar sobrepondo banner */
+.podium-av-wrap{display:flex;justify-content:center;margin-top:-28px;position:relative;z-index:3;flex-shrink:0;}
+.podium-card.p1 .podium-av-wrap{margin-top:-34px;}
+.podium-crown{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:1.6rem;filter:drop-shadow(0 2px 8px rgba(255,215,0,.9));animation:crownFloat 2.6s ease-in-out infinite;pointer-events:none;}
+@keyframes crownFloat{0%,100%{transform:translateX(-50%) translateY(0) rotate(-5deg);}50%{transform:translateX(-50%) translateY(-5px) rotate(5deg);}}
+.podium-av{width:56px;height:56px;border-radius:50%;border:3px solid var(--bg);background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;overflow:hidden;flex-shrink:0;}
+.podium-card.p1 .podium-av{width:70px;height:70px;border-color:var(--bg);box-shadow:0 0 18px rgba(255,215,0,.45);font-size:2.2rem;}
+.podium-card.p2 .podium-av{box-shadow:0 0 10px rgba(192,192,192,.2);}
+.podium-card.p3 .podium-av{box-shadow:0 0 10px rgba(205,127,50,.18);}
+.podium-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+/* Info */
+.podium-info{text-align:center;padding:8px 8px 12px;flex:1;display:flex;flex-direction:column;align-items:center;}
+.podium-name{font-weight:800;font-size:.78rem;line-height:1.25;margin-bottom:2px;overflow-wrap:anywhere;color:var(--text);}
+.podium-card.p1 .podium-name{font-size:.9rem;color:var(--gold);}
+.podium-lvl{font-size:.56rem;color:var(--muted2);margin-bottom:7px;line-height:1.2;}
+.podium-xp{font-family:'Orbitron',monospace;font-weight:900;color:var(--gold);font-size:.88rem;}
+.podium-card.p1 .podium-xp{font-size:1.05rem;text-shadow:0 0 14px rgba(255,215,0,.45);}
+.podium-card.p2 .podium-xp{color:#c0c0c0;}
+.podium-card.p3 .podium-xp{color:#cd7f32;}
+.podium-rankn{font-family:'Orbitron',monospace;font-size:.48rem;letter-spacing:2px;color:var(--muted);margin-top:5px;text-transform:uppercase;}
+.podium-me-tag{margin-top:6px;font-size:.48rem;font-family:'Orbitron',monospace;letter-spacing:1px;background:rgba(0,212,255,.18);color:var(--accent);padding:2px 8px;border-radius:6px;font-weight:900;}
+@media(max-width:560px){
+  .podium-wrap{gap:6px;}
+  .podium-banner{height:54px;}
+  .podium-card.p1 .podium-banner{height:64px;}
+  .podium-av{width:46px;height:46px;font-size:1.4rem;}
+  .podium-card.p1 .podium-av{width:58px;height:58px;font-size:1.8rem;}
+  .podium-av-wrap{margin-top:-22px;}
+  .podium-card.p1 .podium-av-wrap{margin-top:-28px;}
+  .podium-name{font-size:.68rem;}
+  .podium-card.p1 .podium-name{font-size:.78rem;}
+  .podium-xp{font-size:.76rem;}
+  .podium-card.p1 .podium-xp{font-size:.9rem;}
+  .podium-crown{font-size:1.3rem;top:-16px;}
+}
+
+/* ── MEDALHAS DE TEMPORADA ── */
+.medalhas-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+.medalha-chip{display:flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:5px 12px 5px 8px;font-size:.72rem;font-weight:700;}
+.medalha-chip.m1{border-color:rgba(255,215,0,.5);background:linear-gradient(135deg,rgba(255,215,0,.12),var(--s2));}
+.medalha-chip.m2{border-color:rgba(192,192,192,.45);}
+.medalha-chip.m3{border-color:rgba(205,127,50,.45);}
+.medalha-chip .mch-ic{font-size:1.05rem;}
+.medalha-chip .mch-sub{font-size:.58rem;color:var(--muted);font-weight:600;}
+
+/* ── COROA AO LADO DO NOME (campeões) ── */
+.champ-crown{display:inline-block;margin-right:3px;font-size:.9em;line-height:1;vertical-align:baseline;animation:champPulse 2.2s ease-in-out infinite;}
+.champ-crown-1{filter:drop-shadow(0 0 4px rgba(255,215,0,.85));}
+.champ-crown-2{filter:drop-shadow(0 0 3px rgba(192,192,192,.8));}
+.champ-crown-3{filter:drop-shadow(0 0 3px rgba(205,127,50,.8));}
+@keyframes champPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}
+
+/* ── AURA NO AVATAR (campeões) ── */
+.champ-aura{}
+.champ-aura-1{box-shadow:0 0 0 2px #ffd700,0 0 12px 2px rgba(255,215,0,.65);animation:auraGlow1 1.8s ease-in-out infinite;border-color:#ffd700 !important;}
+.champ-aura-2{box-shadow:0 0 0 2px #c0c0c0,0 0 10px 1px rgba(192,192,192,.55);animation:auraGlow2 2s ease-in-out infinite;border-color:#c0c0c0 !important;}
+.champ-aura-3{box-shadow:0 0 0 2px #cd7f32,0 0 10px 1px rgba(205,127,50,.55);animation:auraGlow3 2.2s ease-in-out infinite;border-color:#cd7f32 !important;}
+@keyframes auraGlow1{0%,100%{box-shadow:0 0 0 2px #ffd700,0 0 9px 1px rgba(255,215,0,.45);}50%{box-shadow:0 0 0 2px #fff3b0,0 0 16px 3px rgba(255,215,0,.8);}}
+@keyframes auraGlow2{0%,100%{box-shadow:0 0 0 2px #c0c0c0,0 0 7px 1px rgba(192,192,192,.4);}50%{box-shadow:0 0 0 2px #fff,0 0 13px 2px rgba(192,192,192,.7);}}
+@keyframes auraGlow3{0%,100%{box-shadow:0 0 0 2px #cd7f32,0 0 7px 1px rgba(205,127,50,.4);}50%{box-shadow:0 0 0 2px #e8a868,0 0 13px 2px rgba(205,127,50,.7);}}
+
+/* ── HALL DA FAMA ── */
+/* ══ HALL DA FAMA — GALACTIC ══ */
+.hall-season{background:var(--s1);border:1px solid var(--border);border-radius:16px;margin-bottom:18px;overflow:hidden;}
+.hall-season-header{background:linear-gradient(135deg,rgba(0,212,255,.07),rgba(124,58,237,.07));border-bottom:1px solid rgba(0,212,255,.15);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
+.hall-season-name{font-family:'Orbitron',monospace;font-size:.68rem;letter-spacing:2px;color:var(--accent);font-weight:700;}
+.hall-season-name .hsn-date{font-size:.58rem;color:var(--muted);font-family:'Chakra Petch',sans-serif;letter-spacing:0;font-weight:400;}
+/* Pódio do Hall reutiliza .podium-* do ranking */
+.hall-podium-wrap{display:grid;grid-template-columns:1fr 1.28fr 1fr;gap:8px;padding:14px;align-items:end;}
+@media(max-width:480px){.hall-podium-wrap{gap:5px;padding:10px;}}
+
+/* ── TÍTULOS CAMPEÃO (exclusivos) ── */
+.p-campeao{background:linear-gradient(135deg,rgba(255,215,0,.22),rgba(255,160,0,.18));color:#ffd700;border:1px solid rgba(255,215,0,.4);text-shadow:0 0 8px rgba(255,215,0,.5);}
+.p-vice{background:linear-gradient(135deg,rgba(203,213,225,.2),rgba(148,163,184,.15));color:#e2e8f0;border:1px solid rgba(203,213,225,.35);}
+.p-bronze{background:linear-gradient(135deg,rgba(205,127,50,.22),rgba(180,100,40,.15));color:#e8a868;border:1px solid rgba(205,127,50,.4);}
+
+/* ── MISSÃO BLOQUEADA (progressão) ── */
+.mission-card.mlocked{opacity:.85;border-style:dashed;border-color:rgba(124,58,237,.35);}
+.mission-lock-banner{display:flex;align-items:center;gap:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);border-radius:var(--radius-sm);padding:9px 12px;margin-top:10px;font-size:.74rem;color:#c4b5fd;font-weight:700;}
+.mission-lock-banner .mlb-ic{font-size:1.1rem;}
+.prog-track{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.prog-pill{flex:1;min-width:130px;background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:11px 13px;position:relative;overflow:hidden;}
+.prog-pill.done{border-color:rgba(16,185,129,.45);}
+.prog-pill.locked{opacity:.6;}
+.prog-pill-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.prog-pill-lbl{font-family:'Orbitron',monospace;font-size:.62rem;letter-spacing:1px;font-weight:700;}
+.prog-pill-bar{height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.prog-pill-fill{height:100%;border-radius:3px;transition:width .6s;}
+.prog-pill-status{font-size:.6rem;color:var(--muted2);margin-top:6px;}
+
 /* ── BADGES ── */
 .badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px;}
 .badge-item{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:13px 7px;text-align:center;transition:all .2s;cursor:default;}
@@ -751,8 +859,104 @@ select option{background:var(--s1);}
 .nf-shine{position:relative;}
 .nf-shine::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 42%,rgba(255,255,255,.75) 50%,transparent 58%);background-size:260% 100%;animation:nkShine 2.6s linear infinite;pointer-events:none;}
 @keyframes nkShine{0%{background-position:200% 0}100%{background-position:-120% 0}}
-/* — FONTES DE NICK (grátis) — */
-.nfont-orbitron{font-family:'Orbitron',sans-serif;}
+/* ══ COSMÉTICOS SUPREMOS v4 ══ */
+/* — BORDAS SUPREMAS — */
+/* Void Rift: conic preto/roxo com racha dimensional */
+.hero-card.b-void{animation:brdVoid 3s ease-in-out infinite;}
+@keyframes brdVoid{0%,100%{box-shadow:0 0 0 2px #3b0a55,0 0 28px rgba(59,10,85,.9),0 0 60px rgba(124,58,237,.5)}50%{box-shadow:0 0 0 3px #7c3aed,0 0 40px rgba(124,58,237,1),0 0 80px rgba(59,10,85,.7)}}
+/* Supernova: explosão solar */
+.hero-card.b-supernova{animation:brdSupernova 1.8s ease-in-out infinite;}
+@keyframes brdSupernova{0%{box-shadow:0 0 0 2px #ff7a00,0 0 20px rgba(255,122,0,.8),0 0 48px rgba(255,45,45,.5)}33%{box-shadow:0 0 0 3px #ffd700,0 0 36px rgba(255,215,0,1),0 0 72px rgba(255,122,0,.7)}66%{box-shadow:0 0 0 2px #ff2d55,0 0 28px rgba(255,45,85,.9),0 0 60px rgba(255,215,0,.5)}100%{box-shadow:0 0 0 2px #ff7a00,0 0 20px rgba(255,122,0,.8),0 0 48px rgba(255,45,45,.5)}}
+/* Dragon: anel tricolor girando estilo dragão */
+.hero-card.b-dragon{position:relative;}
+.hero-card.b-dragon::after{content:'';position:absolute;inset:-3px;border-radius:inherit;padding:3px;background:conic-gradient(from 0deg,#ff2d00,#ffd700,#ff7a00,#ff0050,#ff2d00);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:brdSpin 3s linear infinite;z-index:3;pointer-events:none;filter:drop-shadow(0 0 12px rgba(255,90,0,.8));}
+/* Quantum: glitch multi-dimensão */
+.hero-card.b-quantum{animation:brdQuantum .8s steps(1) infinite;}
+@keyframes brdQuantum{0%{box-shadow:0 0 0 2px #00d4ff,4px 0 0 #ff0050,-4px 0 0 #00ffe0,0 0 32px rgba(0,212,255,.7)}20%{box-shadow:0 0 0 2px #ff00e6,-4px 0 0 #ffd700,4px 0 0 #00d4ff,0 0 32px rgba(255,0,230,.7)}40%{box-shadow:0 0 0 3px #ffd700,3px 0 0 #ff00e6,-3px 0 0 #10ffa0,0 0 40px rgba(255,215,0,.8)}60%{box-shadow:0 0 0 2px #10ffa0,-2px 0 0 #ff2d55,2px 0 0 #a855f7,0 0 28px rgba(16,255,160,.7)}80%{box-shadow:0 0 0 2px #a855f7,3px 0 0 #00d4ff,-3px 0 0 #ff0050,0 0 36px rgba(168,85,247,.8)}}
+/* Divine: anel divino branco-dourado duplo */
+.hero-card.b-divine{animation:brdDivine 2.5s ease-in-out infinite;}
+@keyframes brdDivine{0%,100%{box-shadow:0 0 0 2px #fff8d0,0 0 0 5px rgba(255,215,0,.6),0 0 36px rgba(255,240,180,1),0 0 72px rgba(255,215,0,.5)}50%{box-shadow:0 0 0 3px #ffffff,0 0 0 6px rgba(255,240,180,.8),0 0 56px rgba(255,255,255,.9),0 0 100px rgba(255,215,0,.6)}}
+/* Shadow: sombra oscura com pulso roxo */
+.hero-card.b-shadow{animation:brdShadow 2.8s ease-in-out infinite;}
+@keyframes brdShadow{0%,100%{box-shadow:0 0 0 2px #2d0060,0 0 22px rgba(45,0,96,.9),0 0 50px rgba(20,0,40,.8)}50%{box-shadow:0 0 0 2px #6b00c4,0 0 38px rgba(107,0,196,.8),0 0 72px rgba(45,0,96,.6)}}
+/* Storm: tempestade elétrica azul-branca */
+.hero-card.b-storm{animation:brdStorm 1.2s linear infinite;}
+@keyframes brdStorm{0%,100%{box-shadow:0 0 0 2px #7df9ff,0 0 26px rgba(125,249,255,.9),0 0 56px rgba(59,130,246,.6)}15%,55%{box-shadow:0 0 0 1px rgba(255,255,255,.8),0 0 40px rgba(255,255,255,.95),0 0 80px rgba(125,249,255,.8)}30%,70%{box-shadow:0 0 0 2px #3b82f6,0 0 20px rgba(59,130,246,.7),0 0 42px rgba(125,249,255,.4)}}
+/* Venom: verde+roxo sinistro */
+.hero-card.b-venom{animation:brdVenom 2.4s ease-in-out infinite;}
+@keyframes brdVenom{0%,100%{box-shadow:0 0 0 2px #6b00c4,0 0 26px rgba(107,0,196,.8),0 0 52px rgba(0,180,70,.4)}50%{box-shadow:0 0 0 2px #00b346,0 0 28px rgba(0,179,70,.85),0 0 56px rgba(107,0,196,.5)}}
+/* Phantom: borda invisível que aparece e some */
+.hero-card.b-phantom{animation:brdPhantom 3.5s ease-in-out infinite;}
+@keyframes brdPhantom{0%,100%{box-shadow:0 0 0 2px rgba(125,249,255,.1),0 0 8px rgba(168,85,247,.2)}30%{box-shadow:0 0 0 3px rgba(125,249,255,.9),0 0 30px rgba(125,249,255,.8),0 0 60px rgba(168,85,247,.6)}60%{box-shadow:0 0 0 2px rgba(168,85,247,.7),0 0 22px rgba(168,85,247,.6),0 0 44px rgba(125,249,255,.4)}}
+/* Oblivion: anel duplo girando preto/roxo */
+.hero-card.b-oblivion{position:relative;}
+.hero-card.b-oblivion::after{content:'';position:absolute;inset:-4px;border-radius:inherit;padding:4px;background:conic-gradient(from 0deg,#000000,#1a0030,#4a0080,#0a0015,#7c3aed,#000000);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:brdSpin 8s linear infinite;z-index:3;pointer-events:none;filter:drop-shadow(0 0 14px rgba(124,58,237,.9));}
+
+/* — EFEITOS SUPREMOS — */
+/* Raio: relâmpago cruzando diagonal */
+.hero-card.e-lightning::before{content:'';position:absolute;inset:0;z-index:4;pointer-events:none;
+  background:linear-gradient(115deg,transparent 46%,rgba(125,249,255,.06) 48%,rgba(255,255,255,.85) 50%,rgba(125,249,255,.06) 52%,transparent 54%);
+  background-size:300% 300%;animation:eLightning 3.2s linear infinite;}
+@keyframes eLightning{0%,80%{background-position:200% -100%;opacity:0}85%,87%{opacity:1}86%{background-position:200% -100%}88%{background-position:-100% 200%;opacity:0}100%{background-position:-100% 200%;opacity:0}}
+/* Vórtice: espiral sugando para dentro */
+.hero-card.e-vortex::before{content:'';position:absolute;inset:-60%;z-index:3;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent,rgba(168,85,247,.15) 20%,rgba(0,212,255,.2) 40%,rgba(168,85,247,.15) 60%,transparent 80%);
+  -webkit-mask:radial-gradient(circle at 50%,transparent 20%,#000 50%,transparent 80%);mask:radial-gradient(circle at 50%,transparent 20%,#000 50%,transparent 80%);
+  animation:eVortex 4s linear infinite;}
+@keyframes eVortex{to{transform:rotate(-360deg)}}
+/* Fire Blast: chamas subindo */
+.hero-card.e-fire_blast::before{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(0deg,rgba(255,90,0,.4) 0%,rgba(255,45,45,.25) 35%,rgba(255,180,0,.1) 60%,transparent 80%);
+  background-size:100% 200%;-webkit-mask:linear-gradient(0deg,#000 0%,transparent 60%);mask:linear-gradient(0deg,#000 0%,transparent 60%);
+  animation:eFireBlast 1.4s ease-in-out infinite alternate;}
+@keyframes eFireBlast{from{background-position:0 100%;opacity:.7}to{background-position:0 0%;opacity:1}}
+/* Matrix Fall: código verde caindo */
+.hero-card.e-matrix_fall::before{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:repeating-linear-gradient(180deg,transparent 0 2px,rgba(57,255,20,.3) 2px 3px,transparent 3px 18px),
+             repeating-linear-gradient(0deg,transparent 0 38px,rgba(57,255,20,.08) 38px 39px);
+  background-size:20px 80px,100% 100%;
+  -webkit-mask:linear-gradient(180deg,#000,rgba(0,0,0,.3),transparent);mask:linear-gradient(180deg,#000,rgba(0,0,0,.3),transparent);
+  animation:eMatrixFall 1.8s linear infinite;}
+@keyframes eMatrixFall{from{background-position:0 -80px,0 0}to{background-position:0 80px,0 0}}
+/* Glitch X: distorção RGB extrema */
+.hero-card.e-glitch_x::before{content:'';position:absolute;inset:0;z-index:4;pointer-events:none;animation:eGlitchX 2.5s steps(1) infinite;}
+@keyframes eGlitchX{0%,90%,100%{opacity:0}91%{opacity:1;box-shadow:inset 3px 0 0 rgba(255,0,80,.7),inset -3px 0 0 rgba(0,255,224,.7)}92%{box-shadow:inset -4px 0 0 rgba(255,0,80,.7),inset 4px 0 0 rgba(0,255,224,.7);transform:translateX(2px)}93%{box-shadow:inset 2px 0 0 rgba(255,0,230,.8),inset -2px 0 0 rgba(125,249,255,.8);transform:translateX(-1px)}95%{box-shadow:inset -3px 0 0 rgba(255,0,80,.5),inset 3px 0 0 rgba(0,212,255,.5);transform:none}98%{opacity:0}}
+/* Aura Divina: halo dourado emanando */
+.hero-card.e-aura::before{content:'';position:absolute;inset:-4px;z-index:3;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,240,120,.35) 0%,rgba(255,215,0,.12) 40%,transparent 70%);
+  animation:eAuraDiv 3s ease-in-out infinite alternate;}
+@keyframes eAuraDiv{from{opacity:.6;filter:blur(4px)}to{opacity:1;filter:blur(8px)}}
+/* Black Hole: vórtice absorvendo escuro */
+.hero-card.e-blackhole::before{content:'';position:absolute;inset:-80%;z-index:3;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 70%,rgba(0,0,0,.8) 85%,rgba(45,0,96,.6) 95%,transparent);
+  animation:eVortex 6s linear infinite reverse;}
+
+/* — CORES DE NICK SUPREMAS — */
+.nk-divine{background:linear-gradient(90deg,#fff8d0,#ffd700,#ffffff,#ffd700,#fff8d0);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 3s linear infinite;filter:drop-shadow(0 0 10px rgba(255,240,100,.8));}
+.nk-obsidian{background:linear-gradient(90deg,#4a0080,#1a0030,#7c3aed,#1a0030,#4a0080);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 5s linear infinite;filter:drop-shadow(0 0 8px rgba(124,58,237,.7));}
+.nk-plasma_s{background:linear-gradient(90deg,#00d4ff,#ff00e6,#00d4ff,#ff00e6);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 2s linear infinite;filter:drop-shadow(0 0 10px rgba(255,0,230,.6));}
+.nk-godlike{background:linear-gradient(90deg,#ffffff,#ffd700,#fff3b0,#ff9d00,#ffffff);background-size:400% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 2.5s linear infinite;filter:drop-shadow(0 0 14px rgba(255,255,255,.9)) drop-shadow(0 0 6px rgba(255,215,0,.8));}
+.nk-blood{background:linear-gradient(90deg,#4a0000,#cc0000,#ff2d55,#cc0000,#4a0000);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 4s linear infinite;filter:drop-shadow(0 0 8px rgba(204,0,0,.7));}
+.nk-crystal{background:linear-gradient(90deg,#dffaff,#7df9ff,#ffffff,#89cfef,#dffaff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 3.5s linear infinite;filter:drop-shadow(0 0 10px rgba(125,249,255,.75));}
+.nk-abyss{background:linear-gradient(90deg,#0d001a,#4a0080,#1a0030,#7c3aed,#0d001a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 6s linear infinite;filter:drop-shadow(0 0 10px rgba(124,58,237,.5));}
+.nk-storm{background:linear-gradient(90deg,#ffffff,#7df9ff,#3b82f6,#7df9ff,#ffffff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nkShift 2.8s linear infinite;filter:drop-shadow(0 0 12px rgba(125,249,255,.8));}
+
+/* — FUNDOS DE NICK SUPREMOS — */
+.nb-void_s{padding:2px 12px;background:linear-gradient(90deg,rgba(45,0,96,.85),rgba(20,0,40,.9));border:1px solid rgba(124,58,237,.7);box-shadow:0 0 18px rgba(124,58,237,.5),inset 0 0 12px rgba(45,0,96,.4);}
+.nb-diamond{padding:2px 12px;background:linear-gradient(90deg,rgba(125,249,255,.15),rgba(255,255,255,.18),rgba(168,85,247,.15));background-size:200% 100%;border:1px solid rgba(255,255,255,.5);box-shadow:0 0 18px rgba(255,255,255,.3),0 0 8px rgba(125,249,255,.4);animation:nkShift 4s linear infinite;}
+.nb-magma{padding:2px 12px;background:linear-gradient(90deg,rgba(255,45,0,.22),rgba(255,122,0,.2),rgba(180,0,0,.22));background-size:200% 100%;border:1px solid rgba(255,90,0,.65);box-shadow:0 0 18px rgba(255,90,0,.45);animation:nkShift 3s linear infinite;}
+.nb-storm_s{padding:2px 12px;background:linear-gradient(90deg,rgba(59,130,246,.18),rgba(125,249,255,.2),rgba(59,130,246,.18));background-size:200% 100%;border:1px solid rgba(125,249,255,.6);box-shadow:0 0 18px rgba(125,249,255,.4);animation:brdStorm 1.8s linear infinite;}
+.nb-supremo{padding:2px 12px;background:linear-gradient(90deg,rgba(255,215,0,.12),rgba(255,255,255,.1),rgba(255,215,0,.12));background-size:200% 100%;border:1px solid rgba(255,215,0,.8);box-shadow:0 0 20px rgba(255,215,0,.5),0 0 8px rgba(255,255,255,.3);animation:nkShift 3s linear infinite;}
+
+/* — TÍTULO SUPREMO — */
+.p-supreme{background:linear-gradient(135deg,rgba(255,215,0,.25),rgba(255,255,255,.18),rgba(255,215,0,.25));color:#fff;border:1px solid rgba(255,255,255,.7);text-shadow:0 0 12px rgba(255,255,255,.9),0 0 24px rgba(255,215,0,.7);}
+.p-phantom{background:linear-gradient(135deg,rgba(20,0,40,.8),rgba(107,0,196,.25));color:#c084fc;border:1px solid rgba(124,58,237,.6);text-shadow:0 0 10px rgba(192,132,252,.7);}
+.p-godcoder{background:linear-gradient(135deg,rgba(255,215,0,.3),rgba(255,122,0,.25),rgba(255,215,0,.3));color:#fff8d0;border:1px solid rgba(255,200,0,.8);text-shadow:0 0 14px rgba(255,215,0,1),0 0 30px rgba(255,122,0,.6);animation:brdDivine 2s ease-in-out infinite;}
+.p-overlord{background:linear-gradient(135deg,rgba(255,0,80,.2),rgba(45,0,96,.3),rgba(255,0,80,.2));color:#ff6b9d;border:1px solid rgba(255,45,85,.55);text-shadow:0 0 10px rgba(255,45,85,.7);}
+.p-void_walker{background:linear-gradient(135deg,rgba(0,0,0,.7),rgba(45,0,96,.5));color:#a78bfa;border:1px solid rgba(45,0,96,.8);text-shadow:0 0 8px rgba(167,139,250,.6);}
+.p-dragon_lord{background:linear-gradient(135deg,rgba(255,90,0,.25),rgba(180,0,0,.2),rgba(255,215,0,.15));color:#ff7a00;border:1px solid rgba(255,90,0,.6);text-shadow:0 0 12px rgba(255,90,0,.8);}
+.p-void_emperor{background:linear-gradient(135deg,rgba(0,0,0,.9),rgba(45,0,96,.7),rgba(124,58,237,.3));color:#e9d5ff;border:1px solid rgba(124,58,237,.8);text-shadow:0 0 16px rgba(167,139,250,.8),0 0 6px rgba(255,255,255,.3);animation:brdVoid 2.5s ease-in-out infinite;}
+
 .nfont-audiowide{font-family:'Audiowide',sans-serif;}
 .nfont-press{font-family:'Press Start 2P',monospace;font-size:.6em;letter-spacing:0;}
 .nfont-bungee{font-family:'Bungee',sans-serif;font-size:.9em;}
@@ -888,6 +1092,7 @@ select option{background:var(--s1);}
 .wc-rarity-raro{border-left:3px solid var(--accent)!important;}
 .wc-rarity-epico{border-left:3px solid #a855f7!important;}
 .wc-rarity-lendario{border-left:3px solid var(--gold)!important;box-shadow:0 0 14px rgba(255,215,0,.1);}
+.wc-rarity-supremo{border-left:3px solid #fff!important;box-shadow:0 0 20px rgba(255,255,255,.15),0 0 40px rgba(255,215,0,.08)!important;background:linear-gradient(135deg,rgba(255,255,255,.03),var(--s1))!important;}
 .wc-rarity-badge{display:inline-block;font-size:.52rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:4px;margin-bottom:5px;}
 .rb-comum{background:rgba(100,116,139,.15);color:#94a3b8;}
 .rb-raro{background:rgba(0,212,255,.12);color:var(--accent);}
@@ -1625,7 +1830,13 @@ select option{background:var(--s1);}
 
       <!-- RANKING -->
       <div id="ppage-ranking" class="page">
-        <div class="page-hdr"><div><div class="page-title">🏆 Ranking</div><div class="page-sub">Alunos e Guildas</div></div></div>
+        <div class="page-hdr" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;"><div><div class="page-title">🏆 Ranking</div><div class="page-sub">Alunos e Guildas</div></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-sm" style="background:rgba(0,212,255,.12);border:1px solid var(--accent);color:var(--accent);" onclick="abrirEditarTemporada()">✏️ Editar Período</button>
+            <button class="btn btn-orange btn-sm" onclick="abrirEncerrarTemporada()" style="flex-shrink:0;">🏁 Encerrar Temporada</button>
+          </div>
+        </div>
+        <div id="p-season-bar" style="margin-bottom:16px;"></div>
         <div id="ranking-split" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
 
           <!-- ESQUERDA: Alunos -->
@@ -1646,6 +1857,9 @@ select option{background:var(--s1);}
           </div>
 
         </div>
+
+        <!-- HALL DA FAMA (PROFESSOR) -->
+        <div id="p-hall-fama" style="margin-top:28px;border-top:1px solid var(--border);padding-top:20px;"></div>
       </div>
 
       <!-- VITRINE PROF -->
@@ -1876,6 +2090,7 @@ select option{background:var(--s1);}
         <button class="snav" id="asnav-missoes" onclick="alunoTab('missoes','asnav-missoes')"><span class="snav-ic">🎯</span>Missões<span id="miss-badge-sb" class="snav-badge" style="display:none;background:var(--accent);color:#000;"></span></button>
         <button class="snav" id="asnav-wcloja" onclick="alunoTab('wcloja','asnav-wcloja')"><span class="snav-ic">&#x1F48E;</span>Loja WarpCoins</button>
         <button class="snav" id="asnav-ranking" onclick="alunoTab('ranking','asnav-ranking')"><span class="snav-ic">🏆</span>Ranking</button>
+        <button class="snav" id="asnav-hallfama" onclick="alunoTab('hallfama','asnav-hallfama')"><span class="snav-ic">🏛️</span>Hall da Fama</button>
         <button class="snav" id="asnav-guilda" onclick="alunoTab('guilda','asnav-guilda')"><span class="snav-ic">⚔️</span>Guilda<span id="guilda-badge-sb" class="snav-badge" style="display:none;background:var(--purple);"></span></button>
         <button class="snav" id="asnav-correios" onclick="alunoTab('correios','asnav-correios')"><span class="snav-ic">📬</span>Correios<span id="correios-badge-sb" class="snav-badge" style="display:none;background:var(--accent);color:#000;"></span></button>
         <button class="snav" id="asnav-chat" onclick="alunoTab('chat','asnav-chat')"><span class="snav-ic">💬</span>Chat<span id="chat-badge-sb" class="snav-badge" style="display:none;background:var(--green);"></span></button>
@@ -1897,6 +2112,7 @@ select option{background:var(--s1);}
         <div id="a-hero"></div>
         <div class="steam-stat-grid" id="a-stats" style="margin-bottom:14px;"></div>
         <div id="a-streak-card"></div>
+        <div id="a-medalhas-sec"></div>
         <div class="sec-title">🏅 Conquistas</div>
         <div class="badge-grid" id="a-badges-mini" style="margin-bottom:14px;"></div>
         <div class="badge-grid" id="a-badges" style="margin-bottom:14px;"></div>
@@ -1910,6 +2126,7 @@ select option{background:var(--s1);}
       <div id="apage-missoes" class="page">
         <div class="page-hdr"><div><div class="page-title">🎯 Missões</div><div class="page-sub">Complete no Scratch e envie para aprovação</div></div></div>
         <div id="a-weekly-banner"></div>
+        <div id="a-miss-prog"></div>
         <!-- SUB-ABAS -->
         <div style="display:flex;gap:0;margin-bottom:18px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px;position:sticky;top:0;z-index:10;">
           <button id="miss-tab-abertas" onclick="missTab('abertas')" style="flex:1;padding:9px 12px;border:none;border-radius:6px;font-family:'Chakra Petch',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;transition:all .2s;background:var(--accent);color:#000;">🚀 Em Aberto <span id="miss-count-abertas" style="font-size:.7rem;opacity:.8;"></span></button>
@@ -1927,8 +2144,16 @@ select option{background:var(--s1);}
 
       <!-- RANKING -->
       <div id="apage-ranking" class="page">
-        <div class="page-hdr"><div><div class="page-title">🏆 Ranking da Turma</div></div></div>
+        <div class="page-hdr"><div><div class="page-title">🏆 Ranking da Turma</div><div class="page-sub">Os 3 primeiros da temporada</div></div></div>
+        <div id="a-ranking-season"></div>
+        <div id="a-podio"></div>
         <div id="a-ranking"></div>
+      </div>
+
+      <!-- HALL DA FAMA -->
+      <div id="apage-hallfama" class="page">
+        <div class="page-hdr"><div><div class="page-title">🏛️ Hall da Fama</div><div class="page-sub">Os campeões eternizados das temporadas passadas</div></div></div>
+        <div id="a-hall-fama"></div>
       </div>
 
       <!-- HISTÓRICO (movido para Perfil) -->
@@ -2029,6 +2254,7 @@ select option{background:var(--s1);}
         <button class="mnav" id="amnav-missoes" onclick="alunoTab('missoes','asnav-missoes',true,'amnav-missoes')"><span class="mnav-ic">🎯</span>Missões<span id="miss-badge-nav" class="mnav-badge" style="display:none;background:var(--accent);color:#000;"></span></button>
         <button class="mnav" id="amnav-wcloja" onclick="alunoTab('wcloja','asnav-wcloja',true,'amnav-wcloja')"><span class="mnav-ic">&#x1F48E;</span>WarpCoins</button>
         <button class="mnav" id="amnav-ranking" onclick="alunoTab('ranking','asnav-ranking',true,'amnav-ranking')"><span class="mnav-ic">🏆</span>Ranking</button>
+        <button class="mnav" id="amnav-hallfama" onclick="alunoTab('hallfama','asnav-hallfama',true,'amnav-hallfama')"><span class="mnav-ic">🏛️</span>Hall</button>
         <button class="mnav" id="amnav-guilda" onclick="alunoTab('guilda','asnav-guilda',true,'amnav-guilda')"><span class="mnav-ic">⚔️</span>Guilda</button>
         <button class="mnav" id="amnav-correios" onclick="alunoTab('correios','asnav-correios',true,'amnav-correios')"><span class="mnav-ic">📬</span>Correios<span id="correios-badge-nav" class="mnav-badge" style="display:none;background:var(--accent);color:#000;"></span></button>
         <button class="mnav" id="amnav-chat" onclick="alunoTab('chat','asnav-chat',true,'amnav-chat')"><span class="mnav-ic">💬</span>Chat</button>
@@ -2078,6 +2304,31 @@ select option{background:var(--s1);}
   </div>
 </div>
 <!-- MODAL PERFIL ALUNO -->
+<div class="modal-overlay" id="modal-encerrar-season">
+  <div class="modal" style="max-width:480px;"><button class="modal-close" onclick="closeModal('modal-encerrar-season')">✕</button>
+    <div id="modal-encerrar-season-content"></div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR TEMPORADA -->
+<div class="modal-overlay" id="modal-editar-season">
+  <div class="modal" style="max-width:420px;"><button class="modal-close" onclick="closeModal('modal-editar-season')">✕</button>
+    <div class="modal-title">✏️ Editar Período da Temporada</div>
+    <div style="font-size:.78rem;color:var(--muted2);margin-bottom:18px;">Ajuste as datas de início e fim da temporada atual.</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+      <div>
+        <label style="font-size:.72rem;color:var(--muted2);display:block;margin-bottom:4px;">📅 Início</label>
+        <input type="date" id="edit-season-start" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Chakra Petch',sans-serif;font-size:.85rem;outline:none;">
+      </div>
+      <div>
+        <label style="font-size:.72rem;color:var(--muted2);display:block;margin-bottom:4px;">🏁 Fim</label>
+        <input type="date" id="edit-season-end" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Chakra Petch',sans-serif;font-size:.85rem;outline:none;">
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="salvarEdicaoTemporada()">💾 Salvar Período</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-perfil-aluno">
   <div class="modal" style="max-width:460px;"><button class="modal-close" onclick="closeModal('modal-perfil-aluno')">✕</button>
     <div id="modal-perfil-aluno-content"></div>
@@ -2182,24 +2433,398 @@ let S = {
   guildas: [],
   alunos:[], perfis:[], pin:'----',
   pendentes:[], resgates:[],
-  loja:[], desafio:null,
+  loja:[], desafio:null, season:null, seasonHistory:[],
   missoes:[], desafios:[]
 };
 
 const MISSOES_PADRAO = [
-  {id:'m1',titulo:"Olá, Mundo Scratch!",desc:"Crie seu primeiro projeto com um personagem se movendo.",xp:100,dif:"easy",done:[],tipo:'individual'},
-  {id:'m2',titulo:"O Gato Falante",desc:"Faça o gato dizer seu nome e uma frase quando clicado.",xp:150,dif:"easy",done:[],tipo:'individual'},
-  {id:'m3',titulo:"Animação em Loop",desc:"Crie uma animação com 3+ frames em loop por 30 segundos.",xp:200,dif:"easy",done:[],tipo:'individual'},
-  {id:'m4',titulo:"Quiz de Robótica",desc:"Monte um quiz com 5 perguntas sobre robótica.",xp:300,dif:"medium",done:[],tipo:'individual'},
-  {id:'m5',titulo:"Mini Jogo: Pega-Pega",desc:"Jogo onde o jogador pega itens e acumula pontos.",xp:400,dif:"medium",done:[],tipo:'individual'},
-  {id:'m6',titulo:"Calculadora Visual",desc:"Calculadora com soma e subtração com feedback na tela.",xp:350,dif:"medium",done:[],tipo:'individual'},
-  {id:'m7',titulo:"Jogo de Plataforma",desc:"Jogo com gravidade, chão e pelo menos 2 fases.",xp:600,dif:"hard",done:[],tipo:'individual'},
-  {id:'m8',titulo:"Mestre dos Loops",desc:"Projeto usando loops, variáveis e mensagens juntos.",xp:700,dif:"hard",done:[],tipo:'individual'},
-  {id:'m9',titulo:"Projeto Livre Criativo",desc:"Projeto original com 20+ blocos para apresentar à turma.",xp:500,dif:"hard",done:[],tipo:'individual'},
-  {id:'m10',titulo:"🤝 Robô em Dupla",desc:"Em dupla: criem um robô animado que responde a cliques. Cada membro contribui com pelo menos 10 blocos.",xp:300,dif:"medium",done:[],tipo:'equipe',vagas:2},
-  {id:'m11',titulo:"🤝 Jogo em Trio",desc:"Em trio: criem um jogo com 3 fases, cada membro responsável por uma fase.",xp:400,dif:"hard",done:[],tipo:'equipe',vagas:3},
-  {id:'m12',titulo:"🤝 Apresentação Animada",desc:"Em dupla: criem uma apresentação animada sobre um tema de robótica.",xp:250,dif:"easy",done:[],tipo:'equipe',vagas:2},
+  // ── FÁCEIS (base da progressão) ──
+  {id:'s2_e1',titulo:"🚀 Decolagem no Espaço",desc:"Crie um foguete que sobe pela tela quando você aperta a seta para cima. Use o bloco 'mude y por'.",xp:100,dif:"easy",done:[],tipo:'individual'},
+  {id:'s2_e2',titulo:"👾 Alien Falante",desc:"Faça um alien dizer 'Olá, terráqueo!' e o seu nome quando for clicado, usando o bloco 'diga'.",xp:120,dif:"easy",done:[],tipo:'individual'},
+  {id:'s2_e3',titulo:"🌗 Animação Orbital",desc:"Crie uma animação em loop com 3+ fantasias que se repete por 20 segundos (ex: planeta girando).",xp:150,dif:"easy",done:[],tipo:'individual'},
+  {id:'s2_e4',titulo:"🎨 Cenário Galáctico",desc:"Monte um palco com um plano de fundo do espaço e 2 personagens posicionados nele.",xp:130,dif:"easy",done:[],tipo:'individual'},
+  {id:'s2_e5',titulo:"🔊 Nave com Som",desc:"Adicione um efeito sonoro que toca quando a nave se move ou colide com algo.",xp:140,dif:"easy",done:[],tipo:'individual'},
+  // ── MÉDIOS (liberam após 3 fáceis) ──
+  {id:'s2_m1',titulo:"🛸 Caça-Asteroides",desc:"Jogo: desvie de asteroides que caem do topo. Use clones e detecção de toque.",xp:320,dif:"medium",done:[],tipo:'individual'},
+  {id:'s2_m2',titulo:"🧮 Console de Bordo",desc:"Calculadora espacial com soma, subtração e multiplicação, mostrando o resultado na tela.",xp:300,dif:"medium",done:[],tipo:'individual'},
+  {id:'s2_m3',titulo:"🧠 Quiz da Galáxia",desc:"Quiz com 5 perguntas, contador de pontos com variável e mensagem final de acerto.",xp:330,dif:"medium",done:[],tipo:'individual'},
+  {id:'s2_m4',titulo:"🪙 Coletor de Cristais",desc:"Personagem que se move e coleta cristais, somando pontos a cada item pego.",xp:350,dif:"medium",done:[],tipo:'individual'},
+  {id:'s2_m5',titulo:"🤖 Robô Patrulheiro",desc:"Robô que anda sozinho de um lado ao outro e muda de direção ao tocar na borda.",xp:310,dif:"medium",done:[],tipo:'individual'},
+  // ── DIFÍCEIS (liberam após 3 médios) ──
+  {id:'s2_h1',titulo:"🌌 Plataforma Estelar",desc:"Jogo de plataforma com gravidade, pulo, chão e pelo menos 2 fases.",xp:600,dif:"hard",done:[],tipo:'individual'},
+  {id:'s2_h2',titulo:"⚙️ Mestre dos Sistemas",desc:"Projeto usando loops, variáveis E mensagens (transmissões) funcionando juntos.",xp:650,dif:"hard",done:[],tipo:'individual'},
+  {id:'s2_h3',titulo:"👹 Chefe Final",desc:"Crie um inimigo 'chefe' com barra de vida que diminui ao ser atingido e some ao zerar.",xp:700,dif:"hard",done:[],tipo:'individual'},
+  {id:'s2_h4',titulo:"🎮 Projeto Livre Épico",desc:"Projeto original com 25+ blocos, menu inicial e tela de fim, para apresentar à turma.",xp:550,dif:"hard",done:[],tipo:'individual'},
+  // ── EM EQUIPE (sempre disponíveis) ──
+  {id:'s2_t1',titulo:"🤝 Estação Espacial em Dupla",desc:"Em dupla: criem uma cena interativa da estação onde cada membro programa um personagem (mín. 10 blocos cada).",xp:300,dif:"medium",done:[],tipo:'equipe',vagas:2},
+  {id:'s2_t2',titulo:"🤝 Missão Trio: 3 Fases",desc:"Em trio: um jogo com 3 fases, cada membro responsável por uma fase.",xp:420,dif:"hard",done:[],tipo:'equipe',vagas:3},
+  {id:'s2_t3',titulo:"🤝 Documentário Animado",desc:"Em dupla: uma apresentação animada sobre um planeta ou tecnologia espacial.",xp:250,dif:"easy",done:[],tipo:'equipe',vagas:2},
 ];
+
+// ── PROGRESSÃO DE MISSÕES ──
+// Aluno precisa concluir MISS_PROG_REQ missões individuais de um nível
+// para liberar o próximo (fácil → médio → difícil).
+const MISS_PROG_REQ = 3;
+// Uma missão conta como concluída se o aluno está no array done da missão
+// OU se está registrada no próprio doc do aluno (missoesFeitas) — fonte à prova
+// de falha, pois o doc do aluno é gravado junto com o XP na aprovação.
+function feitaPor(a, m){
+  if(!a||!m) return false;
+  return (m.done||[]).includes(a.id) || (a.missoesFeitas||[]).includes(m.id);
+}
+function progressaoMissoes(a){
+  const indiv = S.missoes.filter(m=>m.tipo==='individual');
+  const feitasDif = dif => indiv.filter(m=>m.dif===dif && feitaPor(a,m)).length;
+  const easyDone   = feitasDif('easy');
+  const mediumDone = feitasDif('medium');
+  const hardDone   = feitasDif('hard');
+  return {
+    req: MISS_PROG_REQ,
+    easyDone, mediumDone, hardDone,
+    mediumUnlocked: easyDone   >= MISS_PROG_REQ,
+    hardUnlocked:   mediumDone >= MISS_PROG_REQ,
+  };
+}
+// Retorna {locked:bool, req:texto} para uma missão específica
+function missaoBloqueada(a, m){
+  if(m.tipo==='equipe') return {locked:false};
+  const p = progressaoMissoes(a);
+  if(m.dif==='medium' && !p.mediumUnlocked)
+    return {locked:true, falta:MISS_PROG_REQ-p.easyDone, nivelAlvo:'fáceis'};
+  if(m.dif==='hard' && !p.hardUnlocked)
+    return {locked:true, falta:MISS_PROG_REQ-p.mediumDone, nivelAlvo:'médias'};
+  return {locked:false};
+}
+// Renderiza as medalhas de temporada de um aluno (array a.medalhas)
+function medalhasHtml(medalhas, compact){
+  const meds = Array.isArray(medalhas) ? [...medalhas].sort((a,b)=>(b.ts||0)-(a.ts||0)) : [];
+  if(!meds.length) return '';
+  const ic={1:'🥇',2:'🥈',3:'🥉'};
+  const lbl={1:'Campeão',2:'Vice-campeão',3:'3º lugar'};
+  const chips = meds.map(md=>`<div class="medalha-chip m${md.pos}"><span class="mch-ic">${ic[md.pos]||'🏅'}</span><span>${escapeHtml(lbl[md.pos]||'Pódio')}<div class="mch-sub">${escapeHtml(md.season||'Temporada')}</div></span></div>`).join('');
+  if(compact) return `<div class="medalhas-wrap" style="margin-top:8px;">${chips}</div>`;
+  return `<div class="sec-title">🏆 Medalhas de Temporada</div><div class="medalhas-wrap" style="margin-bottom:14px;">${chips}</div>`;
+}
+// Melhor colocação de temporada do aluno (1, 2, 3) — 0 se nenhuma
+function medalhaTopo(obj){
+  const meds = obj && Array.isArray(obj.medalhas) ? obj.medalhas : [];
+  if(!meds.length) return 0;
+  return Math.min(...meds.map(m=>m.pos||9));
+}
+// Coroa/insígnia exibida ao lado do nome dos campeões
+function crownBadge(obj){
+  const p = medalhaTopo(obj);
+  if(!p) return '';
+  const ic={1:'👑',2:'🥈',3:'🥉'}[p]||'';
+  return `<span class="champ-crown champ-crown-${p}" title="Campeão de temporada">${ic}</span>`;
+}
+// Classe da aura animada no avatar dos campeões
+function auraCls(obj){
+  const p = medalhaTopo(obj);
+  return p ? (' champ-aura champ-aura-'+p) : '';
+}
+// ── Helpers globais para o Hall da Fama ──
+function hallAvatarHtml(al){
+  if(!al) return '<span>👾</span>';
+  const eqAv=al.wc_eq_avatar?WC_ITEMS.find(i=>i.id===al.wc_eq_avatar):null;
+  const photo=al.photo&&al.photo.trim().length>0&&sanitizeUrl(al.photo)?al.photo:null;
+  const aiUrl=al.aiUrl&&al.aiUrl.trim().length>0&&sanitizeUrl(al.aiUrl)?al.aiUrl:null;
+  if(eqAv?.imgUrl&&eqAv.imgUrl.trim().length>0) return `<img src="${escapeHtml(eqAv.imgUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  if(photo) return `<img src="${escapeHtml(photo)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  if(aiUrl) return `<img src="${escapeHtml(aiUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  return `<span>${escapeHtml(al.avatar||'👾')}</span>`;
+}
+function hallTitleHtml(al){
+  if(!al) return '';
+  const eqTitle=al.wc_eq_title;
+  const titleItem=eqTitle?WC_ITEMS.find(i=>i.id===eqTitle):null;
+  if(titleItem) return `<span class="${titleItem.titleCls} patente" style="margin-top:4px;">${escapeHtml(titleItem.titleTxt)}</span>`;
+  const pat=patente(al.xp||0);
+  return `<span class="${pat.cls} patente" style="margin-top:4px;">${escapeHtml(pat.nome)}</span>`;
+}
+function hallBannerBg(al){
+  if(!al) return null;
+  const eqB=eqItem(al,'banner');
+  const bIt=WC_ITEMS.find(i=>i.id===eqB)||WC_ITEMS.find(i=>i.id==='banner_default');
+  if(al.profileBanner&&al.profileBanner.trim().length>0) return {bg:`url('${escapeHtml(al.profileBanner)}') center/cover no-repeat`,cls:''};
+  if(bIt?.imgUrl&&bIt.imgUrl.trim().length>0) return {bg:`url('${escapeHtml(bIt.imgUrl)}') center/cover no-repeat`,cls:''};
+  return {bg:bIt?.bg||'linear-gradient(135deg,#0a1330,#1a1147)',cls:bIt?.animCls||''};
+}
+// Hall da Fama: campeões das temporadas encerradas
+// Hall da Fama: campeões das temporadas encerradas
+function renderHallFama(){
+  const el=document.getElementById('a-hall-fama'); if(!el) return;
+  const hist=Array.isArray(S.seasonHistory)?S.seasonHistory:[];
+  if(!hist.length){ el.innerHTML='<div class="empty" style="padding:40px 20px;"><div class="empty-icon">🏛️</div><div class="empty-text">Nenhuma temporada encerrada ainda.<br><span style="font-size:.72rem;color:var(--muted);">O Hall da Fama é preenchido ao encerrar uma temporada.</span></div></div>'; return; }
+  const bannerGrad={1:'linear-gradient(135deg,#1a1000,#2e1e00,#1a2800)',2:'linear-gradient(135deg,#141826,#1e1630,#142226)',3:'linear-gradient(135deg,#1a1200,#2a1800,#1a1a00)'};
+  const badgeDe={1:'👑 Campeão',2:'🥈 2º Lugar',3:'🥉 3º Lugar'};
+  const lblDe={1:'1º LUGAR',2:'2º LUGAR',3:'3º LUGAR'};
+  const clsDe={1:'p1',2:'p2',3:'p3'};
+  const hallCardDe=t=>{
+    const pos=t.pos;
+    const alData=S.alunos.find(x=>x.id===t.id)||S.perfis.find(x=>x.id===t.id);
+    const bannerInfo=alData?hallBannerBg(alData):{bg:bannerGrad[pos]||bannerGrad[3],cls:''};
+    const avHtml=hallAvatarHtml(alData);
+    const auraCl=alData?auraCls(alData):'';
+    const titleHtml=hallTitleHtml(alData);
+    const clickable=alData?`data-aluno-id="${escapeHtml(t.id)}" style="cursor:pointer;"`:'';
+    return `<div class="podium-card ${clsDe[pos]}" ${clickable}>
+      <div class="podium-banner">
+        <div class="podium-banner-bg ${bannerInfo.cls}" style="background:${bannerInfo.bg};"></div>
+        <div class="podium-banner-overlay"></div>
+        <div class="podium-pos-badge">${badgeDe[pos]}</div>
+      </div>
+      <div class="podium-av-wrap">
+        ${pos===1?'<span class="podium-crown">👑</span>':''}
+        <div class="podium-av${auraCl}">${avHtml}</div>
+      </div>
+      <div class="podium-info">
+        <div class="podium-name">${escapeHtml(t.nome||'—')}</div>
+        ${titleHtml}
+        <div class="podium-xp">${Number(t.xp)||0} XP</div>
+        <div class="podium-rankn">${lblDe[pos]}</div>
+      </div>
+    </div>`;
+  };
+  const blocos=hist.map(s=>{
+    const dt=s.encerradaEm?new Date(s.encerradaEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
+    const top3Sorted=[...(s.top3||[])].sort((a,b)=>a.pos-b.pos);
+    const ordemVisual=[top3Sorted[1],top3Sorted[0],top3Sorted[2]].filter(Boolean);
+    const cards=ordemVisual.length
+      ?`<div class="hall-podium-wrap">${ordemVisual.map(t=>hallCardDe(t)).join('')}</div>`
+      :`<div style="color:var(--muted);font-size:.74rem;padding:14px;">Sem registros.</div>`;
+    return `<div class="hall-season">
+      <div class="hall-season-header">
+        <span class="hall-season-name">🏆 ${escapeHtml(s.nome||'Temporada')}</span>
+        <span class="hall-season-name hsn-date">📅 ${dt}</span>
+      </div>
+      ${cards}
+    </div>`;
+  }).join('');
+  el.innerHTML=blocos;
+  el.querySelectorAll('[data-aluno-id]').forEach(div=>
+    div.addEventListener('click',()=>abrirPerfilAluno(div.dataset.alunoId)));
+}
+// ── TEMPORADAS (SEASONS) ──
+const MESES_PT=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function seasonPadrao(num, durDias=61){
+  const start=new Date();
+  const end=new Date(start.getTime()+durDias*86400000);
+  const per=`${start.getDate()} ${MESES_PT[start.getMonth()]} – ${end.getDate()} ${MESES_PT[end.getMonth()]}`;
+  return { num, nome:`Temporada ${num}`, periodo:per, start:start.toISOString(), end:end.toISOString() };
+}
+function seasonBarHtmlInto(elId){
+  const el=document.getElementById(elId); if(!el) return;
+  if(!S.season){ el.innerHTML=''; return; }
+  const ss=S.season; const now2=new Date(); const end2=new Date(ss.end); const start2=new Date(ss.start);
+  const total2=Math.max(1,(end2-start2)/86400000); const elapsed2=(now2-start2)/86400000;
+  const pc2=Math.min(100,Math.max(0,Math.round(elapsed2/total2*100)));
+  const dias2=Math.max(0,Math.ceil((end2-now2)/86400000));
+  el.innerHTML=`<div class="season-bar"><div style="font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:3px;color:var(--accent);margin-bottom:2px;">🏆 ${escapeHtml(ss.nome)}</div><div style="font-size:.7rem;color:var(--muted2);">${escapeHtml(ss.periodo||'')} · ⏱ ${dias2} dias restantes</div><div class="season-prog-wrap"><div class="season-prog-fill" style="width:${pc2}%"></div></div></div>`;
+}
+
+// ── RECOMPENSAS DO TOP 3 ──
+const SEASON_REWARDS = [
+  { pos:1, coins:500, titleId:'title_season_1', medalha:'🥇', label:'Campeão Galáctico' },
+  { pos:2, coins:300, titleId:'title_season_2', medalha:'🥈', label:'Vice-Campeão Estelar' },
+  { pos:3, coins:150, titleId:'title_season_3', medalha:'🥉', label:'Herói do Pódio' },
+];
+
+// Preview / confirmação antes de encerrar
+function abrirEditarTemporada(){
+  const ss=S.season;
+  if(!ss){ toast('⚠️ Nenhuma temporada ativa.'); return; }
+  const toInput=iso=>{ const d=new Date(iso); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; };
+  const si=document.getElementById('edit-season-start'); if(si) si.value=toInput(ss.start);
+  const ei=document.getElementById('edit-season-end'); if(ei) ei.value=toInput(ss.end);
+  openModal('modal-editar-season');
+}
+async function salvarEdicaoTemporada(){
+  const si=document.getElementById('edit-season-start');
+  const ei=document.getElementById('edit-season-end');
+  if(!si||!ei||!si.value||!ei.value){ toast('⚠️ Preencha as duas datas.'); return; }
+  const newStart=new Date(si.value+'T00:00:00');
+  const newEnd=new Date(ei.value+'T23:59:59');
+  if(newEnd<=newStart){ toast('⚠️ A data de fim deve ser após o início.'); return; }
+  const ss=S.season||{};
+  const per=`${newStart.getDate()} ${MESES_PT[newStart.getMonth()]} – ${newEnd.getDate()} ${MESES_PT[newEnd.getMonth()]}`;
+  const updated={...ss, start:newStart.toISOString(), end:newEnd.toISOString(), periodo:per};
+  setSyncing('syncing');
+  try{
+    await COL.config().set({season:updated},{merge:true});
+    S.season=updated;
+    seasonBarHtmlInto('p-season-bar');
+    seasonBarHtmlInto('a-season-bar');
+    closeModal('modal-editar-season');
+    toast('✅ Período da temporada atualizado!');
+  }catch(e){
+    toast('❌ Erro ao salvar: '+(e.code||e.message||'desconhecido'));
+  }
+  setSyncing('ok');
+}
+function renderProfHallFama(){
+  const el=document.getElementById('p-hall-fama'); if(!el) return;
+  const hist=Array.isArray(S.seasonHistory)?S.seasonHistory:[];
+  if(!hist.length){ el.innerHTML=''; return; }
+  const bannerGrad={1:'linear-gradient(135deg,#1a1000,#2e1e00,#1a2800)',2:'linear-gradient(135deg,#141826,#1e1630,#142226)',3:'linear-gradient(135deg,#1a1200,#2a1800,#1a1a00)'};
+  const badgeDe={1:'👑 Campeão',2:'🥈 2º Lugar',3:'🥉 3º Lugar'};
+  const lblDe={1:'1º LUGAR',2:'2º LUGAR',3:'3º LUGAR'};
+  const clsDe={1:'p1',2:'p2',3:'p3'};
+  const hallCardDe=t=>{
+    const pos=t.pos;
+    const alData=S.alunos.find(x=>x.id===t.id)||S.perfis.find(x=>x.id===t.id);
+    const bannerInfo=alData?hallBannerBg(alData):{bg:bannerGrad[pos]||bannerGrad[3],cls:''};
+    const avHtml=hallAvatarHtml(alData);
+    const auraCl=alData?auraCls(alData):'';
+    const titleHtml=hallTitleHtml(alData);
+    return `<div class="podium-card ${clsDe[pos]}">
+      <div class="podium-banner">
+        <div class="podium-banner-bg ${bannerInfo.cls}" style="background:${bannerInfo.bg};"></div>
+        <div class="podium-banner-overlay"></div>
+        <div class="podium-pos-badge">${badgeDe[pos]}</div>
+      </div>
+      <div class="podium-av-wrap">
+        ${pos===1?'<span class="podium-crown">👑</span>':''}
+        <div class="podium-av${auraCl}">${avHtml}</div>
+      </div>
+      <div class="podium-info">
+        <div class="podium-name">${escapeHtml(t.nome||'—')}</div>
+        ${titleHtml}
+        <div class="podium-xp">${Number(t.xp)||0} XP</div>
+        <div class="podium-rankn">${lblDe[pos]}</div>
+      </div>
+    </div>`;
+  };
+  const blocos=hist.map(s=>{
+    const dt=s.encerradaEm?new Date(s.encerradaEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
+    const top3Sorted=[...(s.top3||[])].sort((a,b)=>a.pos-b.pos);
+    const ordemVisual=[top3Sorted[1],top3Sorted[0],top3Sorted[2]].filter(Boolean);
+    const cards=ordemVisual.length?`<div class="hall-podium-wrap">${ordemVisual.map(t=>hallCardDe(t)).join('')}</div>`:'';
+    return `<div class="hall-season"><div class="hall-season-header"><span class="hall-season-name">🏆 ${escapeHtml(s.nome||'Temporada')}</span><span class="hall-season-name hsn-date">📅 ${dt}</span></div>${cards}</div>`;
+  }).join('');
+  el.innerHTML=`<div style="font-family:'Orbitron',monospace;font-size:.7rem;letter-spacing:2px;color:var(--gold);margin-bottom:16px;text-transform:uppercase;padding-top:4px;">🏛️ Hall da Fama</div>${blocos}`;
+}
+function abrirEncerrarTemporada(){
+  const sorted=[...S.alunos].sort((a,b)=>(b.xp||0)-(a.xp||0));
+  const top3=sorted.slice(0,3);
+  const ss=S.season||seasonPadrao(1);
+  const proxNum=(ss.num||1)+1;
+  const cont=document.getElementById('modal-encerrar-season-content');
+  if(!top3.length){
+    cont.innerHTML=`<div class="modal-title">🏁 Encerrar Temporada</div><div style="color:var(--muted2);font-size:.85rem;line-height:1.6;">Não há alunos com XP para premiar ainda. Cadastre/pontue alunos antes de encerrar.</div><button class="btn btn-outline btn-block" style="margin-top:14px;" onclick="closeModal('modal-encerrar-season')">Fechar</button>`;
+    document.getElementById('modal-encerrar-season').classList.add('active');
+    return;
+  }
+  const podioPreview=top3.map((al,i)=>{
+    const r=SEASON_REWARDS[i];
+    return `<div style="display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--s2);border:1px solid ${i===0?'rgba(255,215,0,.4)':'var(--border)'};border-radius:10px;margin-bottom:7px;">
+      <div style="font-size:1.4rem;flex-shrink:0;">${r.medalha}</div>
+      <div style="flex:1;min-width:0;"><div style="font-weight:800;font-size:.86rem;overflow-wrap:anywhere;">${escapeHtml(al.nome)}</div><div style="font-size:.64rem;color:var(--muted);">${Number(al.xp)||0} XP</div></div>
+      <div style="text-align:right;flex-shrink:0;font-size:.64rem;color:var(--muted2);line-height:1.5;">🪙 +${r.coins}<br>🏷️ Título<br>🏅 Medalha</div>
+    </div>`;
+  }).join('');
+  cont.innerHTML=`
+    <div class="modal-title">🏁 Encerrar ${escapeHtml(ss.nome)}</div>
+    <div style="font-size:.78rem;color:var(--muted2);line-height:1.6;margin-bottom:14px;">Confira o pódio e as recompensas. Ao confirmar, uma <strong>nova temporada</strong> (Temporada ${proxNum}) começa.</div>
+    <div style="font-size:.6rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">🏆 Pódio Final</div>
+    ${podioPreview}
+    <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:11px 13px;margin:14px 0;font-size:.74rem;line-height:1.7;color:var(--text);">
+      <strong style="color:var(--red);">⚠️ Esta ação vai:</strong><br>
+      • Premiar o Top 3 (moedas + título + medalha)<br>
+      • <strong>Zerar o XP de todos</strong> os alunos (níveis e ranking reiniciam)<br>
+      • <strong>Preservar as WarpCoins</strong> de todos (saldo mantido)<br>
+      • Apagar as missões atuais e publicar as novas<br>
+      • Iniciar a Temporada ${proxNum}
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted2);margin-bottom:14px;cursor:pointer;">
+      <input type="checkbox" id="confirm-encerrar-chk" style="width:16px;height:16px;flex-shrink:0;"> Entendo que o XP de todos será zerado e não há como desfazer.
+    </label>
+    <button class="btn btn-orange btn-block" id="btn-confirmar-encerrar" onclick="encerrarTemporada()">🏁 Confirmar e Encerrar</button>
+    <button class="btn btn-outline btn-block" style="margin-bottom:0;" onclick="closeModal('modal-encerrar-season')">Cancelar</button>`;
+  document.getElementById('modal-encerrar-season').classList.add('active');
+}
+
+async function encerrarTemporada(){
+  const chk=document.getElementById('confirm-encerrar-chk');
+  if(!chk||!chk.checked){ toast('⚠️ Marque a confirmação primeiro.'); return; }
+  const btn=document.getElementById('btn-confirmar-encerrar');
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Encerrando...'; }
+  setSyncing('syncing');
+  try{
+    const ss=S.season||seasonPadrao(1);
+    const proxNum=(ss.num||1)+1;
+    const sorted=[...S.alunos].sort((a,b)=>(b.xp||0)-(a.xp||0));
+    const top3=sorted.slice(0,3);
+    const top3Ids=top3.map(a=>a.id);
+    const agora=Date.now();
+
+    // ── 1) Atualizar cada aluno (zerar XP, preservar moedas, premiar top 3) ──
+    const CHUNK=150;
+    for(let i=0;i<sorted.length;i+=CHUNK){
+      const fatia=sorted.slice(i,i+CHUNK);
+      const batch=db.batch();
+      fatia.forEach(al=>{
+        const moedasDoXP=Math.floor((al.xp||0)/10);
+        let novoWcBonus=(al.wc_bonus||0)+moedasDoXP; // preserva WarpCoins
+        const upd={ xp:0, wc_bonus:novoWcBonus, missoesFeitas:[] };
+        const updPerfil={ xp:0 };
+        let notif;
+        const posIdx=top3Ids.indexOf(al.id);
+        if(posIdx>=0){
+          const r=SEASON_REWARDS[posIdx];
+          novoWcBonus+=r.coins;
+          upd.wc_bonus=novoWcBonus;
+          // título exclusivo (concede e equipa)
+          const owned=Array.isArray(al.wc_owned)?[...al.wc_owned]:[];
+          if(!owned.includes(r.titleId)) owned.push(r.titleId);
+          upd.wc_owned=owned;
+          upd.wc_eq_title=r.titleId;
+          updPerfil.wc_eq_title=r.titleId;
+          // medalha permanente
+          const meds=Array.isArray(al.medalhas)?[...al.medalhas]:[];
+          meds.push({ season:ss.nome, pos:r.pos, ts:agora });
+          upd.medalhas=meds;
+          updPerfil.medalhas=meds;
+          notif={ id:'n'+agora+'_'+al.id, tipo:'ranking', titulo:`${r.medalha} ${r.pos}º lugar na ${ss.nome}!`, desc:`Parabéns! Você terminou em ${r.pos}º lugar e ganhou o título "${r.label}", uma medalha e +${r.coins}🪙. Nova temporada começou — boa sorte!`, ts:agora, lido:false };
+        } else {
+          notif={ id:'n'+agora+'_'+al.id, tipo:'update', titulo:`🏁 ${ss.nome} encerrada!`, desc:`Uma nova temporada começou: Temporada ${proxNum}. O ranking foi zerado, mas suas WarpCoins foram mantidas. Novas missões estão disponíveis! 🚀`, ts:agora, lido:false };
+        }
+        upd.correios=[notif,...(al.correios||[])].slice(0,50);
+        batch.update(COL.alunos().doc(al.id), upd);
+        batch.set(COL.perfis().doc(al.id), updPerfil, {merge:true});
+      });
+      await batch.commit();
+    }
+
+    // ── 2) Limpar missões antigas (o professor cria as novas pelo gerador de IA) ──
+    const missSnap=await COL.missoes().get();
+    if(!missSnap.empty){
+      const delBatch=db.batch();
+      missSnap.docs.forEach(d=>delBatch.delete(d.ref));
+      await delBatch.commit();
+    }
+
+    // ── 3) Nova temporada na config (guarda histórico do pódio) ──
+    const novaSeason=seasonPadrao(proxNum);
+    const historicoEntry={ nome:ss.nome, num:ss.num||1, encerradaEm:agora,
+      top3: top3.map((a,i)=>({ id:a.id, nome:a.nome, xp:a.xp||0, pos:i+1 })) };
+    const cfgSnap=await COL.config().get();
+    const histAnt=(cfgSnap.exists && Array.isArray(cfgSnap.data().seasonHistory)) ? cfgSnap.data().seasonHistory : [];
+    // missoesIniciadas:true evita que o seed padrão repopule missões após o reset
+    await COL.config().set({ season:novaSeason, seasonHistory:[historicoEntry,...histAnt].slice(0,20), missoesIniciadas:true }, {merge:true});
+    S.season=novaSeason;
+    S.seasonHistory=[historicoEntry,...histAnt].slice(0,20);
+
+    closeModal('modal-encerrar-season');
+    setSyncing('ok');
+    toast(`🎉 ${ss.nome} encerrada! Temporada ${proxNum} começou.`);
+  }catch(e){
+    console.error('[encerrarTemporada]', e);
+    setSyncing('error');
+    toast('❌ Erro ao encerrar: '+(e.code||e.message||'desconhecido'));
+    if(btn){ btn.disabled=false; btn.textContent='🏁 Confirmar e Encerrar'; }
+  }
+}
 const LOJA_PADRAO = [
   {id:'l1',emoji:'🎮',nome:'Escolher o projeto livre',desc:'Você decide o tema do próximo projeto criativo.',custo:300,ativo:true},
   {id:'l2',emoji:'💺',nome:'Sentar onde quiser',desc:'Por uma aula inteira, pode sentar em qualquer lugar.',custo:200,ativo:true},
@@ -2236,20 +2861,26 @@ async function inicializar(){
   try {
     setMsg('Conectando ao Firebase...');
     const cfgSnap = await withTimeout(COL.config().get(), 'config');
+    let _missoesIniciadas = false;
     if(cfgSnap.exists){
       S.pin = cfgSnap.data().pin || String(Math.floor(1000+Math.random()*9000));
+      S.season = cfgSnap.data().season || null;
+      S.seasonHistory = cfgSnap.data().seasonHistory || [];
+      _missoesIniciadas = !!cfgSnap.data().missoesIniciadas;
     } else {
       S.pin = String(Math.floor(1000+Math.random()*9000));
       await COL.config().set({ pin: S.pin, desafio: null });
     }
+    if(!S.season){ S.season = seasonPadrao(1); }
 
     setMsg('Carregando missões...');
     const missSnap = await withTimeout(COL.missoes().get(), 'missoes');
-    if(missSnap.empty){
+    if(missSnap.empty && !_missoesIniciadas){
       const batch = db.batch();
       MISSOES_PADRAO.forEach(m => batch.set(COL.missoes().doc(m.id), m));
       await batch.commit();
       S.missoes = [...MISSOES_PADRAO];
+      await COL.config().set({ missoesIniciadas:true }, {merge:true}).catch(()=>{});
     } else {
       S.missoes = missSnap.docs.map(d => ({id:d.id,...d.data()}));
     }
@@ -2324,7 +2955,7 @@ function ligarListeners(){
   });
   // Config (pin, desafio legado)
   COL.config().onSnapshot(snap => {
-    if(snap.exists){ const d=snap.data(); S.pin=d.pin||S.pin; renderSafe(); }
+    if(snap.exists){ const d=snap.data(); S.pin=d.pin||S.pin; if(d.season!==undefined&&d.season) S.season=d.season; if(Array.isArray(d.seasonHistory)) S.seasonHistory=d.seasonHistory; renderSafe(); }
   });
   // Desafios (coleção independente)
   COL.desafios().onSnapshot(snap => {
@@ -3204,7 +3835,7 @@ function missTab(tab){
   }
 }
 
-const ALUNO_LABELS={perfil:'Perfil',missoes:'Missões',wcloja:'WarpCoins',ranking:'Ranking',guilda:'Guilda',correios:'Correios',chat:'Chat',vitrine:'Vitrine'};
+const ALUNO_LABELS={perfil:'Perfil',missoes:'Missões',wcloja:'WarpCoins',ranking:'Ranking',hallfama:'Hall da Fama',guilda:'Guilda',correios:'Correios',chat:'Chat',vitrine:'Vitrine'};
 function alunoTab(tab,snavId,isMobile=false,mnavId=''){
   document.querySelectorAll('[id^="apage-"]').forEach(p=>p.classList.remove('active'));
   const pg=document.getElementById('apage-'+tab);
@@ -3218,6 +3849,7 @@ function alunoTab(tab,snavId,isMobile=false,mnavId=''){
   else if(tab==='correios') renderCorreios();
   else if(tab==='chat'){ initChat(); }
   else if(tab==='vitrine') renderVitrine();
+  else if(tab==='hallfama') renderHallFama();
   else renderAluno();
 }
 
@@ -3452,6 +4084,7 @@ function renderPAprovacoes(){
 }
 
 async function renderPRanking(){
+  seasonBarHtmlInto('p-season-bar');
   // ── Alunos: Geral ──
   const elGeral = document.getElementById('p-ranking-geral');
   if(elGeral){
@@ -3513,6 +4146,7 @@ async function renderPRanking(){
       }
     }catch(e){elGuildas.innerHTML='<div style="color:var(--muted);font-size:.78rem;padding:16px 0;text-align:center;">Erro ao carregar guildas.</div>';console.error(e);}
   }
+  renderProfHallFama();
 }
 
 function rankTab(tab){
@@ -3975,9 +4609,8 @@ function renderAluno(){
   renderWCLoja(a);
 
   // Season bar
-  const seasonEl=document.getElementById('a-season-bar');
-  if(seasonEl&&S.season){const ss=S.season;const now2=new Date();const end2=new Date(ss.end);const start2=new Date(ss.start);const total2=Math.max(1,(end2-start2)/86400000);const elapsed2=(now2-start2)/86400000;const pc2=Math.min(100,Math.round(elapsed2/total2*100));const dias2=Math.max(0,Math.ceil((end2-now2)/86400000));seasonEl.innerHTML=`<div class="season-bar"><div style="font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:3px;color:var(--accent);margin-bottom:2px;">🏆 ${ss.nome}</div><div style="font-size:.7rem;color:var(--muted2);">${ss.periodo} · ⏱ ${dias2} dias restantes</div><div class="season-prog-wrap"><div class="season-prog-fill" style="width:${pc2}%"></div></div></div>`;}
-  else if(seasonEl)seasonEl.innerHTML='';
+  seasonBarHtmlInto('a-season-bar');
+  seasonBarHtmlInto('a-ranking-season');
 
   // Welcome card
   const welcomeEl=document.getElementById('a-welcome');
@@ -4004,6 +4637,10 @@ function renderAluno(){
 
   const desbloq=CONQ.filter(c=>c.check(a)).slice(0,6);
   document.getElementById('a-badges-mini').innerHTML=desbloq.map(c=>`<div class="badge-item"><div class="badge-icon">${c.icon}</div><div class="badge-name">${c.nome}</div></div>`).join('')||`<p style="color:var(--muted);font-size:.8rem">Complete missões para ganhar badges!</p>`;
+
+  // MEDALHAS DE TEMPORADA
+  const medSec=document.getElementById('a-medalhas-sec');
+  if(medSec) medSec.innerHTML = medalhasHtml(a.medalhas);
 
   // ACTIVITY FEED
   const feedEl=document.getElementById('a-activity-feed');
@@ -4033,27 +4670,48 @@ function renderAluno(){
   // MISSÕES INDIVIDUAIS — separar abertas/pendentes de feitas
   const indiv=S.missoes.filter(m=>m.tipo==='individual');
   const missCard=(m,forceFeita=false)=>{
-    const feita=(m.done||[]).includes(a.id);
+    const feita=feitaPor(a,m);
     const pend=S.pendentes.find(p=>p.alunoId===a.id&&p.missaoId===m.id);
     const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[m.dif];
     const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[m.dif];
     const wcLabel=m.wc?`<span style="font-family:'Orbitron',monospace;font-size:.62rem;color:var(--wc);">🪙${m.wc}</span>`:'';
     const videoLink=(()=>{ const sv=sanitizeUrl(m.video||''); return sv?`<div style="margin-top:6px;"><a href="${escapeHtml(sv)}" target="_blank" rel="noopener noreferrer" style="font-size:.72rem;color:var(--accent);">🎬 Vídeo de referência</a></div>`:''; })();
+    const bloq = (!feita && !pend) ? missaoBloqueada(a,m) : {locked:false};
     let statusTag='',action='';
     if(feita){
       statusTag=`<span class="status-tag tag-done">✓ Aprovada</span>`;
       if(pend?.feedback) action=`<div class="feedback-bubble">💬 <strong>Professor:</strong> ${pend.feedback}</div>`;
     } else if(pend) statusTag=`<span class="status-tag tag-pending">⏳ Aguardando</span>`;
+    else if(bloq.locked){
+      statusTag=`<span class="status-tag tag-open" style="opacity:.7;">🔒 Bloqueada</span>`;
+      action=`<div class="mission-lock-banner"><span class="mlb-ic">🔒</span><span>Conclua mais <strong>${bloq.falta}</strong> missõe${bloq.falta!==1?'s':''} ${bloq.nivelAlvo} para liberar este nível.</span></div>`;
+    }
     else{statusTag=`<span class="status-tag tag-open">Disponível</span>`;action=`<div style="margin-top:10px;"><button class="btn btn-gold" style="width:100%;" onclick="abrirMissao('${m.id}')">🚀 Iniciar Missão</button></div>`;}
-    return `<div class="mission-card ${feita?'done':pend?'pending':''}">
-      <div class="mtitle">${m.titulo}</div>
+    return `<div class="mission-card ${feita?'done':pend?'pending':bloq.locked?'mlocked':''}">
+      <div class="mtitle">${bloq.locked?'🔒 ':''}${m.titulo}</div>
       <div class="mdesc">${m.desc}</div>
-      ${videoLink}
+      ${bloq.locked?'':videoLink}
       <div class="mtags"><span class="mdiff ${dc}">${dl}</span><span class="mxp">+${m.xp} XP</span>${wcLabel}${statusTag}</div>
       ${action}</div>`;
   };
-  const abertas = indiv.filter(m=>!(m.done||[]).includes(a.id));
-  const feitas  = indiv.filter(m=>(m.done||[]).includes(a.id));
+  // Barra de progressão (fácil → médio → difícil)
+  const _prog = progressaoMissoes(a);
+  const progPill=(lbl,cor,done,unlocked,reqTxt)=>{
+    const pct=Math.min(100,Math.round(done/MISS_PROG_REQ*100));
+    return `<div class="prog-pill ${done>=MISS_PROG_REQ?'done':''} ${unlocked?'':'locked'}">
+      <div class="prog-pill-top"><span class="prog-pill-lbl" style="color:${cor};">${lbl}</span><span style="font-size:.7rem;font-weight:800;color:${cor};">${done}/${MISS_PROG_REQ}</span></div>
+      <div class="prog-pill-bar"><div class="prog-pill-fill" style="width:${pct}%;background:${cor};"></div></div>
+      <div class="prog-pill-status">${reqTxt}</div>
+    </div>`;
+  };
+  const elProg = document.getElementById('a-miss-prog');
+  if(elProg) elProg.innerHTML = `<div class="prog-track">
+    ${progPill('🟢 FÁCIL','#10b981',_prog.easyDone,true,_prog.mediumUnlocked?'✅ Nível médio liberado!':'Conclua para liberar o médio')}
+    ${progPill('🟡 MÉDIO','#f59e0b',_prog.mediumDone,_prog.mediumUnlocked,!_prog.mediumUnlocked?'🔒 Faça '+MISS_PROG_REQ+' fáceis':_prog.hardUnlocked?'✅ Nível difícil liberado!':'Conclua para liberar o difícil')}
+    ${progPill('🔴 DIFÍCIL','#ef4444',_prog.hardDone,_prog.hardUnlocked,!_prog.hardUnlocked?'🔒 Faça '+MISS_PROG_REQ+' médias':'✅ Tudo liberado!')}
+  </div>`;
+  const abertas = indiv.filter(m=>!feitaPor(a,m));
+  const feitas  = indiv.filter(m=>feitaPor(a,m));
   // Contadores nas abas
   const cntAb = document.getElementById('miss-count-abertas');
   const cntFt = document.getElementById('miss-count-feitas');
@@ -4071,7 +4729,7 @@ function renderAluno(){
   // MISSÕES EQUIPE
   const equipe=S.missoes.filter(m=>m.tipo==='equipe');
   document.getElementById('a-equipe-missoes').innerHTML=equipe.map(m=>{
-    const feita=(m.done||[]).includes(a.id);
+    const feita=feitaPor(a,m);
     const pend=S.pendentes.find(p=>p.alunoId===a.id&&p.missaoId===m.id);
     const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[m.dif];
     const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[m.dif];
@@ -4095,30 +4753,82 @@ function renderAluno(){
     return full || p;
   });
   const sorted=[...rankingBase].sort((x,y)=>(y.xp||0)-(x.xp||0));
-  document.getElementById('a-ranking').innerHTML=sorted.map((al,i)=>{
-    const nv=nivel(al.xp||0);const isMe=al.id===a.id;
-    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rx';
-    const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+
+  // Helper de avatar para o pódio/lista
+  const avatarHtmlDe=(al,size)=>{
     const eqAv=al['wc_eq_avatar']?WC_ITEMS.find(i=>i.id===al['wc_eq_avatar']):null;
     const aiUrl=eqAv?.imgUrl&&eqAv.imgUrl.trim().length>0?eqAv.imgUrl:null;
     const safePhoto = al.profilePhoto && (al.profilePhoto.startsWith('data:image/') || sanitizeUrl(al.profilePhoto)) ? al.profilePhoto : '';
     const safeAiUrl = aiUrl && sanitizeUrl(aiUrl) ? aiUrl : '';
-    const rankAvatarHtml=safePhoto
-      ?`<div style="width:38px;height:38px;border-radius:50%;border:2px solid var(--border);overflow:hidden;flex-shrink:0;"><img src="${escapeHtml(safePhoto)}" style="width:100%;height:100%;object-fit:cover;"></div>`
-      :safeAiUrl
-      ?`<div style="width:38px;height:38px;border-radius:50%;border:2px solid var(--border);overflow:hidden;flex-shrink:0;"><img src="${escapeHtml(safeAiUrl)}" style="width:100%;height:100%;object-fit:cover;"></div>`
-      :`<div class="avatar" style="width:38px;height:38px;font-size:1.3rem">${escapeHtml(al.avatar||'👾')}</div>`;
+    if(safePhoto) return `<img src="${escapeHtml(safePhoto)}" style="width:100%;height:100%;object-fit:cover;">`;
+    if(safeAiUrl) return `<img src="${escapeHtml(safeAiUrl)}" style="width:100%;height:100%;object-fit:cover;">`;
+    return `<span>${escapeHtml(al.avatar||'👾')}</span>`;
+  };
+
+  // ── PÓDIO: TOP 3 ──
+  const top3 = sorted.slice(0,3);
+  const podioEl = document.getElementById('a-podio');
+  if(podioEl){
+    if(top3.length===0){ podioEl.innerHTML=''; }
+    else{
+      const ordemVisual = [top3[1], top3[0], top3[2]];
+      const posDe = al => top3.indexOf(al)+1;
+      const clsDe = {1:'p1',2:'p2',3:'p3'};
+      const badgeDe = {1:'👑 Campeão',2:'🥈 2º Lugar',3:'🥉 3º Lugar'};
+      const lblDe = {1:'1º LUGAR',2:'2º LUGAR',3:'3º LUGAR'};
+      const bannerBgDe = al => {
+        const eqB=eqItem(al,'banner');
+        const bIt=WC_ITEMS.find(i=>i.id===eqB)||WC_ITEMS.find(i=>i.id==='banner_default');
+        if(al.profileBanner&&al.profileBanner.trim().length>0) return `url('${escapeHtml(al.profileBanner)}') center/cover no-repeat`;
+        if(bIt?.imgUrl&&bIt.imgUrl.trim().length>0) return `url('${escapeHtml(bIt.imgUrl)}') center/cover no-repeat`;
+        return bIt?.bg||'linear-gradient(135deg,rgba(0,212,255,.12),rgba(124,58,237,.12))';
+      };
+      podioEl.innerHTML = `<div class="podium-wrap">${ordemVisual.map(al=>{
+        if(!al) return `<div></div>`;
+        const pos=posDe(al); const isMe=al.id===a.id; const nv=nivel(al.xp||0);
+        return `<div class="podium-card ${clsDe[pos]}" data-aluno-id="${escapeHtml(al.id)}">
+          <div class="podium-banner">
+            <div class="podium-banner-bg" style="background:${bannerBgDe(al)};"></div>
+            <div class="podium-banner-overlay"></div>
+            <div class="podium-pos-badge">${badgeDe[pos]}</div>
+          </div>
+          <div class="podium-av-wrap">
+            ${pos===1?'<span class="podium-crown">👑</span>':''}
+            <div class="podium-av${auraCls(al)}">${avatarHtmlDe(al)}</div>
+          </div>
+          <div class="podium-info">
+            <div class="podium-name">${nickHtml(al,escapeHtml(al.nome))}</div>
+            <div class="podium-lvl">${nv.e} ${nv.n}</div>
+            <div class="podium-xp">${Number(al.xp)||0} XP</div>
+            <div class="podium-rankn">${lblDe[pos]}</div>
+            ${isMe?'<div class="podium-me-tag">VOCÊ</div>':''}
+          </div>
+        </div>`;
+      }).join('')}</div>`;
+      podioEl.querySelectorAll('[data-aluno-id]').forEach(div=>
+        div.addEventListener('click',()=>abrirPerfilAluno(div.dataset.alunoId)));
+    }
+  }
+
+  // ── LISTA (do 4º em diante) ──
+  const resto = sorted.slice(3);
+  const listaHtml = resto.map((al,idx)=>{
+    const i=idx+3; const nv=nivel(al.xp||0);const isMe=al.id===a.id;
+    const ri=`#${i+1}`;
     return `<div class="rank-item ${isMe?'me':''}" data-aluno-id="${escapeHtml(al.id)}" style="cursor:pointer;">
-      <div class="rnum ${rc}">${ri}</div>
-      ${rankAvatarHtml}
+      <div class="rnum rx">${ri}</div>
+      <div class="avatar${auraCls(al)}" style="width:38px;height:38px;font-size:1.3rem;overflow:hidden;border-radius:50%;border:2px solid var(--border);">${avatarHtmlDe(al)}</div>
       <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.9rem;">${nickHtml(al,escapeHtml(al.nome))}${isMe?' 👈':''}</div><div style="font-size:.68rem;color:var(--muted2)">${nv.e} ${nv.n}${(al.streak||0)>=3?` · 🔥${al.streak}`:''}</div></div>
       <div style="font-family:'Orbitron',monospace;font-size:.88rem;color:var(--gold);font-weight:700;flex-shrink:0">${Number(al.xp)||0} XP</div>
     </div>`;
   }).join('');
-  // Event delegation seguro para ranking
-  document.getElementById('a-ranking').querySelectorAll('[data-aluno-id]').forEach(div=>{
-    div.addEventListener('click',()=>abrirPerfilAluno(div.dataset.alunoId));
-  });
+  const listaEl = document.getElementById('a-ranking');
+  if(listaEl){
+    listaEl.innerHTML = resto.length ? listaHtml : (top3.length?'<div style="text-align:center;color:var(--muted);font-size:.76rem;padding:14px;">O pódio está completo! 🏆</div>':'<div class="empty" style="padding:30px 20px;"><div class="empty-icon">🏆</div><div class="empty-text">Sem alunos no ranking ainda.</div></div>');
+    listaEl.querySelectorAll('[data-aluno-id]').forEach(div=>
+      div.addEventListener('click',()=>abrirPerfilAluno(div.dataset.alunoId)));
+  }
+  renderHallFama();
 
   // HISTÓRICO
   const hist=a.historico||[];
@@ -4283,12 +4993,19 @@ async function aprovar(pid){
     const correiosUpd=[notifAprovado,...(aluno.correios||[])].slice(0,50);
     // Atualiza aluno
     const xpAntes = aluno.xp||0;
-    await COL.alunos().doc(aluno.id).update({xp:novoXP,wc_bonus:novoWCBonus,historico:hist,correios:correiosUpd,...boosterUpdate});
-    await COL.perfis().doc(aluno.id).update({xp:novoXP});
+    const alunoUpd={xp:novoXP,wc_bonus:novoWCBonus,historico:hist,correios:correiosUpd,...boosterUpdate};
+    const perfilUpd={xp:novoXP};
+    if(!pend.isDesafio){
+      // registro à prova de falha: marca a missão como feita no próprio doc do aluno
+      alunoUpd.missoesFeitas = firebase.firestore.FieldValue.arrayUnion(pend.missaoId);
+      perfilUpd.missoesFeitas = firebase.firestore.FieldValue.arrayUnion(pend.missaoId);
+    }
+    await COL.alunos().doc(aluno.id).update(alunoUpd);
+    await COL.perfis().doc(aluno.id).update(perfilUpd).catch(()=>{});
     setTimeout(()=>verificarNotifRanking(aluno.id, xpAntes), 1500);
     // Marca missão como done (se não for desafio)
     if(!pend.isDesafio){
-      await COL.missoes().doc(pend.missaoId).update({done:firebase.firestore.FieldValue.arrayUnion(aluno.id)});
+      await COL.missoes().doc(pend.missaoId).update({done:firebase.firestore.FieldValue.arrayUnion(aluno.id)}).catch(e=>console.warn('[done missoes]',e.code||e.message));
       // Se for missão de guilda: dá XP a todos os membros da guilda
       if(pend.isGuilda && pend.guildaId){
         const gSnap = await COL.guildas().doc(pend.guildaId).get();
@@ -4301,9 +5018,9 @@ async function aprovar(pid){
             const hist2 = [{desc:`⚔️ Missão de guilda aprovada: ${missao.titulo} (via ${aluno.nome}) +${wcGanho}🪙`,xp:missao.xp,ts:Date.now()},...(m2.historico||[])].slice(0,30);
             const notifGuilda={id:'n'+Date.now()+'_'+mid,tipo:'guilda',titulo:`⚔️ Missão de guilda concluída!`,desc:`Sua guilda completou "${missao.titulo}" e você ganhou +${missao.xp} XP!`,xp:missao.xp,ts:Date.now(),lido:false};
             const correiosGuilda=[notifGuilda,...(m2.correios||[])].slice(0,50);
-            await COL.alunos().doc(mid).update({xp:novoXP2,historico:hist2,correios:correiosGuilda});
-            await COL.perfis().doc(mid).update({xp:novoXP2});
-            await COL.missoes().doc(pend.missaoId).update({done:firebase.firestore.FieldValue.arrayUnion(mid)});
+            await COL.alunos().doc(mid).update({xp:novoXP2,historico:hist2,correios:correiosGuilda,missoesFeitas:firebase.firestore.FieldValue.arrayUnion(pend.missaoId)});
+            await COL.perfis().doc(mid).update({xp:novoXP2,missoesFeitas:firebase.firestore.FieldValue.arrayUnion(pend.missaoId)}).catch(()=>{});
+            await COL.missoes().doc(pend.missaoId).update({done:firebase.firestore.FieldValue.arrayUnion(mid)}).catch(()=>{});
           }
           if(membros.length) toast(`⚔️ XP distribuído para ${membros.length+1} membros da guilda!`);
         }
@@ -4947,6 +5664,9 @@ function abrirMissao(mid){
   const a=S.alunos.find(x=>x.id===alunoAtual);
   const m=S.missoes.find(x=>x.id===mid);
   if(!a||!m)return;
+  const bloq=missaoBloqueada(a,m);
+  if(feitaPor(a,m)){ toast('✅ Você já concluiu esta missão!'); return; }
+  if(bloq.locked){ toast(`🔒 Conclua mais ${bloq.falta} missõe${bloq.falta!==1?'s':''} ${bloq.nivelAlvo} para liberar este nível.`); return; }
   const dc={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[m.dif];
   const dl={easy:'Fácil',medium:'Médio',hard:'Difícil'}[m.dif];
   const isEquipe=m.tipo==='equipe';
@@ -4977,7 +5697,9 @@ function abrirMissao(mid){
 async function enviarAprovacao(mid){
   const a=S.alunos.find(x=>x.id===alunoAtual);
   if(!a)return;
-  if(S.pendentes.find(p=>p.alunoId===a.id&&p.missaoId===mid)) return toast('⚠️ Já enviada! Aguarde aprovação.');
+  const m=S.missoes.find(x=>x.id===mid);
+  if(m && feitaPor(a,m)) return toast('✅ Você já concluiu esta missão! Ela está na aba Concluídas.');
+  if(S.pendentes.find(p=>p.alunoId===a.id&&p.missaoId===mid&&!p.rejeitado)) return toast('⚠️ Já enviada! Aguarde aprovação.');
   const link=document.getElementById('missao-link')?.value.trim()||'';
   setSyncing('syncing');
   try {
@@ -5154,6 +5876,10 @@ const WC_ITEMS=[
   {id:'title_wizard',cat:'title',name:'Mago do Scratch',desc:'Feiticeiro do código.',cost:250,icon:'🧙',free:false,titleTxt:'Mago do Scratch',titleCls:'p-capitao'},
   {id:'title_speedrun',cat:'title',name:'Speedrunner',desc:'Missões num piscar.',cost:200,icon:'⚡',free:false,titleTxt:'Speedrunner ⚡',titleCls:'p-tenente'},
   {id:'title_bug',cat:'title',name:'Domador de Bugs',desc:'Bugs temem você.',cost:280,icon:'🐛',free:false,titleTxt:'Domador de Bugs 🐛',titleCls:'p-general'},
+  // ── TÍTULOS EXCLUSIVOS DE TEMPORADA (só ganha quem fica no Top 3; não vão para a loja) ──
+  {id:'title_season_1',cat:'title',name:'Campeão da Temporada',desc:'Exclusivo do 1º lugar de uma temporada.',cost:0,icon:'👑',free:false,exclusive:true,seasonReward:true,titleTxt:'👑 Campeão Galáctico',titleCls:'p-campeao'},
+  {id:'title_season_2',cat:'title',name:'Vice-Campeão',desc:'Exclusivo do 2º lugar de uma temporada.',cost:0,icon:'🥈',free:false,exclusive:true,seasonReward:true,titleTxt:'🥈 Vice-Campeão Estelar',titleCls:'p-vice'},
+  {id:'title_season_3',cat:'title',name:'Pódio de Bronze',desc:'Exclusivo do 3º lugar de uma temporada.',cost:0,icon:'🥉',free:false,exclusive:true,seasonReward:true,titleTxt:'🥉 Herói do Pódio',titleCls:'p-bronze'},
   {id:'hack_xpboost',cat:'hackpower',name:'Turbo XP',desc:'Ganha +50% XP na próxima missão aprovada.',cost:500,icon:'🚀',free:false,hackUses:1,hackId:'xpboost'},
   {id:'hack_streak',cat:'hackpower',name:'Escudo de Streak',desc:'Protege seu streak por 1 dia de falta.',cost:300,icon:'🛡️',free:false,hackUses:1,hackId:'streak_shield'},
   {id:'hack_loot2',cat:'hackpower',name:'Loot Duplo',desc:'Próxima caixa de loot revela 2 prêmios.',cost:400,icon:'🎁',free:false,hackUses:1,hackId:'double_loot'},
@@ -5206,12 +5932,111 @@ const WC_ITEMS=[
   {id:'border_ai_gold_circuit',cat:'border',name:'Borda Gold Circuit',desc:'Circuito dourado ornamentado. Épica.',cost:300,cls:'b-gold',icon:'🏅',free:false,rarity:'epico',
    imgUrl:'',
    aiPrompt:'A circular avatar frame with golden circuit board patterns glowing softly. Ornate tech aesthetic, transparent center. Isolated on transparent background. 512x512px.'},
+
+  // ══════════════════════════════════════
+  //  COSMÉTICOS SUPREMOS v4 — novos itens
+  // ══════════════════════════════════════
+
+  // ── BORDAS SUPREMAS ──
+  {id:'border_v4_void',cat:'border',name:'Fenda Dimensional',desc:'Rasga a realidade com energia roxa sombria.',cost:450,cls:'b-void',col:'#6b00c4',icon:'🌑',free:false,rarity:'epico'},
+  {id:'border_v4_supernova',cat:'border',name:'Supernova',desc:'Explosão estelar em loop: laranja → dourado → vermelho.',cost:500,cls:'b-supernova',col:'#ff7a00',icon:'💥',free:false,rarity:'epico'},
+  {id:'border_v4_dragon',cat:'border',name:'Dragão de Fogo',desc:'Anel tricolor de chamas dracônicas girando.',cost:520,cls:'b-dragon',col:'#ff2d00',icon:'🐉',free:false,rarity:'lendario'},
+  {id:'border_v4_quantum',cat:'border',name:'Quantum Shift',desc:'Distorção quântica: sete cores se rasgando.',cost:600,cls:'b-quantum',col:'#00d4ff',icon:'⚛️',free:false,rarity:'lendario'},
+  {id:'border_v4_divine',cat:'border',name:'Divino',desc:'Aura de luz divina branca-dourada pulsando.',cost:700,cls:'b-divine',col:'#fff8d0',icon:'✨',free:false,rarity:'lendario'},
+  {id:'border_v4_shadow',cat:'border',name:'Sombra Sinistra',desc:'Pulso roxo das profundezas do abismo.',cost:350,cls:'b-shadow',col:'#2d0060',icon:'🌒',free:false,rarity:'raro'},
+  {id:'border_v4_storm',cat:'border',name:'Tempestade Elétrica',desc:'Relâmpagos azuis flicker-intenso ao redor.',cost:550,cls:'b-storm',col:'#7df9ff',icon:'⚡',free:false,rarity:'epico'},
+  {id:'border_v4_venom',cat:'border',name:'Veneno',desc:'Verde radioativo e roxo sinistro alternando.',cost:400,cls:'b-venom',col:'#00b346',icon:'☠️',free:false,rarity:'raro'},
+  {id:'border_v4_phantom',cat:'border',name:'Fantasma',desc:'Borda que aparece e desaparece como um fantasma.',cost:480,cls:'b-phantom',col:'#7df9ff',icon:'👻',free:false,rarity:'epico'},
+  {id:'border_v4_oblivion',cat:'border',name:'Anel do Oblivion',desc:'Vórtice preto-roxo duplo girando lentamente.',cost:750,cls:'b-oblivion',col:'#4a0080',icon:'🌀',free:false,rarity:'lendario'},
+
+  // ── EFEITOS SUPREMOS ──
+  {id:'effect_v4_lightning',cat:'effect',name:'Raio Supremo',desc:'Relâmpago branco cruzando o perfil em diagonal.',cost:500,cls:'e-lightning',icon:'⚡',free:false,rarity:'epico'},
+  {id:'effect_v4_vortex',cat:'effect',name:'Vórtice Cósmico',desc:'Espiral galáctica sugando para o centro.',cost:450,cls:'e-vortex',icon:'🌀',free:false,rarity:'epico'},
+  {id:'effect_v4_fire',cat:'effect',name:'Explosão de Fogo',desc:'Chamas laranja e vermelhas subindo pelo perfil.',cost:480,cls:'e-fire_blast',icon:'🔥',free:false,rarity:'epico'},
+  {id:'effect_v4_matrix',cat:'effect',name:'Matrix Fall',desc:'Código verde caindo como na Matrix.',cost:420,cls:'e-matrix_fall',icon:'🟢',free:false,rarity:'raro'},
+  {id:'effect_v4_glitch',cat:'effect',name:'Glitch Extremo',desc:'Distorção RGB total: o perfil parece hackear.',cost:550,cls:'e-glitch_x',icon:'📺',free:false,rarity:'lendario'},
+  {id:'effect_v4_aura',cat:'effect',name:'Aura Divina',desc:'Halo dourado emanando de dentro do perfil.',cost:600,cls:'e-aura',icon:'🌟',free:false,rarity:'lendario'},
+  {id:'effect_v4_blackhole',cat:'effect',name:'Buraco Negro',desc:'Vórtice escuro absorvendo tudo ao redor.',cost:700,cls:'e-blackhole',icon:'🕳️',free:false,rarity:'lendario'},
+
+  // ── AVATARES EMOJI SUPREMOS ──
+  {id:'av_v4_devil',cat:'avatar',name:'Demônio',desc:'Personagem das trevas com poderes supremos.',cost:150,emoji:'😈',icon:'😈',free:false},
+  {id:'av_v4_skull',cat:'avatar',name:'Caveira Hacker',desc:'Símbolo definitivo do caos digital.',cost:120,emoji:'💀',icon:'💀',free:false},
+  {id:'av_v4_lightning',cat:'avatar',name:'Ser de Raio',desc:'Pura energia elétrica em forma de avatar.',cost:100,emoji:'⚡',icon:'⚡',free:false},
+  {id:'av_v4_octopus',cat:'avatar',name:'Polvo Dimensional',desc:'Criatura de outra dimensão cósmica.',cost:180,emoji:'🐙',icon:'🐙',free:false},
+  {id:'av_v4_kraken',cat:'avatar',name:'Kraken',desc:'Terror das profundezas digitais.',cost:200,emoji:'🦑',icon:'🦑',free:false},
+  {id:'av_v4_phoenix',cat:'avatar',name:'Fênix de Código',desc:'Renasce das cinzas a cada bug resolvido.',cost:220,emoji:'🦅',icon:'🦅',free:false},
+  {id:'av_v4_demon_lord',cat:'avatar',name:'Lorde Demoníaco',desc:'O mais temido de todos os programadores.',cost:280,emoji:'👺',icon:'👺',free:false},
+
+  // ── AVATARES IA SUPREMOS ──
+  {id:'av_ai_neon_samurai',cat:'avatar',name:'Samurai Neon',desc:'Guerreiro cyberpunk com katana de luz. Épico.',cost:650,icon:'⚔️',free:false,rarity:'epico',imgUrl:'',
+   aiPrompt:'A stylized close-up portrait of a futuristic samurai in sleek black armor with glowing cyan neon trim, holding a katana of pure light energy. Moody cinematic lighting, rain in background. Anime-influenced with photorealistic details. 4k, dramatic composition.'},
+  {id:'av_ai_android',cat:'avatar',name:'Android Alpha',desc:'Androide de última geração fotorrealista. Épico.',cost:700,icon:'🤖',free:false,rarity:'epico',imgUrl:'',
+   aiPrompt:'A hyper-realistic close-up portrait of an advanced humanoid android with chrome skin, glowing cyan eyes, and subtle blue LED lighting running across the face. Clean background, studio lighting, cinematic. 8k.'},
+  {id:'av_ai_crystal_mage',cat:'avatar',name:'Mago dos Cristais',desc:'Feiticeiro controlando cristais de energia. Épico.',cost:600,icon:'🔮',free:false,rarity:'epico',imgUrl:'',
+   aiPrompt:'A stylized portrait of a young crystal mage surrounded by floating glowing purple and blue crystals, dramatic magical lighting, fantasy meets sci-fi. Digital painting, 4k, cinematic.'},
+  {id:'av_ai_black_knight',cat:'avatar',name:'Cavaleiro das Trevas',desc:'Guerreiro épico do mundo sombrio. Lendário.',cost:950,icon:'🛡️',free:false,rarity:'lendario',imgUrl:'',
+   aiPrompt:'A hyper-realistic portrait of a dark knight in black obsidian armor with glowing red runes, holding a cursed sword. Dark fantasy epic, dramatic rim lighting, deep shadows, cinematic. 8k.'},
+  {id:'av_ai_void_entity',cat:'avatar',name:'Entidade do Abismo',desc:'Ser de outra dimensão. Raridade Suprema.',cost:1200,icon:'🌑',free:false,rarity:'supremo',imgUrl:'',
+   aiPrompt:'A cosmic horror entity made of dark matter and swirling void energy, humanoid shape dissolving into stars and darkness, eyes of pure white light. Surreal digital art, cinematic lighting, ultra-detailed. 8k.'},
+  {id:'av_ai_god_coder',cat:'avatar',name:'God of Code',desc:'A encarnação suprema do programador lendário.',cost:1500,icon:'⚡',free:false,rarity:'supremo',imgUrl:'',
+   aiPrompt:'A godlike entity of pure digital energy, glowing streams of code flowing through a transcendent figure made of light and circuitry. Radiating divine power, zero gravity environment, epic cinematic composition. Ultra-detailed, 8k.'},
+
+  // ── BANNERS SUPREMOS ──
+  {id:'banner_v4_void',cat:'banner',name:'Abismo Supremo',desc:'Vórtice preto-roxo dimensional. Épico.',cost:500,bg:'linear-gradient(135deg,#0d0020,#1a0035,#3b0070,#0d0020)',animCls:'ban-anim-flow',icon:'🌑',free:false,rarity:'epico'},
+  {id:'banner_v4_storm',cat:'banner',name:'Tempestade de Dados',desc:'Azul elétrico e branco em colapso. Épico.',cost:450,bg:'linear-gradient(135deg,#000a1a,#0a2240,#1a4a80,#7df9ff33,#000a1a)',animCls:'ban-anim-aurora',icon:'⚡',free:false,rarity:'epico'},
+  {id:'banner_v4_lava',cat:'banner',name:'Campo de Lava',desc:'Magma fluindo com calor extremo. Raro.',cost:380,bg:'linear-gradient(135deg,#1a0000,#4a0000,#c02200,#ff4500,#1a0000)',animCls:'ban-anim-flow',icon:'🌋',free:false,rarity:'raro'},
+  {id:'banner_v4_divine',cat:'banner',name:'Banner Divino',desc:'Luz celestial dourada-branca. Supremo.',cost:900,bg:'linear-gradient(135deg,#1a1000,#3a2800,#ffd70033,#fffbe0,#ffd70033,#1a1000)',animCls:'ban-anim-aurora',icon:'✨',free:false,rarity:'supremo'},
+  {id:'banner_v4_dragon',cat:'banner',name:'Terra dos Dragões',desc:'Escamas e chamas épicas. Lendário.',cost:700,bg:'linear-gradient(135deg,#1a0000,#3a0800,#8b1a00,#ff6b00,#3a0800)',animCls:'ban-anim-flow',icon:'🐉',free:false,rarity:'lendario'},
+  {id:'banner_v4_quantum',cat:'banner',name:'Dimensão Quântica',desc:'Realidade se fragmentando em cores. Supremo.',cost:1000,bg:'linear-gradient(120deg,#000a1a,#2d0060,#00d4ff22,#7c3aed,#ff00e622,#000a1a)',animCls:'ban-anim-aurora',icon:'⚛️',free:false,rarity:'supremo'},
+
+  // ── CORES DE NICK SUPREMAS ──
+  {id:'nk_v4_divine',cat:'nickcolor',name:'Nick Divino',desc:'Dourado resplandecente com brilho celestial.',cost:500,cls:'nk-divine',icon:'✨',free:false,rarity:'epico'},
+  {id:'nk_v4_obsidian',cat:'nickcolor',name:'Nick Obsidiana',desc:'Roxo sombrio das profundezas.',cost:400,cls:'nk-obsidian',icon:'🌑',free:false,rarity:'raro'},
+  {id:'nk_v4_plasma',cat:'nickcolor',name:'Nick Plasma Supremo',desc:'Cyan e magenta em velocidade máxima.',cost:450,cls:'nk-plasma_s',icon:'⚛️',free:false,rarity:'epico'},
+  {id:'nk_v4_godlike',cat:'nickcolor',name:'Nick GODLIKE',desc:'Branco e ouro. Reservado aos escolhidos.',cost:650,cls:'nk-godlike',icon:'⚡',free:false,rarity:'lendario'},
+  {id:'nk_v4_blood',cat:'nickcolor',name:'Nick Sangue',desc:'Vermelho carmesim das batalhas épicas.',cost:350,cls:'nk-blood',icon:'🩸',free:false,rarity:'raro'},
+  {id:'nk_v4_crystal',cat:'nickcolor',name:'Nick Cristal',desc:'Gelo azul-branco refrativo brilhante.',cost:380,cls:'nk-crystal',icon:'💎',free:false,rarity:'raro'},
+  {id:'nk_v4_storm',cat:'nickcolor',name:'Nick Tempestade',desc:'Branco elétrico como um raio.',cost:420,cls:'nk-storm',icon:'⚡',free:false,rarity:'epico'},
+
+  // ── FUNDOS DE NICK SUPREMOS ──
+  {id:'nb_v4_void',cat:'nickbg',name:'Fundo Abismo',desc:'Escuridão dimensional com aura roxa.',cost:350,cls:'nb-void_s',icon:'🌑',free:false,rarity:'raro'},
+  {id:'nb_v4_diamond',cat:'nickbg',name:'Fundo Diamante',desc:'Cristal prismático com brilho refratado.',cost:400,cls:'nb-diamond',icon:'💎',free:false,rarity:'epico'},
+  {id:'nb_v4_magma',cat:'nickbg',name:'Fundo Magma',desc:'Calor de lava fluindo atrás do nick.',cost:320,cls:'nb-magma',icon:'🌋',free:false,rarity:'raro'},
+  {id:'nb_v4_storm',cat:'nickbg',name:'Fundo Tempestade',desc:'Energia azul elétrica pulsando.',cost:300,cls:'nb-storm_s',icon:'⚡',free:false,rarity:'raro'},
+  {id:'nb_v4_supremo',cat:'nickbg',name:'Fundo Supremo',desc:'Dourado com luz divina. Para os eleitos.',cost:500,cls:'nb-supremo',icon:'✨',free:false,rarity:'epico'},
+
+  // ── TÍTULOS SUPREMOS ──
+  {id:'title_v4_supreme',cat:'title',name:'Supremo',desc:'Acima de qualquer classificação.',cost:800,icon:'👑',free:false,rarity:'lendario',titleTxt:'⚡ Supremo ⚡',titleCls:'p-supreme'},
+  {id:'title_v4_phantom',cat:'title',name:'Phantom',desc:'Misterioso e inalcançável.',cost:600,icon:'👻',free:false,rarity:'epico',titleTxt:'👻 Phantom',titleCls:'p-phantom'},
+  {id:'title_v4_godcoder',cat:'title',name:'Deus do Código',desc:'O título mais raro do WarpCode.',cost:1200,icon:'⚡',free:false,rarity:'supremo',titleTxt:'⚡ Deus do Código ⚡',titleCls:'p-godcoder'},
+  {id:'title_v4_overlord',cat:'title',name:'Overlord',desc:'Dominante absoluto do ranking.',cost:700,icon:'🔱',free:false,rarity:'epico',titleTxt:'🔱 Overlord',titleCls:'p-overlord'},
+  {id:'title_v4_void_walker',cat:'title',name:'Caminhante do Abismo',desc:'Trânsfuga entre dimensões.',cost:550,icon:'🌑',free:false,rarity:'epico',titleTxt:'🌑 Caminhante do Abismo',titleCls:'p-void_walker'},
+  {id:'title_v4_dragon_lord',cat:'title',name:'Senhor dos Dragões',desc:'Poder absoluto sobre as criaturas do fogo.',cost:900,icon:'🐉',free:false,rarity:'lendario',titleTxt:'🐉 Senhor dos Dragões',titleCls:'p-dragon_lord'},
+  {id:'title_v4_void_emperor',cat:'title',name:'Imperador do Abismo',desc:'Título supremo. Apenas os mais lendários.',cost:1500,icon:'🌌',free:false,rarity:'supremo',titleTxt:'🌌 Imperador do Abismo 🌌',titleCls:'p-void_emperor'},
+  {id:'title_v4_legend_coder',cat:'title',name:'Lenda Viva',desc:'Eternizado na história do WarpCode.',cost:650,icon:'🏛️',free:false,rarity:'lendario',titleTxt:'🏛️ Lenda Viva',titleCls:'p-lenda'},
+
+  // ── HACK POWERS SUPREMOS ──
+  {id:'hack_v4_hyperturbo',cat:'hackpower',name:'HIPER TURBO XP',desc:'+200% XP na próxima missão aprovada. Devastador.',cost:2000,icon:'🌋',free:false,hackUses:1,hackId:'xpboost3',rarity:'supremo'},
+  {id:'hack_v4_xprain',cat:'hackpower',name:'Chuva de XP',desc:'+500 XP instantâneo. Sem condições.',cost:1500,icon:'💰',free:false,hackUses:1,hackId:'xprain',rarity:'lendario'},
+  {id:'hack_v4_wc_mine',cat:'hackpower',name:'Mineração de WC',desc:'+200 WarpCoins instantâneos.',cost:1200,icon:'⛏️',free:false,hackUses:1,hackId:'wc_mine',rarity:'lendario'},
+  {id:'hack_v4_shield3',cat:'hackpower',name:'Escudo Supremo',desc:'Protege seu streak por 3 dias seguidos.',cost:800,icon:'🛡️',free:false,hackUses:1,hackId:'shield3'},
+  {id:'hack_v4_loot_leg',cat:'hackpower',name:'Loot Lendário',desc:'Próxima caixa garante prêmio raro garantido.',cost:1000,icon:'🎁',free:false,hackUses:1,hackId:'loot_legendary',rarity:'lendario'},
+  {id:'hack_v4_time_stop',cat:'hackpower',name:'Para o Tempo',desc:'Estende prazo de missão em +3 dias.',cost:700,icon:'⏱️',free:false,hackUses:1,hackId:'time_stop'},
+  {id:'hack_v4_wc_x2',cat:'hackpower',name:'WarpCoins x2',desc:'Dobra as WarpCoins ganhas por 24h.',cost:900,icon:'🪙',free:false,hackUses:1,hackId:'wc_x2'},
+
+  // ── PETS SUPREMOS ──
+  {id:'pet_v4_phoenix',cat:'pet',name:'Fênix Suprema',desc:'Renasce das cinzas com poder máximo.',cost:500,petEmoji:'🦅',icon:'🦅',free:false,rarity:'epico'},
+  {id:'pet_v4_wolf',cat:'pet',name:'Lobo Cósmico',desc:'Guardião leal das dimensões.',cost:350,petEmoji:'🐺',icon:'🐺',free:false},
+  {id:'pet_v4_octopus',cat:'pet',name:'Polvo Dimensional',desc:'Capaz de hackear qualquer sistema.',cost:400,petEmoji:'🐙',icon:'🐙',free:false},
+  {id:'pet_v4_tiger',cat:'pet',name:'Tigre Neon',desc:'Velocidade e brutalidade digital.',cost:380,petEmoji:'🐯',icon:'🐯',free:false},
+  {id:'pet_v4_dragon',cat:'pet',name:'Dragão Supremo',desc:'O mais poderoso parceiro do WarpCode.',cost:700,petEmoji:'🐉',icon:'🐉',free:false,rarity:'lendario'},
+  {id:'pet_v4_unicorn',cat:'pet',name:'Unicórnio Galáctico',desc:'Raro, mágico e imbatível.',cost:450,petEmoji:'🦄',icon:'🦄',free:false,rarity:'epico'},
 ];
 
 // 🔓 PERSONALIZAÇÕES LIBERADAS — todos os cosméticos visuais são gratuitos para todos os alunos.
 // (Hack Powers e Pets ficam fora: são poder de jogo / sistema de evolução próprio.)
 const FREE_CATS=['avatar','banner','border','effect','nickbg','nickcolor','nickfx','title'];
-WC_ITEMS.forEach(it=>{ if(FREE_CATS.includes(it.cat)){ it.free=true; it.cost=0; } });
+WC_ITEMS.forEach(it=>{ if(FREE_CATS.includes(it.cat) && !it.exclusive && it.cost===0){ it.free=true; } });
 
 const LOOT_TABLE=[
   {r:'comum',w:35,type:'xp',v:50,label:'+50 XP',icon:'⚡'},
@@ -5320,7 +6145,7 @@ function nickHtml(obj,name,extraStyle){
   const nc=nickClasses(obj);
   const wrapCls='nick-wrap'+(nc.bg?' '+nc.bg:'');
   const style=extraStyle?` style="${extraStyle}"`:'';
-  return `<span class="${wrapCls}"${style}><span class="nick ${nc.txt}">${name}</span></span>`;
+  return `${crownBadge(obj)}<span class="${wrapCls}"${style}><span class="nick ${nc.txt}">${name}</span></span>`;
 }
 // Aplica o tema salvo assim que a página carrega (antes do login)
 window.addEventListener('DOMContentLoaded',()=>{try{applyTheme(localStorage.getItem('wc_theme')||'theme_default');}catch(e){}});
@@ -5336,7 +6161,7 @@ function wcRarityBadge(item){
   const auto=['border','effect','nickcolor','nickfx','nickbg','banner'].includes(item.cat);
   if(!item.rarity&&!auto)return'';
   const r=itemRarity(item);
-  const lbl={comum:'COMUM',raro:'RARO',epico:'ÉPICO',lendario:'LENDÁRIO'}[r]||'';
+  const lbl={comum:'COMUM',raro:'RARO',epico:'ÉPICO',lendario:'LENDÁRIO',supremo:'✦ SUPREMO ✦'}[r]||'';
   return`<span class="wc-rarity-badge rb-${r}">${lbl}</span>`;
 }
 function wcRarityCls(item){
@@ -5353,8 +6178,8 @@ function itemRarity(item){
   if(item.cost<=180)return'epico';
   return'lendario';
 }
-const RARITY_COR={comum:'#94a3b8',raro:'#00d4ff',epico:'#a855f7',lendario:'#ffd700'};
-const RARITY_LBL={comum:'Comum',raro:'Raro',epico:'Épico',lendario:'Lendário'};
+const RARITY_COR={comum:'#94a3b8',raro:'#00d4ff',epico:'#a855f7',lendario:'#ffd700',supremo:'#ffffff'};
+const RARITY_LBL={comum:'Comum',raro:'Raro',epico:'Épico',lendario:'Lendário',supremo:'✦ Supremo'};
 // Selo compacto de raridade (dot luminoso) para usar no modal
 function rarPip(item){
   const r=itemRarity(item);const c=RARITY_COR[r];
@@ -5398,7 +6223,9 @@ function wcCopiarPrompt(itemId){
 function renderWCLoja(a){
   const el=document.getElementById('a-wc-items');if(!el)return;
   const saldo=wcSaldo(a);
-  const items=wcFilterAtual==='todos'?WC_ITEMS:WC_ITEMS.filter(i=>i.cat===wcFilterAtual);
+  const items=(wcFilterAtual==='todos'?WC_ITEMS:WC_ITEMS.filter(i=>i.cat===wcFilterAtual))
+    .filter(i=>!(i.seasonReward && !temItem(a,i.id)))
+    .filter(i=>!i.free);
   const catL={border:'🖼️ Borda',effect:'✨ Efeito',banner:'🎖️ Banner',avatar:'👾 Avatar',pet:'🐾 Pet',nickcolor:'🎨 Cor de Nick',nickfx:'💫 Efeito de Nick',nickbg:'🏷️ Fundo de Nick',title:'🏷️ Título',hackpower:'⚡ Hack'};
   el.innerHTML=items.map(item=>{
     const owns=temItem(a,item.id);const eq=eqItem(a,item.cat)===item.id;
@@ -6620,9 +7447,10 @@ async function abrirPerfilAluno(alunoId){
         ${bannerFrameCls(al)?`<div class="banner-frame ${bannerFrameCls(al)}"></div>`:''}
       </div>
       <div style="padding:0 16px 16px;position:relative;">
-        <div style="width:78px;height:78px;border-radius:50%;background:var(--s2);border:3px solid var(--s1);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,.6);margin-top:-40px;">${fotoHtml}</div>
+        <div class="${auraCls(al).trim()}" style="width:78px;height:78px;border-radius:50%;background:var(--s2);border:3px solid var(--s1);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,.6);margin-top:-40px;">${fotoHtml}</div>
         <div style="font-size:1.25rem;font-weight:900;line-height:1.2;margin-top:10px;word-break:break-word;">${nickHtml(al,escapeHtml(al.nome))}</div>
         <div style="margin-top:6px;">${displayTitle}</div>
+        ${medalhasHtml(al.medalhas, true)}
         <div style="font-size:.68rem;color:var(--muted2);margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
           <span>${escapeHtml(al.turma||'')} · #${pos} no ranking</span>
           <span style="color:var(--muted);">·</span>
@@ -7415,17 +8243,19 @@ function renderChatMsgs(msgs){
     const time = new Date(m.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     const safeAutorId = escapeHtml(m.autorId||'');
     const safeAutorNome = escapeHtml(m.autorNome||'');
+    const meObj=S.alunos.find(x=>x.id===alunoAtual);
+    const authorObj=S.alunos.find(x=>x.id===m.autorId)||(S.perfis&&S.perfis.find(x=>x.id===m.autorId));
+    const auraOwner = own ? meObj : authorObj;
+    const auraC = isProf ? '' : auraCls(auraOwner);
     const avatarHtml = m.foto
-      ? `<div class="chat-avatar-sm"><img src="${escapeHtml(m.foto)}" alt=""></div>`
-      : `<div class="chat-avatar-sm">${escapeHtml(isProf ? '🛸' : (m.avatar||'👾'))}</div>`;
+      ? `<div class="chat-avatar-sm${auraC}"><img src="${escapeHtml(m.foto)}" alt=""></div>`
+      : `<div class="chat-avatar-sm${auraC}">${escapeHtml(isProf ? '🛸' : (m.avatar||'👾'))}</div>`;
     const safeGifUrl = sanitizeUrl(m.gifUrl||'');
     const bubble = m.tipo==='gif' && safeGifUrl
       ? `<img src="${escapeHtml(safeGifUrl)}" class="chat-gif" alt="GIF">`
       : `<div class="chat-bubble"${isProf&&!own?' style="border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.07);"':''}>${escapeHtml(m.texto||'')}</div>`;
     const clickAttr = !own && safeAutorId && !isProf ? `data-aluno-id="${safeAutorId}"` : '';
     const clickStyle = !own && !isProf ? 'cursor:pointer;' : '';
-    const meObj=S.alunos.find(x=>x.id===alunoAtual);
-    const authorObj=S.alunos.find(x=>x.id===m.autorId)||(S.perfis&&S.perfis.find(x=>x.id===m.autorId));
     const authorLabel = isProf
       ? `<span style="color:var(--accent);font-weight:700;">Professor</span> · ${time}`
       : own
