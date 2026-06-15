@@ -4070,7 +4070,11 @@ function renderPAprovacoes(){
     const dt=new Date(p.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
     const safeId=escapeHtml(p.id);
     const safeLink=sanitizeUrl(p.link||'');
-    const linkHtml=safeLink?`<a class="approval-link" href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer">🔗 ${escapeHtml(safeLink)}</a>`:'';
+    // Extrai ID do projeto Scratch para verificação de privacidade
+    const scratchIdMatch=safeLink?safeLink.match(/scratch\.mit\.edu\/projects\/(\d+)/):null;
+    const scratchId=scratchIdMatch?scratchIdMatch[1]:null;
+    const linkPrivadoAttr=scratchId?` data-scratch-check="${escapeHtml(scratchId)}" data-pend-id="${safeId}"`:'';
+    const linkHtml=safeLink?`<a class="approval-link"${linkPrivadoAttr} href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer">🔗 ${escapeHtml(safeLink)}</a><span id="scratch-status-${safeId}" style="font-size:.7rem;margin-left:6px;"></span>`:'';
     return `<div class="approval-card">
       <div class="approval-meta">
         <div><div style="font-weight:800;font-size:.92rem;">${escapeHtml(aluno.avatar||'👾')} ${escapeHtml(aluno.nome)} <span style="color:var(--muted2);font-weight:400;font-size:.8rem">${escapeHtml(aluno.turma)}</span></div><div style="font-size:.65rem;color:var(--muted)">${dt}</div></div>
@@ -4095,6 +4099,24 @@ function renderPAprovacoes(){
       else if(btn.dataset.action==='aprovar-destacar') aprovarEDestacar(id);
       else if(btn.dataset.action==='rejeitar') rejeitar(id);
     });
+  });
+  // Verificação assíncrona: detecta projetos privados no painel do professor
+  el.querySelectorAll('[data-scratch-check]').forEach(async link=>{
+    const projectId=link.dataset.scratchCheck;
+    const pendId=link.dataset.pendId;
+    const statusEl=document.getElementById(`scratch-status-${pendId}`);
+    if(!statusEl) return;
+    try{
+      const resp=await fetch(`https://api.scratch.mit.edu/projects/${projectId}`,{signal:AbortSignal.timeout(5000)});
+      if(resp.status===404||resp.status===403){
+        statusEl.innerHTML='<span style="background:#ef4444;color:#fff;padding:1px 6px;border-radius:4px;font-weight:700;">🔒 PRIVADO</span>';
+        link.style.color='#ef4444';
+        link.style.textDecoration='line-through';
+        link.insertAdjacentHTML('afterend','<div style="font-size:.72rem;color:#ef4444;margin-top:4px;">⚠️ Projeto não compartilhado — o aluno precisa clicar em "Compartilhar" no Scratch.</div>');
+      } else if(resp.ok){
+        statusEl.innerHTML='<span style="color:#10ffa0">✓ público</span>';
+      }
+    }catch(e){ /* silencioso */ }
   });
 }
 
@@ -5694,16 +5716,22 @@ function abrirMissao(mid){
       ${isEquipe?`<span class="mdiff diff-team">👥 ${m.vagas} pessoas</span>`:''}
       <span class="mxp" style="font-size:.82rem">+${m.xp} XP ${isEquipe?'por membro':''}</span>
     </div>
-    <div style="font-size:.8rem;color:var(--muted2);line-height:1.9;margin-bottom:16px;background:var(--s2);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+    <div style="font-size:.8rem;color:var(--muted2);line-height:1.9;margin-bottom:10px;background:var(--s2);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
       1️⃣ Clique em <strong style="color:var(--text)">Abrir no Scratch</strong><br>
       2️⃣ Complete conforme a missão<br>
       ${isEquipe?'👥 Cada membro deve enviar individualmente<br>':''}
-      3️⃣ Copie o link do projeto<br>
-      4️⃣ Cole aqui e envie para aprovação
+      3️⃣ Clique em <strong style="color:#10ffa0">Compartilhar</strong> no topo do Scratch<br>
+      4️⃣ Copie o link do projeto<br>
+      5️⃣ Cole aqui e envie para aprovação
+    </div>
+    <div style="background:rgba(255,200,0,.12);border:1px solid rgba(255,200,0,.4);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;font-size:.78rem;color:#ffd700;line-height:1.6;">
+      ⚠️ <strong>ATENÇÃO:</strong> Seu projeto precisa estar <strong>Compartilhado</strong> no Scratch!<br>
+      Clique em <strong>"Compartilhar"</strong> antes de copiar o link — senão o professor não conseguirá abrir.
     </div>
     <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank" rel="noopener noreferrer">🐱 Abrir no Scratch</a>
     <label>Link do projeto (recomendado)</label>
-    <input type="url" id="missao-link" placeholder="https://scratch.mit.edu/projects/..." style="margin-bottom:14px">
+    <input type="url" id="missao-link" placeholder="https://scratch.mit.edu/projects/..." style="margin-bottom:6px">
+    <div id="missao-link-status" style="font-size:.75rem;min-height:18px;margin-bottom:10px;"></div>
     <button class="btn btn-primary btn-block" onclick="enviarAprovacao('${m.id}')">📤 Enviar para Aprovação</button>
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-missao')" style="margin-bottom:0">Cancelar</button>`;
   document.getElementById('modal-missao').classList.add('active');
@@ -5715,10 +5743,16 @@ async function enviarAprovacao(mid){
   const m=S.missoes.find(x=>x.id===mid);
   if(m && feitaPor(a,m)) return toast('✅ Você já concluiu esta missão! Ela está na aba Concluídas.');
   if(S.pendentes.find(p=>p.alunoId===a.id&&p.missaoId===mid&&!p.rejeitado)) return toast('⚠️ Já enviada! Aguarde aprovação.');
-  const link=document.getElementById('missao-link')?.value.trim()||'';
+  const linkRaw=document.getElementById('missao-link')?.value.trim()||'';
+  if(linkRaw){
+    const v=await validarLinkScratch(linkRaw);
+    if(!v.ok) return toast(v.erro,5000);
+    if(v.aviso) toast('⚠️ '+v.aviso,4000);
+    var linkFinal=v.linkNormalizado||linkRaw;
+  } else { var linkFinal=''; }
   setSyncing('syncing');
   try {
-    await COL.pendentes().add({alunoId:a.id,missaoId:mid,link,ts:Date.now(),aprovado:false,rejeitado:false});
+    await COL.pendentes().add({alunoId:a.id,missaoId:mid,link:linkFinal,ts:Date.now(),aprovado:false,rejeitado:false});
     closeModal('modal-missao');
     toast('📤 Enviado! Aguarde o professor aprovar.');
     setSyncing('ok');
@@ -5738,15 +5772,21 @@ function abrirDesafio(desafioId){
       <span class="mxp" style="font-size:.82rem">+${Number(d.xp)||0} XP</span>
     </div>
     ${safeVideoD?`<a class="scratch-btn" href="${escapeHtml(safeVideoD)}" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg,#ef4444,#dc2626);">🎬 Ver Vídeo Exemplo</a>`:''}
-    <div style="font-size:.8rem;color:var(--muted2);line-height:1.9;margin-bottom:16px;background:var(--s2);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+    <div style="font-size:.8rem;color:var(--muted2);line-height:1.9;margin-bottom:10px;background:var(--s2);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
       1️⃣ Clique em <strong style="color:var(--text)">Abrir no Scratch</strong><br>
       2️⃣ Complete o desafio proposto<br>
-      3️⃣ Copie o link do projeto<br>
-      4️⃣ Cole aqui e envie para aprovação
+      3️⃣ Clique em <strong style="color:#10ffa0">Compartilhar</strong> no topo do Scratch<br>
+      4️⃣ Copie o link do projeto<br>
+      5️⃣ Cole aqui e envie para aprovação
+    </div>
+    <div style="background:rgba(255,200,0,.12);border:1px solid rgba(255,200,0,.4);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;font-size:.78rem;color:#ffd700;line-height:1.6;">
+      ⚠️ <strong>ATENÇÃO:</strong> Seu projeto precisa estar <strong>Compartilhado</strong> no Scratch!<br>
+      Clique em <strong>"Compartilhar"</strong> antes de copiar o link — senão o professor não conseguirá abrir.
     </div>
     <a class="scratch-btn" href="https://scratch.mit.edu/projects/editor" target="_blank" rel="noopener noreferrer">🐱 Abrir no Scratch</a>
     <label>Link do projeto (recomendado)</label>
-    <input type="url" id="missao-link" placeholder="https://scratch.mit.edu/projects/..." style="margin-bottom:14px">
+    <input type="url" id="missao-link" placeholder="https://scratch.mit.edu/projects/..." style="margin-bottom:6px">
+    <div id="missao-link-status" style="font-size:.75rem;min-height:18px;margin-bottom:10px;"></div>
     <button class="btn btn-primary btn-block" id="btn-enviar-desafio">📤 Enviar para Aprovação</button>
     <button class="btn btn-outline btn-block" onclick="closeModal('modal-missao')" style="margin-bottom:0">Cancelar</button>`;
   document.getElementById('btn-enviar-desafio').addEventListener('click',()=>enviarDesafio(desafioId));
@@ -5759,14 +5799,56 @@ async function enviarDesafio(desafioId){
   const a=S.alunos.find(x=>x.id===alunoAtual);
   if(!a)return;
   if(S.pendentes.find(p=>p.alunoId===a.id&&p.isDesafio&&p.desafioId===desafioId)) return toast('⚠️ Já enviado! Aguarde aprovação.');
-  const link=document.getElementById('missao-link')?.value.trim()||'';
+  const linkRaw=document.getElementById('missao-link')?.value.trim()||'';
+  if(linkRaw){
+    const v=await validarLinkScratch(linkRaw);
+    if(!v.ok) return toast(v.erro,5000);
+    if(v.aviso) toast('⚠️ '+v.aviso,4000);
+    var linkFinal=v.linkNormalizado||linkRaw;
+  } else { var linkFinal=''; }
   setSyncing('syncing');
   try {
-    await COL.pendentes().add({alunoId:a.id,missaoId:'desafio',desafioId,link,ts:Date.now(),isDesafio:true,xp:d.xp,aprovado:false,rejeitado:false});
+    await COL.pendentes().add({alunoId:a.id,missaoId:'desafio',desafioId,link:linkFinal,ts:Date.now(),isDesafio:true,xp:d.xp,aprovado:false,rejeitado:false});
     closeModal('modal-missao');
     toast('🔥 Desafio enviado! Aguarde aprovação.');
     setSyncing('ok');
   } catch(e){ toast('❌ Erro!'); setSyncing('error'); }
+}
+
+// ══════════════════════════════════════
+//  VALIDAÇÃO DE LINK SCRATCH
+//  Verifica formato e se o projeto está compartilhado (público)
+// ══════════════════════════════════════
+async function validarLinkScratch(link){
+  if(!link) return {ok:true};
+  const safeUrl=sanitizeUrl(link);
+  if(!safeUrl) return {ok:false,erro:'❌ Link inválido. Use um endereço que comece com https://'};
+  let u;
+  try{ u=new URL(safeUrl); }catch(e){ return {ok:false,erro:'❌ Link inválido.'}; }
+  if(!u.hostname.includes('scratch.mit.edu'))
+    return {ok:false,erro:'❌ O link deve ser do Scratch.\nExemplo: https://scratch.mit.edu/projects/123456789'};
+  const m=u.pathname.match(/\/projects\/(\d+)/);
+  if(!m)
+    return {ok:false,erro:'❌ Link incompleto. O link deve ter o número do projeto.\nExemplo: https://scratch.mit.edu/projects/123456789'};
+  const projectId=m[1];
+  const statusEl=document.getElementById('missao-link-status');
+  if(statusEl) statusEl.innerHTML='<span style="color:var(--muted2)">🔍 Verificando projeto...</span>';
+  try{
+    const resp=await fetch(`https://api.scratch.mit.edu/projects/${projectId}`,{signal:AbortSignal.timeout(6000)});
+    if(statusEl) statusEl.innerHTML='';
+    if(resp.status===404||resp.status===403){
+      return {
+        ok:false,
+        erro:`🔒 Projeto PRIVADO!\n\nO link está correto, mas o projeto não está compartilhado.\n\nPara corrigir:\n1. Abra o projeto no Scratch\n2. Clique em "Compartilhar" no topo da página\n3. Volte aqui e envie novamente`
+      };
+    }
+    if(!resp.ok) return {ok:true,aviso:'Não foi possível verificar se o projeto está público. Certifique-se de ter clicado em "Compartilhar" no Scratch.',linkNormalizado:`https://scratch.mit.edu/projects/${projectId}`};
+    return {ok:true,linkNormalizado:`https://scratch.mit.edu/projects/${projectId}`};
+  }catch(e){
+    if(statusEl) statusEl.innerHTML='';
+    // Timeout ou erro de rede — deixa passar com aviso
+    return {ok:true,aviso:'Não foi possível verificar o projeto (sem conexão com a API do Scratch). Certifique-se de ter clicado em "Compartilhar".',linkNormalizado:`https://scratch.mit.edu/projects/${projectId}`};
+  }
 }
 
 async function resgatar(itemId){
@@ -6836,7 +6918,7 @@ async function gerarPin(){
   try { await COL.config().update({pin:novo}); toast(`🔑 Novo PIN: ${novo}`); } catch(e){ toast('❌ Erro!'); }
 }
 function copiarLink(){navigator.clipboard?.writeText(window.location.href).then(()=>toast('📋 Link copiado!')).catch(()=>toast('📋 Copie o link da barra do navegador!'));}
-function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);}
+function toast(msg,dur=3200){const t=document.createElement('div');t.className='toast';t.style.whiteSpace='pre-line';t.style.maxWidth='320px';t.style.lineHeight='1.5';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),dur);}
 
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);}));
 
